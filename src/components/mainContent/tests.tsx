@@ -94,7 +94,7 @@ const Tests = () => {
         <div key={index} className="tests">
           {/* <TestsItem testItem={item}></TestsItem> */}
           cdsdsfsd <br></br>
-          kombo
+          kombo father
         </div>
       ))}
     </div>
