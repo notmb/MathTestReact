@@ -38,7 +38,7 @@ const fetchImage = async (url: string) => {
 };
 
 //КОМПОНЕНТ ЗОБРАЖЕННЯ ДЛЯ ЗАВДАННЯ
-const PictureForQuestion = (props: { url: string }) => {
+const Picture = (props: { url: string; classForPicture: string }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const PictureForQuestion = (props: { url: string }) => {
     <div>
       {imageUrl ? (
         <img
-          className="picture_for_question"
+          className={props.classForPicture}
           src={imageUrl}
           alt="Loaded from Firebase"
         />
@@ -68,7 +68,10 @@ const Task = (props: { task: string; imgForQuestion: string }) => {
         <MathJax>{props.task}</MathJax>
       </div>
       {props.imgForQuestion && (
-        <PictureForQuestion url={props.imgForQuestion}></PictureForQuestion>
+        <Picture
+          url={props.imgForQuestion}
+          classForPicture="picture_for_question"
+        ></Picture>
       )}
     </div>
   );
@@ -97,9 +100,10 @@ const Answers = (props: { answers: string[]; imageForAnswers: string[] }) => {
             {props.answers.map((item, index) => (
               <td key={index} className="answer_options">
                 {pictureIsPresent && (
-                  <PictureForQuestion
+                  <Picture
                     url={props.imageForAnswers[index]}
-                  ></PictureForQuestion>
+                    classForPicture="picture_for_answer"
+                  ></Picture>
                 )}
                 <MathJax>{item}</MathJax>
               </td>

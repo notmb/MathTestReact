@@ -34,9 +34,17 @@ const Tests = () => {
         const documentSnapshots = await Promise.all(promises);
 
         // Фільтруємо документи, якщо вони існують
-        const documents = documentSnapshots.map((snapshot) =>
-          snapshot.exists() ? snapshot.data() : null
-        );
+        // const documents = documentSnapshots.map((snapshot) =>
+        //   snapshot.exists() ? snapshot.data() : null
+        // );
+        const documents: Test[] = documentSnapshots.map((snapshot) => {
+          if (snapshot.exists()) {
+            // Приводимо дані документа до типу Test
+            return snapshot.data() as Test;
+          } else {
+            throw new Error("Документ не існує");
+          }
+        });
 
         setDocuments(documents); // Зберігаємо отримані документи в стані
       } catch (error) {
