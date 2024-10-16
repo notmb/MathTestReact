@@ -17,42 +17,8 @@ interface Test {
   imgForQuestion: string;
 }
 
-//ГЕНЕРУЄМО ВИПАДКОВІ ЧИСЛА ДЛЯ ТЕСТУ
-const randomNumber = (numberOfTask: number, CountAllTask: number): string[] => {
-  const m: { [key: number]: number } = {};
-  const a: string[] = [];
-
-  for (let i: number = 0; i < numberOfTask; ++i) {
-    const r: number = Math.floor(Math.random() * (CountAllTask - i));
-    a.push(((r in m ? m[r] : r) + 1).toString());
-    const l: number = CountAllTask - i - 1;
-    m[r] = l in m ? m[l] : l;
-  }
-
-  return a;
-};
-//ГЕНЕРУЄМО ВИПАДКОВІ ЧИСЛА ДЛЯ ТЕСТУ
-
 const Tests = () => {
   const [documents, setDocuments] = useState<any[]>([]);
-
-  // Отримання кількості документів
-  // const getDocumentCount = async () => {
-  //   try {
-  //     const coll = collection(db, "tasks");
-  //     const snapshot = await getCountFromServer(coll);
-  //     const count = snapshot.data().count
-  //   } catch (error) {
-  //     console.error("Помилка отримання кількості документів:", error);
-  //   }
-  // };
-
-  // Викликаємо getDocumentCount тільки один раз при завантаженні
-  // useEffect(() => {
-  //   getDocumentCount();
-  // }, []); // Цей useEffect викликається тільки один раз при монтовані компонента
-
-  // Викликаємо, коли змінюється значення count
 
   useEffect(() => {
     const fetchMultipleDocuments = async () => {
@@ -92,7 +58,7 @@ const Tests = () => {
     <div className="alltests">
       {documents.map((item, index) => (
         <div key={index} className="tests">
-          {/* <TestsItem testItem={item}></TestsItem> */}
+          <TestsItem testItem={item}></TestsItem>
           cdsdsfsd <br></br>
           kombo father
         </div>
@@ -104,47 +70,18 @@ const Tests = () => {
 export default Tests;
 //ВМІСТ КОМПОНЕНТА
 
-//ЗАВАНТАЖУЄМО ДКУМЕНТ ПО ID
-const fetchDocumentById = async (id: string) => {
-  try {
-    const docRef = doc(db, "tasks", id);
-    const docSnap = await getDoc(docRef);
+//ГЕНЕРУЄМО ВИПАДКОВІ ЧИСЛА ДЛЯ ТЕСТУ
+const randomNumber = (numberOfTask: number, CountAllTask: number): string[] => {
+  const m: { [key: number]: number } = {};
+  const a: string[] = [];
 
-    if (docSnap.exists()) {
-      const data = docSnap.data() as Test;
-      console.log("Документ отримано: ", data); // Перевірка всіх даних документа
-      return data;
-    } else {
-      console.log("Документ не знайдено!");
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching document: ", error);
-    return null;
+  for (let i: number = 0; i < numberOfTask; ++i) {
+    const r: number = Math.floor(Math.random() * (CountAllTask - i));
+    a.push(((r in m ? m[r] : r) + 1).toString());
+    const l: number = CountAllTask - i - 1;
+    m[r] = l in m ? m[l] : l;
   }
+
+  return a;
 };
-//ЗАВАНТАЖУЄМО ДКУМЕНТ ПО ID
-
-//ОТРИМУЄМО КОЛЕКЦІЮ ПО НАЗВІ
-// const fetchCollection = async () => {
-//   try {
-//     const querySnapshot = await getDocs(collection(db, "tasks"));
-//     return querySnapshot;
-//   } catch (error) {
-//     console.error("Error fetching document: ", error);
-//     return null;
-//   }
-// };
-//ОТРИМУЄМО КОЛЕКЦІЮ ПО НАЗВІ
-
-//ОТРИМУЄМО ДКУМЕНТ ПО ID
-// useEffect(() => {
-//   const loadData = async () => {
-//     const fetchedData = await fetchDocumentById("1");
-//     if (fetchedData) {
-//       setData(fetchedData);
-//     }
-//   };
-//   loadData();
-// }, []);
-//ОТРИМУЄМО ДКУМЕНТ ПО ID
+//ГЕНЕРУЄМО ВИПАДКОВІ ЧИСЛА ДЛЯ ТЕСТУ
