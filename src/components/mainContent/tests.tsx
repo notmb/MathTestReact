@@ -20,6 +20,7 @@ interface Test {
 const Tests = () => {
   const [documents, setDocuments] = useState<any[]>([]);
 
+  //ГЕНЕРУЄМО ТЕСТ
   useEffect(() => {
     const fetchMultipleDocuments = async () => {
       try {
@@ -33,10 +34,6 @@ const Tests = () => {
         const promises = tasksId.map((id) => getDoc(doc(db, "tasks", id)));
         const documentSnapshots = await Promise.all(promises);
 
-        // Фільтруємо документи, якщо вони існують
-        // const documents = documentSnapshots.map((snapshot) =>
-        //   snapshot.exists() ? snapshot.data() : null
-        // );
         const documents: Test[] = documentSnapshots.map((snapshot) => {
           if (snapshot.exists()) {
             // Приводимо дані документа до типу Test
@@ -57,6 +54,7 @@ const Tests = () => {
 
   console.log("Отримані документи:", documents);
   //ГЕНЕРУЄМО ТЕСТ
+
   //ВМІСТ КОМПОНЕНТА
   if (!documents) {
     return <div>Loading...</div>;
