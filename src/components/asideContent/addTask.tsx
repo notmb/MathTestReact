@@ -68,7 +68,7 @@ const AddTask = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>
+          <label className="element_form">
             Завдання:
             <input
               type="text"
@@ -78,7 +78,7 @@ const AddTask = () => {
           </label>
         </div>
         <div>
-          <label>
+          <label className="element_form">
             Назва фото до завдання:
             <input
               type="text"
@@ -88,13 +88,13 @@ const AddTask = () => {
           </label>
         </div>
         <div>
-          <label>
+          <label className="element_form">
             Відповіді:
             <input type="text" value={answers} onChange={handleAnswerChange} />
           </label>
         </div>
         <div>
-          <label>
+          <label className="element_form">
             Фото до відповідей:
             <input
               type="text"
@@ -104,7 +104,7 @@ const AddTask = () => {
           </label>
         </div>
         <div>
-          <label>
+          <label className="element_form">
             Правильна відповідь:
             <input
               type="text"
