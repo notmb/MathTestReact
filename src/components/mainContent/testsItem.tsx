@@ -8,8 +8,8 @@ interface Test {
   question: string;
   answers: string[];
   correctAnswer: string;
-  imgForAnswers: string[];
-  imgForQuestion: string;
+  pictureForAnswers: string[];
+  pictureForQuestion: string;
 }
 //ГОЛОВНИЙ КОМПОНЕНТ
 const TestsItem2 = (props: { testItem: Test }) => {
@@ -17,12 +17,12 @@ const TestsItem2 = (props: { testItem: Test }) => {
     <div>
       <Task
         task={props.testItem.question}
-        imgForQuestion={props.testItem.imgForQuestion}
+        imgForQuestion={props.testItem.pictureForQuestion}
         // imgForQuestion={""}
       ></Task>
       <Answers
         answers={props.testItem.answers}
-        imageForAnswers={props.testItem.imgForAnswers}
+        imageForAnswers={props.testItem.pictureForAnswers}
       ></Answers>
       <AnswerChoice answers={props.testItem.answers}></AnswerChoice>
     </div>

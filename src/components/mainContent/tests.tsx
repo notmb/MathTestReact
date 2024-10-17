@@ -13,8 +13,8 @@ interface Test {
   question: string;
   answers: string[];
   correctAnswer: string;
-  imgForAnswers: string[];
-  imgForQuestion: string;
+  pictureForAnswers: string[];
+  pictureForQuestion: string;
 }
 
 const Tests = () => {

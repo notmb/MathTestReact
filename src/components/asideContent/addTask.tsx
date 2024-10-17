@@ -42,7 +42,7 @@ const AddTask = () => {
 
     try {
       // Додаємо новий документ до колекції "users" в Firebase Firestore
-      const docRef = doc(db, "tasks", "4");
+      const docRef = doc(db, "tasks", "3");
 
       await setDoc(docRef, {
         question: question,
@@ -79,7 +79,7 @@ const AddTask = () => {
         </div>
         <div>
           <label>
-            Назва фото до завдання
+            Назва фото до завдання:
             <input
               type="text"
               value={pictureForTask}
