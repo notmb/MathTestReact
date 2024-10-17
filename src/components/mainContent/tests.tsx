@@ -18,7 +18,7 @@ interface Test {
 }
 
 const Tests = () => {
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [documents, setDocuments] = useState<Test[]>([]);
 
   //ГЕНЕРУЄМО ТЕСТ
   useEffect(() => {
