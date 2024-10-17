@@ -10,28 +10,28 @@ const AddTask = () => {
   const [pictureForAnswers, setpictureForAnswers] = useState<string[]>([]);
   const [correctAnswer, setCorrectAnswer] = useState<string>("");
 
-  const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setQuestion(e.target.value); // Оновлюємо стан 'question' на введене значення
   };
 
   const handlePictureForQuestionChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setPictureForTask(e.target.value); // Оновлюємо стан 'imgForTask' на введене значення
   };
 
-  const handleAnswerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setAnswers(e.target.value.split(",")); // Оновлюємо стан 'imgForTask' на введене значення
   };
 
   const handlepictureForAnswersChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setpictureForAnswers(e.target.value.split(",")); // Оновлюємо стан 'imgForTask' на введене значення
   };
 
   const handleCorrectAnswerChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setCorrectAnswer(e.target.value); // Оновлюємо стан 'question' на введене значення
   };
@@ -42,7 +42,7 @@ const AddTask = () => {
 
     try {
       // Додаємо новий документ до колекції "users" в Firebase Firestore
-      const docRef = doc(db, "tasks", "3");
+      const docRef = doc(db, "tasks", "6");
 
       await setDoc(docRef, {
         question: question,
@@ -70,18 +70,13 @@ const AddTask = () => {
         <div>
           <label className="element_form">
             Завдання:
-            <input
-              type="text"
-              value={question}
-              onChange={handleQuestionChange}
-            />
+            <textarea value={question} onChange={handleQuestionChange} />
           </label>
         </div>
         <div>
           <label className="element_form">
             Назва фото до завдання:
-            <input
-              type="text"
+            <textarea
               value={pictureForTask}
               onChange={handlePictureForQuestionChange}
             />
@@ -90,14 +85,13 @@ const AddTask = () => {
         <div>
           <label className="element_form">
             Відповіді:
-            <input type="text" value={answers} onChange={handleAnswerChange} />
+            <textarea value={answers} onChange={handleAnswerChange} />
           </label>
         </div>
         <div>
           <label className="element_form">
             Фото до відповідей:
-            <input
-              type="text"
+            <textarea
               value={pictureForAnswers}
               onChange={handlepictureForAnswersChange}
             />
@@ -106,8 +100,7 @@ const AddTask = () => {
         <div>
           <label className="element_form">
             Правильна відповідь:
-            <input
-              type="text"
+            <textarea
               value={correctAnswer}
               onChange={handleCorrectAnswerChange}
             />
