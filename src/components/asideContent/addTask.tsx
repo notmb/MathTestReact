@@ -65,8 +65,8 @@ const AddTask = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div className="add_task">
+      <form className="form_for_load_task" onSubmit={handleSubmit}>
         <div>
           <label className="element_form">
             Завдання:
@@ -106,7 +106,9 @@ const AddTask = () => {
             />
           </label>
         </div>
-        <button type="submit">Надіслати</button>{" "}
+        <button className="button_in_form" type="submit">
+          Надіслати
+        </button>{" "}
         {/* Кнопка для відправки форми */}
       </form>
     </div>

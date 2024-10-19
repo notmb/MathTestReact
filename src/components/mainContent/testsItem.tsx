@@ -12,9 +12,9 @@ interface Test {
   pictureForQuestion: string;
 }
 //ГОЛОВНИЙ КОМПОНЕНТ
-const TestsItem2 = (props: { testItem: Test }) => {
+const TestsItem = (props: { testItem: Test }) => {
   return (
-    <div>
+    <div className="test">
       <Task
         task={props.testItem.question}
         imgForQuestion={props.testItem.pictureForQuestion}
@@ -28,7 +28,7 @@ const TestsItem2 = (props: { testItem: Test }) => {
     </div>
   );
 };
-export default TestsItem2;
+export default TestsItem;
 //ГОЛОВНИЙ КОМПОНЕНТ
 const fetchImage = async (url: string) => {
   const storage = getStorage(app); // Отримуємо екземпляр Storage

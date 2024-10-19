@@ -19,6 +19,7 @@ interface Test {
 
 const Tests = () => {
   const [documents, setDocuments] = useState<Test[]>([]);
+  const [taskId, setTaskId] = useState<string[]>([]);
 
   //ГЕНЕРУЄМО ТЕСТ
   useEffect(() => {
@@ -42,7 +43,12 @@ const Tests = () => {
             throw new Error("Документ не існує");
           }
         });
-
+        const docIds = documentSnapshots
+          .filter((snapshot) => {
+            return snapshot.exists();
+          })
+          .map((snapshot) => snapshot.id);
+        setTaskId(docIds);
         setDocuments(documents); // Зберігаємо отримані документи в стані
       } catch (error) {
         console.error("Помилка отримання документів:", error);
@@ -51,7 +57,7 @@ const Tests = () => {
 
     fetchMultipleDocuments(); // Викликаємо логіку отримання документів при першому рендері
   }, []);
-
+  console.log(taskId);
   console.log("Отримані документи:", documents);
   //ГЕНЕРУЄМО ТЕСТ
 
@@ -61,12 +67,10 @@ const Tests = () => {
   }
 
   return (
-    <div className="alltests">
+    <div className="tests">
       {documents.map((item, index) => (
         <div key={index} className="tests">
           <TestsItem testItem={item}></TestsItem>
-          cdsdsfsd <br></br>
-          kombo father
         </div>
       ))}
     </div>
