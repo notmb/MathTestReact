@@ -1,4 +1,4 @@
-import AddTask from "./components/asideContent/addTask";
+import AddTask from "./components/mainContent/addTask";
 import MainContent from "./components/mainContent/mainContent";
 
 const routes = [

@@ -1,5 +1,5 @@
 import "./asideBox.css";
-import AddTask from "./addTask";
+import AddTask from "../mainContent/addTask";
 import AsideNavigate from "./asideNavigate";
 
 const AsideBox = (prop: { navigate: (path: string) => void }) => {

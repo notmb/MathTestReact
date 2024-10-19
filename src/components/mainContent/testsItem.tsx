@@ -119,12 +119,12 @@ const Answers = (props: { answers: string[]; imageForAnswers: string[] }) => {
 //КОМПОНЕНТ ДЛЯ ВИБОРУ ВІДПОВІДІ
 const AnswerChoice = (props: { answers: string[] }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
+  console.log(props.answers);
   return (
     <div className="box_form">
       <form className="form_for_answer" action="#" method="post">
         {mark.map((item, index) => {
           return (
-            // <React.Fragment key={index}>
             <div className="box_choise" key={index}>
               <input
                 className="user_choice"
@@ -136,7 +136,7 @@ const AnswerChoice = (props: { answers: string[] }) => {
               <label className="label" htmlFor={item}>
                 <span className="math-jax">
                   <MathJax>
-                    {item} ({props.answers[index]})
+                    {item}({props.answers[index]})
                   </MathJax>
                 </span>
               </label>
