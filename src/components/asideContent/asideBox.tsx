@@ -6,7 +6,7 @@ const AsideBox = (prop: { navigate: (path: string) => void }) => {
   return (
     <div className="aside_box">
       <AsideNavigate navigate={prop.navigate} />
-      <AddTask />
+      {/* <AddTask /> */}
     </div>
   );
 };

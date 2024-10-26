@@ -45,3 +45,9 @@
 .form_for_answer {
   padding-left: 10px;
 }
+.answer {
+  display: flex;
+}
+.MathJAx {
+  display: inline;
+}

@@ -42,7 +42,7 @@ const AddTask = () => {
 
     try {
       // Додаємо новий документ до колекції "users" в Firebase Firestore
-      const docRef = doc(db, "tasks", "6");
+      const docRef = doc(db, "tasks", "5");
 
       await setDoc(docRef, {
         question: question,

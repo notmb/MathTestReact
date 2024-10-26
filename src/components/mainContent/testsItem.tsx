@@ -12,7 +12,11 @@ interface Test {
   pictureForQuestion: string;
 }
 //ГОЛОВНИЙ КОМПОНЕНТ
-const TestsItem = (props: { testItem: Test }) => {
+const TestsItem = (props: {
+  testItem: Test;
+  id: string;
+  func: (id: string, currentAnswer: string) => void;
+}) => {
   return (
     <div className="test">
       <Task
@@ -24,7 +28,11 @@ const TestsItem = (props: { testItem: Test }) => {
         answers={props.testItem.answers}
         imageForAnswers={props.testItem.pictureForAnswers}
       ></Answers>
-      <AnswerChoice answers={props.testItem.answers}></AnswerChoice>
+      <AnswerChoice
+        answers={props.testItem.answers}
+        id={props.id}
+        func={props.func}
+      ></AnswerChoice>
     </div>
   );
 };
@@ -62,6 +70,9 @@ const Picture = (props: { url: string; classForPicture: string }) => {
 
 //КОМПОНЕНТ ЗАВДАННЯ
 const Task = (props: { task: string; imgForQuestion: string }) => {
+  if (props.imgForQuestion) {
+    console.log(props.imgForQuestion);
+  }
   return (
     <div className="question_box">
       <div>
@@ -117,9 +128,22 @@ const Answers = (props: { answers: string[]; imageForAnswers: string[] }) => {
 //КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
 
 //КОМПОНЕНТ ДЛЯ ВИБОРУ ВІДПОВІДІ
-const AnswerChoice = (props: { answers: string[] }) => {
+const AnswerChoice = (props: {
+  answers: string[];
+  id: string;
+  func: (id: string, currentAnswer: string) => void;
+}) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
-  console.log(props.answers);
+  const [answer, setAnswer] = useState<{ userAnswer: string; id: string }>({
+    userAnswer: "",
+    id: "",
+  });
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const id2 = event.target.name.match(/\d+/g)?.join("");
+    setAnswer({ userAnswer: event.target.value, id: id2 || "" });
+    props.func(answer.id, answer.userAnswer);
+  };
+
   return (
     <div className="box_form">
       <form className="form_for_answer" action="#" method="post">
@@ -131,13 +155,16 @@ const AnswerChoice = (props: { answers: string[] }) => {
                 type="radio"
                 id={item}
                 value={item}
-                name="answer"
+                name={"task" + props.id}
+                onChange={handleOptionChange}
               />
               <label className="label" htmlFor={item}>
-                <span className="math-jax">
-                  <MathJax>
-                    {item}({props.answers[index]})
-                  </MathJax>
+                <span className="answer" data-value={props.answers[index]}>
+                  {item}(
+                  <span>
+                    <MathJax>{props.answers[index]}</MathJax>
+                  </span>
+                  )
                 </span>
               </label>
             </div>

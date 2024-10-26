@@ -19,8 +19,18 @@ interface Test {
 
 const Tests = () => {
   const [documents, setDocuments] = useState<Test[]>([]);
-  const [taskId, setTaskId] = useState<string[]>([]);
+  const [taskIds, setTaskIds] = useState<string[]>([]);
+  const [userAnswers, setUserAnswers] = useState<string[]>(Array(4).fill(""));
 
+  const usersAnswers = (id: string, currentAnswer: string) => {
+    const userAnswers2 = userAnswers.map((item, index) =>
+      index === Number(id) ? currentAnswer : item
+    );
+    console.log(id, currentAnswer);
+    console.log(userAnswers2);
+    setUserAnswers(userAnswers2);
+  };
+  // console.log(userAnswers);
   //ГЕНЕРУЄМО ТЕСТ
   useEffect(() => {
     const fetchMultipleDocuments = async () => {
@@ -30,8 +40,8 @@ const Tests = () => {
         const snapshot = await getCountFromServer(coll);
         const count = snapshot.data().count;
 
-        const tasksId = randomNumber(2, count); // Генерація ідентифікаторів
-        console.log(tasksId);
+        const tasksId = randomNumber(4, count); // Генерація ідентифікаторів
+        setTaskIds(tasksId);
         const promises = tasksId.map((id) => getDoc(doc(db, "tasks", id)));
         const documentSnapshots = await Promise.all(promises);
 
@@ -43,12 +53,7 @@ const Tests = () => {
             throw new Error("Документ не існує");
           }
         });
-        const docIds = documentSnapshots
-          .filter((snapshot) => {
-            return snapshot.exists();
-          })
-          .map((snapshot) => snapshot.id);
-        setTaskId(docIds);
+
         setDocuments(documents); // Зберігаємо отримані документи в стані
       } catch (error) {
         console.error("Помилка отримання документів:", error);
@@ -57,8 +62,7 @@ const Tests = () => {
 
     fetchMultipleDocuments(); // Викликаємо логіку отримання документів при першому рендері
   }, []);
-  console.log(taskId);
-  console.log("Отримані документи:", documents);
+
   //ГЕНЕРУЄМО ТЕСТ
 
   //ВМІСТ КОМПОНЕНТА
@@ -69,8 +73,12 @@ const Tests = () => {
   return (
     <div className="tests">
       {documents.map((item, index) => (
-        <div key={index} className="tests">
-          <TestsItem testItem={item}></TestsItem>
+        <div key={taskIds[index]} className="tests">
+          <TestsItem
+            testItem={item}
+            id={taskIds[index]}
+            func={usersAnswers}
+          ></TestsItem>
         </div>
       ))}
     </div>
