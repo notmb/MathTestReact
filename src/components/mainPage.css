@@ -1,0 +1,9 @@
+.main_page {
+  display: flex;
+  position: relative;
+
+  background-color: aliceblue;
+  border: 2px solid rgb(173, 173, 173);
+  margin-top: 10px;
+  width: 100%;
+}

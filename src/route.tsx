@@ -10,6 +10,10 @@ const routes = [
     path: "/createtask",
     component: AddTask,
   },
+  // {
+  //   path: "/math",
+  //   component: MainContent,
+  // }
 ];
 
 const Router = (prop: { currentPath: string }) => {
