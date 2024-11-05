@@ -1,25 +1,32 @@
-import AddTask from "./components/mainContent/addTask";
-import MainContent from "./components/mainContent/mainContent";
+import MainPage from "./components/mainPage";
+import Tests from "./components/mainContent/tests";
 
 const routes = [
   {
-    path: "/test",
-    component: MainContent,
+    path: "/main",
+    component: MainPage,
   },
   {
-    path: "/createtask",
-    component: AddTask,
+    path: "/tests",
+    component: Tests,
   },
-  // {
-  //   path: "/math",
-  //   component: MainContent,
-  // }
+  {
+    path: "/conspectus",
+    component: MainPage,
+  },
+  {
+    path: "/study",
+    component: MainPage,
+  },
 ];
 
-const Router = (prop: { currentPath: string }) => {
+const Router = (prop: {
+  currentPath: string;
+  navigate: (path: string) => void;
+}) => {
   const route =
     routes.find((route) => route.path === prop.currentPath) || routes[0];
   const Component = route.component;
-  return <Component />;
+  return <Component navigate={prop.navigate} />;
 };
 export default Router;

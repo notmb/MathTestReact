@@ -73,7 +73,7 @@ const Tests = () => {
   return (
     <div className="tests">
       {documents.map((item, index) => (
-        <div key={taskIds[index]} className="tests">
+        <div key={taskIds[index]} className="test">
           <TestsItem
             testItem={item}
             id={taskIds[index]}

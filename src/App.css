@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 .app {
   background-image: url("/backgroundimg.jpg");
   background-size: cover;
