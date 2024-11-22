@@ -1,13 +1,8 @@
 * {
   box-sizing: border-box;
+  margin: 0;
 }
 .app {
-  background-image: url("/backgroundimg.jpg");
-  background-size: cover;
-  background-position: center;
   display: flex;
   flex-direction: column;
-
-  height: 1000px;
-  padding: 30px;
 }

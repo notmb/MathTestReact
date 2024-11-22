@@ -1,5 +1,8 @@
 .test {
-  padding-bottom: 15px;
+  border: 2px solid rgb(173, 173, 173);
+  /* border-right: 1px solid rgb(173, 173, 173);
+  border-left: 1px solid rgb(173, 173, 173); */
+  margin-bottom: 10px;
 }
 .question_box {
   border-bottom: 2px solid rgb(244, 236, 236);

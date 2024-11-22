@@ -18,7 +18,7 @@ const TestsItem = (props: {
   func: (id: string, currentAnswer: string) => void;
 }) => {
   return (
-    <div className="test">
+    <div className="task">
       <Task
         task={props.testItem.question}
         imgForQuestion={props.testItem.pictureForQuestion}
