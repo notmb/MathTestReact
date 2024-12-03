@@ -1,0 +1,26 @@
+.footer {
+  background-color: aliceblue;
+  display: flex;
+
+  padding: 16px 32px;
+}
+.footer_conteiners {
+  /* margin-right: 32px; */
+  width: 25%;
+}
+.footer_list {
+  padding: 8px 0 0 16px;
+}
+.fotter_link {
+  text-decoration: none;
+  color: black;
+}
+.footer_conteiner_logo {
+  width: 25%;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+}
+.footer_logo {
+  width: 70%;
+}

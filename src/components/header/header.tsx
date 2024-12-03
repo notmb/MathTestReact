@@ -28,7 +28,10 @@ const Header = (prop: { navigate: (path: string) => void }) => {
           <h5 className="header_navigation_item_h">Навчання</h5>
         </div>
       </div>
-      <div className="header_log_in">
+      <div
+        className="header_log_in"
+        onClick={() => prop.navigate("/account/login")}
+      >
         <h4 className="header_navigation_item_h">Log in</h4>
       </div>
     </header>

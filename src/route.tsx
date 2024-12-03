@@ -1,5 +1,7 @@
 import MainPage from "./components/mainPage";
 import Tests from "./components/mainContent/tests";
+import LogIn from "./components/account/logIn";
+import SingUp from "./components/account/signUp";
 
 const routes = [
   {
@@ -17,6 +19,14 @@ const routes = [
   {
     path: "/study",
     component: MainPage,
+  },
+  {
+    path: "/account/login",
+    component: LogIn,
+  },
+  {
+    path: "/account/singup",
+    component: SingUp,
   },
 ];
 
