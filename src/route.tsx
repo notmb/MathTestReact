@@ -1,6 +1,6 @@
 import MainPage from "./components/mainPage";
 import Tests from "./components/mainContent/tests";
-import LogIn from "./components/account/logIn";
+import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
 
 const routes = [
@@ -22,7 +22,7 @@ const routes = [
   },
   {
     path: "/account/login",
-    component: LogIn,
+    component: SingIn,
   },
   {
     path: "/account/singup",
