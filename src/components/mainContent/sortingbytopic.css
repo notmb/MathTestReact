@@ -1,0 +1,18 @@
+.sorting_by_topic {
+  height: 560px;
+  display: flex;
+  align-content: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 32px;
+}
+.cards_for_sorting {
+  width: 100px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(252, 228, 192, 0.599);
+  cursor: pointer;
+}

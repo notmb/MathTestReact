@@ -1,7 +1,7 @@
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { app } from "../../firebaseConfig";
 import { useState, useEffect } from "react";
-import "./testsItem.css";
+import "./testsItemold.css";
 import { MathJax } from "better-react-mathjax";
 
 interface Test {
@@ -22,7 +22,6 @@ const TestsItem = (props: {
       <Task
         task={props.testItem.question}
         imgForQuestion={props.testItem.pictureForQuestion}
-        // imgForQuestion={""}
       ></Task>
       <Answers
         answers={props.testItem.answers}
@@ -38,6 +37,7 @@ const TestsItem = (props: {
 };
 export default TestsItem;
 //ГОЛОВНИЙ КОМПОНЕНТ
+
 const fetchImage = async (url: string) => {
   const storage = getStorage(app); // Отримуємо екземпляр Storage
   const storageRef = ref(storage, url); // Шлях до файлу в Storage
@@ -89,7 +89,7 @@ const Task = (props: { task: string; imgForQuestion: string }) => {
 };
 //КОМПОНЕНТ ЗАВДАННЯ
 
-//КОМПОНЕНТ ДЛЯ ВІДПОВІДЕй
+//КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
 const Answers = (props: { answers: string[]; imageForAnswers: string[] }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
   // const urlForAnswer = PictureForAnswers(props.imageForAnswers);

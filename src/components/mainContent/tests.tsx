@@ -1,3 +1,5 @@
+import "./tests.css";
+import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
 import {
   getDoc,
@@ -5,101 +7,94 @@ import {
   collection,
   getCountFromServer,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import "./tests.css";
-import TestsItem from "./testsItem";
+import TestsItem from "./testItem";
 
-interface Test {
-  question: string;
-  answers: string[];
+interface Answers {
+  value: string[];
+  pictures: string[];
+}
+interface Comparison {
+  list1: string[];
+  list2: string[];
+}
+interface TaskData {
+  task: string[];
+  answers: Answers;
   correctAnswer: string;
-  pictureForAnswers: string[];
-  pictureForQuestion: string;
+  typeOfTask: string;
+  comparisonTable: Comparison;
+  correctComparison: string[];
+}
+interface TestItem {
+  [key: string]: TaskData; // Колекція з різними завданнями
 }
 
 const Tests = () => {
-  const [documents, setDocuments] = useState<Test[]>([]);
-  const [taskIds, setTaskIds] = useState<string[]>([]);
-  const [userAnswers, setUserAnswers] = useState<string[]>(Array(4).fill(""));
+  const [document, setDocument] = useState<TestItem>();
 
-  const usersAnswers = (id: string, currentAnswer: string) => {
-    const userAnswers2 = userAnswers.map((item, index) =>
-      index === Number(id) ? currentAnswer : item
-    );
-    console.log(id, currentAnswer);
-    console.log(userAnswers2);
-    setUserAnswers(userAnswers2);
-  };
-  // console.log(userAnswers);
   //ГЕНЕРУЄМО ТЕСТ
-  useEffect(() => {
-    const fetchMultipleDocuments = async () => {
-      try {
-        // Отримання кількості документів
-        const coll = collection(db, "tasks");
-        const snapshot = await getCountFromServer(coll);
-        const count = snapshot.data().count;
 
-        const tasksId = randomNumber(4, count); // Генерація ідентифікаторів
-        setTaskIds(tasksId);
-        const promises = tasksId.map((id) => getDoc(doc(db, "tasks", id)));
-        const documentSnapshots = await Promise.all(promises);
+  const getDocument = async () => {
+    try {
+      const docRef = doc(db, "topic 1", "variant 1"); // Створюємо посилання на документ
+      const docSnap = await getDoc(docRef); // Отримуємо дані документа
 
-        const documents: Test[] = documentSnapshots.map((snapshot) => {
-          if (snapshot.exists()) {
-            // Приводимо дані документа до типу Test
-            return snapshot.data() as Test;
-          } else {
-            throw new Error("Документ не існує");
-          }
-        });
+      if (docSnap.exists()) {
+        const data = docSnap.data() as Partial<TestItem>;
+        const finalData: TestItem = Object.entries(data).reduce(
+          (acc, [key, taskData]) => {
+            acc[key] = {
+              task: taskData?.task ?? ["Немає завдання"],
+              answers: taskData?.answers ?? { value: [], pictures: [] },
+              correctAnswer: taskData?.correctAnswer ?? "Немає відповіді",
+              typeOfTask: taskData?.typeOfTask ?? "unknown",
+              comparisonTable: taskData?.comparisonTable ?? {
+                list1: [],
+                list2: [],
+              },
+              correctComparison: taskData?.correctComparison ?? [],
+            };
+            console.log(acc[key].task);
 
-        setDocuments(documents); // Зберігаємо отримані документи в стані
-      } catch (error) {
-        console.error("Помилка отримання документів:", error);
+            return acc;
+          },
+          {} as TestItem
+        );
+        setDocument(finalData);
+      } else {
+        console.log("No such document!");
+        return null;
       }
-    };
-
-    fetchMultipleDocuments(); // Викликаємо логіку отримання документів при першому рендері
+    } catch (error) {
+      console.error("Error getting document:", error);
+      throw error;
+    }
+  };
+  useEffect(() => {
+    getDocument();
   }, []);
 
   //ГЕНЕРУЄМО ТЕСТ
-
-  //ВМІСТ КОМПОНЕНТА
-  if (!documents) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="tests">
-      {documents.map((item, index) => (
-        <div key={taskIds[index]} className="test">
-          <TestsItem
-            testItem={item}
-            id={taskIds[index]}
-            func={usersAnswers}
-          ></TestsItem>
-        </div>
-      ))}
+    <div>
+      <div className="tests">
+        {document &&
+          Object.entries(document).map(([key, task]) => (
+            <div key={key}>
+              <TestsItem
+                task={task.task}
+                answers={task.answers}
+                typeOfTask={task.typeOfTask}
+                comparisonTable={task.comparisonTable}
+                number={key}
+              />
+            </div>
+          ))}
+        {!document && <p>Loading...</p>}
+        <button>Перевірити</button>
+      </div>
     </div>
   );
 };
 
 export default Tests;
-//ВМІСТ КОМПОНЕНТА
-
-//ГЕНЕРУЄМО ВИПАДКОВІ ЧИСЛА ДЛЯ ТЕСТУ
-const randomNumber = (numberOfTask: number, CountAllTask: number): string[] => {
-  const m: { [key: number]: number } = {};
-  const a: string[] = [];
-
-  for (let i: number = 0; i < numberOfTask; ++i) {
-    const r: number = Math.floor(Math.random() * (CountAllTask - i));
-    a.push(((r in m ? m[r] : r) + 1).toString());
-    const l: number = CountAllTask - i - 1;
-    m[r] = l in m ? m[l] : l;
-  }
-
-  return a;
-};
-//ГЕНЕРУЄМО ВИПАДКОВІ ЧИСЛА ДЛЯ ТЕСТУ

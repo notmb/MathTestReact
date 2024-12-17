@@ -1,0 +1,10 @@
+.tests {
+  border-left: 32px solid aliceblue;
+  border-right: 32px solid aliceblue;
+}
+.test {
+  margin-bottom: 10px;
+  border-bottom: 10px solid; /* Задаємо нижній бордер */
+  border-image: linear-gradient(to right, rgb(218, 224, 230), transparent) 1; /* Градієнт для бордера */
+  border-image-slice: 1; /* Використовуємо весь градієнт для бордера */
+}

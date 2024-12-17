@@ -1,7 +1,9 @@
 import MainPage from "./components/mainPage";
+import TestsOld from "./components/mainContent/testsold";
 import Tests from "./components/mainContent/tests";
 import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
+import SortingByClass from "./components/mainContent/sortingbyclass";
 
 const routes = [
   {
@@ -9,12 +11,12 @@ const routes = [
     component: MainPage,
   },
   {
-    path: "/tests",
-    component: Tests,
+    path: "/testsold",
+    component: TestsOld,
   },
   {
     path: "/conspectus",
-    component: MainPage,
+    component: Tests,
   },
   {
     path: "/study",
@@ -27,6 +29,11 @@ const routes = [
   {
     path: "/account/singup",
     component: SingUp,
+  },
+
+  {
+    path: "/tests/sortingbyclass",
+    component: SortingByClass,
   },
 ];
 

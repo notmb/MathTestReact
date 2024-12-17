@@ -11,7 +11,7 @@ const Header = (prop: { navigate: (path: string) => void }) => {
       <div className="header_navigation">
         <div
           className="header_navigation_item"
-          onClick={() => prop.navigate("/tests")}
+          onClick={() => prop.navigate("/testsold")}
         >
           <h5 className="header_navigation_item_h">Тести</h5>
         </div>
