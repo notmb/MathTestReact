@@ -1,12 +1,12 @@
 import "./singIn.css";
-import { useState, useEffect } from "react";
-import { auth } from "../../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+// import { auth } from "../../firebaseConfig";
+// import { signInWithEmailAndPassword } from "firebase/auth";
 import PersonalAccount from "./personalAccount";
 
 const SingIn = (prop: { navigate: (path: string) => void }) => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [password, setPassword] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Запобігає оновленню сторінки
@@ -15,7 +15,7 @@ const SingIn = (prop: { navigate: (path: string) => void }) => {
 
   const handleSignIn = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      // await signInWithEmailAndPassword(auth, email, password);
       alert("Signed in successfully!");
     } catch (error) {
       console.error(error);

@@ -1,12 +1,7 @@
 import "./tests.css";
 import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
-import {
-  getDoc,
-  doc,
-  collection,
-  getCountFromServer,
-} from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import TestsItem from "./testItem";
 
 interface Answers {
@@ -138,8 +133,8 @@ const Tests = () => {
       });
     console.log(comparison);
     let sum = 0;
-    Object.entries(comparison).forEach(([key, item]) => {
-      sum = sum + item;
+    Object.values(comparison).map((value) => {
+      sum = sum + value; // Додаємо значення
     });
     alert(
       "Твій бал за тест: " +

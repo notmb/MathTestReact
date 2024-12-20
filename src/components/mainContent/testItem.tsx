@@ -13,22 +13,6 @@ interface Comparison {
   list2: string[];
 }
 
-interface CorrectComparison {
-  1: string;
-  2: string;
-  3: string;
-  4?: string;
-  5?: string;
-}
-interface TaskData {
-  task: string[];
-  answers: Answers;
-  correctAnswer: string;
-  typeOfTask: string;
-  comparisonTable: Comparison;
-  correctComparison: string[];
-}
-
 const TestsItem = (props: {
   task: string[];
   answers: Answers;
@@ -154,7 +138,7 @@ const Answers = (props: { answers: Answers }) => {
                     classForPicture="picture_for_answer"
                   ></Picture>
                 )}
-                <MathJax>{props.answers.values[index]}</MathJax>
+                <MathJax>{item}</MathJax>
               </td>
             ))}
           </tr>
@@ -265,7 +249,7 @@ const AnswerToComparisonTask = (props: {
     <div>
       <div className="list1">
         <ul>
-          {props.comparisonTable.list1.map((item, index) => (
+          {props.comparisonTable.list1.map((_, index) => (
             <li key={index} className="list_item">
               {index + 1})
               <input
