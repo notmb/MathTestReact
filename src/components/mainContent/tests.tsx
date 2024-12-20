@@ -10,20 +10,22 @@ import {
 import TestsItem from "./testItem";
 
 interface Answers {
-  value: string[];
+  values: string[];
   pictures: string[];
 }
 interface Comparison {
   list1: string[];
   list2: string[];
 }
+interface CorrectComparison {
+  [key: string]: string;
+}
 interface TaskData {
   task: string[];
   answers: Answers;
-  correctAnswer: string;
+  correctAnswer: string | CorrectComparison;
   typeOfTask: string;
   comparisonTable: Comparison;
-  correctComparison: string[];
 }
 interface TestItem {
   [key: string]: TaskData; // Колекція з різними завданнями
@@ -31,6 +33,24 @@ interface TestItem {
 
 const Tests = () => {
   const [document, setDocument] = useState<TestItem>();
+
+  const [userAnswers, setUserAnswers] = useState<{ [key: string]: any }>({});
+
+  const addAnswer = (key: string, answer: string) => {
+    setUserAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [key]: answer, // Додаємо нову відповідь з власним ключем
+    }));
+  };
+
+  const EditUserAnswer = (key: string, newAnswer: any) => {
+    setUserAnswers((prevAnswers) => ({
+      ...prevAnswers, // зберігаємо попередні значення
+      [key]: newAnswer, // оновлюємо значення для конкретного ключа
+    }));
+  };
+
+  console.log(userAnswers);
 
   //ГЕНЕРУЄМО ТЕСТ
 
@@ -41,20 +61,20 @@ const Tests = () => {
 
       if (docSnap.exists()) {
         const data = docSnap.data() as Partial<TestItem>;
+
         const finalData: TestItem = Object.entries(data).reduce(
           (acc, [key, taskData]) => {
             acc[key] = {
               task: taskData?.task ?? ["Немає завдання"],
-              answers: taskData?.answers ?? { value: [], pictures: [] },
+              answers: taskData?.answers ?? { values: [], pictures: [] },
               correctAnswer: taskData?.correctAnswer ?? "Немає відповіді",
               typeOfTask: taskData?.typeOfTask ?? "unknown",
               comparisonTable: taskData?.comparisonTable ?? {
                 list1: [],
                 list2: [],
               },
-              correctComparison: taskData?.correctComparison ?? [],
             };
-            console.log(acc[key].task);
+            addAnswer(key, "");
 
             return acc;
           },
@@ -74,6 +94,61 @@ const Tests = () => {
     getDocument();
   }, []);
 
+  const CheckComparison = (
+    correctAnswer: CorrectComparison,
+    userAnswers: CorrectComparison
+  ) => {
+    let mark = 0;
+    Object.entries(userAnswers).forEach(([key, item]) => {
+      if (item === correctAnswer[key]) {
+        mark = mark + 1;
+      }
+    });
+    return mark;
+  };
+
+  const TestCheck = () => {
+    const comparison: { [key: string]: number } = {};
+    document &&
+      Object.entries(document).forEach(([key, item]) => {
+        console.log(key);
+        if (item.typeOfTask === "choice") {
+          if (item.correctAnswer === userAnswers[key]) {
+            comparison[key] = 1;
+            console.log(comparison);
+          } else {
+            comparison[key] = 0;
+          }
+        }
+        if (item.typeOfTask === "openAnswer") {
+          if (item.correctAnswer === userAnswers[key]) {
+            comparison[key] = 2;
+            console.log(comparison);
+          } else {
+            comparison[key] = 0;
+          }
+        } else {
+          if (typeof item.correctAnswer == "object") {
+            comparison[key] = CheckComparison(
+              item.correctAnswer,
+              userAnswers[key]
+            );
+          }
+        }
+      });
+    console.log(comparison);
+    let sum = 0;
+    Object.entries(comparison).forEach(([key, item]) => {
+      sum = sum + item;
+    });
+    alert(
+      "Твій бал за тест: " +
+        sum +
+        "\nТвій бал у форматі НМТ: " +
+        Math.round((sum * 200) / 17)
+    );
+  };
+
   //ГЕНЕРУЄМО ТЕСТ
   return (
     <div>
@@ -87,11 +162,14 @@ const Tests = () => {
                 typeOfTask={task.typeOfTask}
                 comparisonTable={task.comparisonTable}
                 number={key}
+                func={EditUserAnswer}
               />
             </div>
           ))}
         {!document && <p>Loading...</p>}
-        <button>Перевірити</button>
+        <button className="check_button" onClick={TestCheck}>
+          Перевірити
+        </button>
       </div>
     </div>
   );

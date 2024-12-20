@@ -3,3 +3,7 @@
   height: 200px;
   background-color: brown;
 }
+.check_button {
+  margin: 16px 16px;
+  cursor: pointer;
+}

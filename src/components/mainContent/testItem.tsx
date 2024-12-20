@@ -5,12 +5,20 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
 
 interface Answers {
-  value: string[];
+  values: string[];
   pictures: string[];
 }
 interface Comparison {
   list1: string[];
   list2: string[];
+}
+
+interface CorrectComparison {
+  1: string;
+  2: string;
+  3: string;
+  4?: string;
+  5?: string;
 }
 interface TaskData {
   task: string[];
@@ -27,15 +35,18 @@ const TestsItem = (props: {
   typeOfTask: string;
   comparisonTable: Comparison;
   number: string;
+  func: (taskKey: string, userAnswer: string) => void;
 }) => {
-  console.log(props.number);
   return (
     <div className="tests_item">
       <Task task={props.task} number={props.number}></Task>
       {props.typeOfTask == "choice" && (
         <>
           <Answers answers={props.answers}></Answers>
-          <AnswerChoice></AnswerChoice>
+          <AnswerChoice
+            EditUserAnswer={props.func}
+            number={props.number}
+          ></AnswerChoice>
         </>
       )}
       {props.typeOfTask == "comparison" && (
@@ -45,11 +56,18 @@ const TestsItem = (props: {
             comparisonTable={props.comparisonTable}
           ></ComparisonTable>{" "}
           <AnswerToComparisonTask
+            number={props.number}
             comparisonTable={props.comparisonTable}
+            EditUserAnswer={props.func}
           ></AnswerToComparisonTask>
         </>
       )}
-      {props.typeOfTask == "openAnswer" && <OpenAnswer></OpenAnswer>}
+      {props.typeOfTask == "openAnswer" && (
+        <OpenAnswer
+          number={props.number}
+          EditUserAnswer={props.func}
+        ></OpenAnswer>
+      )}
     </div>
   );
 };
@@ -128,7 +146,7 @@ const Answers = (props: { answers: Answers }) => {
         </thead>
         <tbody>
           <tr id="answers">
-            {props.answers.value.map((item, index) => (
+            {props.answers.values.map((item, index) => (
               <td key={index} className="answer_options">
                 {isPictures && (
                   <Picture
@@ -136,7 +154,7 @@ const Answers = (props: { answers: Answers }) => {
                     classForPicture="picture_for_answer"
                   ></Picture>
                 )}
-                <MathJax>{props.answers.value[index]}</MathJax>
+                <MathJax>{props.answers.values[index]}</MathJax>
               </td>
             ))}
           </tr>
@@ -148,9 +166,17 @@ const Answers = (props: { answers: Answers }) => {
 //КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
 
 //КОМПОНЕНТ ДЛЯ ВИБОРУ ВІДПОВІДІ
-const AnswerChoice = () => {
+const AnswerChoice = (props: {
+  number: string;
+  EditUserAnswer: (taskKey: string, userAnswer: string) => void;
+}) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
-
+  // Обробник зміни відповіді
+  const handleChoiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const userAnswer = event.target.value; // Отримуємо вибрану відповідь
+    const taskKey = event.target.id;
+    props.EditUserAnswer(taskKey, userAnswer); // Викликаємо функцію для оновлення відповіді
+  };
   return (
     <div className="box_form">
       <form className="form_for_answer" action="#" method="post">
@@ -159,10 +185,12 @@ const AnswerChoice = () => {
             <div className="box_choise" key={index}>
               <input
                 className="user_choice"
+                key={index}
                 type="radio"
-                id={item}
+                id={props.number}
                 value={item}
                 name={"task"}
+                onChange={handleChoiceChange}
               />
               <label className="label" htmlFor={item}>
                 <span className="answer">{item}</span>
@@ -206,7 +234,33 @@ const ComparisonTable = (props: { comparisonTable: Comparison }) => {
 //КОМПОНЕНТ СПИСКИ ДЛЯ СПІВСТАВЛЕННЯ
 
 //КОМПОНЕНТ ВІДПОВІДІ ДО ЗАВДАННЯ ІЗ СПІВСТАВЛЕННЯ
-const AnswerToComparisonTask = (props: { comparisonTable: Comparison }) => {
+const AnswerToComparisonTask = (props: {
+  number: string;
+  comparisonTable: Comparison;
+  EditUserAnswer: (taskKey: string, userAnswer: any) => void;
+}) => {
+  const [inputValues, setInputValues] = useState<{ [key: string]: string }>(
+    () =>
+      props.comparisonTable.list1.reduce((acc, _, index) => {
+        acc[(index + 1).toString()] = ""; // Ініціалізуємо пустими рядками
+        return acc;
+      }, {} as { [key: string]: string })
+  );
+
+  // Обробник зміни відповіді
+  const handleChoiceChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const userAnswer = event.target.value; // Отримуємо вибрану відповідь
+    const updatedAnswers = {
+      ...inputValues,
+      [(index + 1).toString()]: userAnswer,
+    };
+    setInputValues(updatedAnswers);
+    props.EditUserAnswer(props.number, updatedAnswers); // Оновлюємо батьківський стан
+  };
+
   return (
     <div>
       <div className="list1">
@@ -214,8 +268,13 @@ const AnswerToComparisonTask = (props: { comparisonTable: Comparison }) => {
           {props.comparisonTable.list1.map((item, index) => (
             <li key={index} className="list_item">
               {index + 1})
-              <input list="fruits" placeholder="your answer..." />
-              <datalist id="fruits">
+              <input
+                id={props.number}
+                list={`fruits-${index}`}
+                placeholder="your answer..."
+                onChange={(event) => handleChoiceChange(event, index)}
+              />
+              <datalist id={`fruits-${index}`}>
                 {["А", "Б", "В", "Г", "Д"].map((option, index) => (
                   <option key={index} value={option} />
                 ))}
@@ -230,10 +289,23 @@ const AnswerToComparisonTask = (props: { comparisonTable: Comparison }) => {
 //КОМПОНЕНТ ВІДПОВІДІ ДО ЗАВДАННЯ ІЗ СПІВСТАВЛЕННЯ
 
 //КОМПОНЕНТ ВІДПОВІДІ ДО ЗАВДАННЯ З ВІДКРИТОЮ ВІДПОВІДДЮ
-const OpenAnswer = () => {
+const OpenAnswer = (props: {
+  number: string;
+  EditUserAnswer: (taskKey: string, userAnswer: string) => void;
+}) => {
+  const handleChoiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const userAnswer = event.target.value; // Отримуємо вибрану відповідь
+    const taskKey = event.target.id;
+    props.EditUserAnswer(taskKey, userAnswer); // Викликаємо функцію для оновлення відповіді
+  };
   return (
     <div className="open_answer">
-      <input type="text" placeholder="your answer..." />
+      <input
+        id={props.number}
+        type="text"
+        placeholder="your answer..."
+        onChange={handleChoiceChange}
+      />
     </div>
   );
 };
