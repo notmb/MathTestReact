@@ -1,4 +1,5 @@
 import "./footer.css";
+import logo from "/logo.svg";
 
 const Footer = () => {
   return (
@@ -47,7 +48,7 @@ const Footer = () => {
         </div>
         <div className="footer_conteiners"></div>
         <div className="footer_conteiner_logo">
-          <img className="footer_logo" src="/logo.svg"></img>
+          <img className="footer_logo" src={logo}></img>
         </div>
       </footer>
     </>

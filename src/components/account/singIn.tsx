@@ -58,7 +58,7 @@ const SingIn = (prop: { navigate: (path: string) => void }) => {
         <div className="conteiner_for_text">
           <p>У Вас немає акаута, тоді потрібно</p>
           <div
-            onClick={() => prop.navigate("/account/singup")}
+            onClick={() => prop.navigate("/MathTestReact/account/singup")}
             className="conteiner_text_sing_up"
           >
             <p className="text_sing_up">Зареєструватись</p>

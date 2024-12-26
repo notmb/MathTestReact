@@ -7,32 +7,32 @@ import SortingByClass from "./components/mainContent/sortingbyclass";
 
 const routes = [
   {
-    path: "/main",
+    path: "/MathTestReact/main",
     component: MainPage,
   },
   {
-    path: "/testsold",
+    path: "/MathTestReact/testsold",
     component: TestsOld,
   },
   {
-    path: "/conspectus",
+    path: "/MathTestReact/conspectus",
     component: Tests,
   },
   {
-    path: "/study",
+    path: "/MathTestReact/study",
     component: MainPage,
   },
   {
-    path: "/account/login",
+    path: "/MathTestReact/account/login",
     component: SingIn,
   },
   {
-    path: "/account/singup",
+    path: "/MathTestReact/account/singup",
     component: SingUp,
   },
 
   {
-    path: "/tests/sortingbyclass",
+    path: "/MathTestReact/tests/sortingbyclass",
     component: SortingByClass,
   },
 ];

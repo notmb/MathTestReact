@@ -1,4 +1,6 @@
 import "./mainPage.css";
+import ikon7 from "/ikon7.svg";
+import section3RightImg from "/section3_right.svg";
 
 const MainPage = (props: { navigate: (path: string) => void }) => {
   return (
@@ -53,7 +55,7 @@ const MainPage = (props: { navigate: (path: string) => void }) => {
         <div className="section3_conteiner_right">
           <img
             className="section3_img"
-            src="/section3_right.svg"
+            src={section3RightImg}
             alt="image"
           ></img>
         </div>
@@ -69,20 +71,10 @@ export default MainPage;
 
 //
 
-//
-
-//
-
-//
-
-//
-
-//
-
 const Card = (props: { navigate: (path: string) => void }) => {
   return (
     <div className="card" onClick={() => props.navigate("/tests")}>
-      <img className="section2_img" src="/ikon7.svg" alt="ikon"></img>
+      <img className="section2_img" src={ikon7} alt="ikon"></img>
       <h2
         style={{
           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
