@@ -8,9 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "main -d build"
+    "preview": "vite preview"
   },
   "dependencies": {
     "better-react-mathjax": "^2.0.3",
