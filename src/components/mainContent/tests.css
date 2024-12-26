@@ -1,9 +1,8 @@
-.test2 {
-  width: 300px;
-  height: 200px;
-  background-color: brown;
-}
 .check_button {
   margin: 16px 16px;
   cursor: pointer;
+}
+.tests {
+  border-left: 32px solid aliceblue;
+  border-right: 32px solid aliceblue;
 }

@@ -1,5 +1,4 @@
 import MainPage from "./components/mainPage";
-import TestsOld from "./components/mainContent/testsold";
 import Tests from "./components/mainContent/tests";
 import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
@@ -11,8 +10,8 @@ const routes = [
     component: MainPage,
   },
   {
-    path: "/MathTestReact/testsold",
-    component: TestsOld,
+    path: "/MathTestReact/tests",
+    component: Tests,
   },
   {
     path: "/MathTestReact/conspectus",
