@@ -21,7 +21,7 @@ interface Task1 {
       value1: string[];
       velue2: string[];
     };
-    image: string;
+    picture: string;
     list: string[];
   };
   answers: {
@@ -39,7 +39,7 @@ const TaskOpenAnswer = (props: {
       value1: string[];
       velue2: string[];
     };
-    image?: string;
+    picture?: string;
     list?: string[];
   };
 
@@ -51,7 +51,7 @@ const TaskOpenAnswer = (props: {
 }) => {
   return (
     <div className="tests_item">
-      <Task text={props.task.text}></Task>
+      <Task text={props.task.text} picture={props.task.picture}></Task>
 
       {/* {props.typeOfTask == "choice" && (
         <>
@@ -75,12 +75,11 @@ const TaskOpenAnswer = (props: {
           ></AnswerToComparisonTask>
         </>
       )}*/}
-      {props.typeOfTask == "openAnswer" && (
-        <OpenAnswer
-          number={props.number}
-          EditUserAnswer={props.func}
-        ></OpenAnswer>
-      )}
+
+      <OpenAnswer
+        number={props.number}
+        EditUserAnswer={props.func}
+      ></OpenAnswer>
     </div>
   );
 };
@@ -94,7 +93,7 @@ const Task = (props: {
     value1: string[];
     velue2: string[];
   };
-  image?: string;
+  picture?: string;
   list?: string[];
 }) => {
   return (
@@ -102,9 +101,9 @@ const Task = (props: {
       <div>
         <MathJax>{props.text}</MathJax>
       </div>
-      {props.image && (
+      {props.picture && (
         <Picture
-          url={props.image}
+          url={props.picture}
           classForPicture="picture_for_question"
         ></Picture>
       )}

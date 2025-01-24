@@ -3,22 +3,23 @@ import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
 import TestsItem from "./testItem";
-import TaskOpenAnswer from "./TaskOpenAnswer";
+import TaskOpenAnswer from "./taskOpenAnswer";
+import TaskChoice from "./taskChoice";
 
 interface Task1 {
   //тип даних для завдання з з вибором 1 відповіді
   task: {
     text: string;
-    table: {
+    table?: {
       value1: string[];
       velue2: string[];
     };
-    image: string;
-    list: string[];
+    picture?: string;
+    list?: string[];
   };
   answers: {
     values: string[];
-    pictures: string[];
+    pictures?: string[];
   };
   correctAnswer: string;
   typeOfTask: string;
@@ -134,12 +135,15 @@ const Tests = () => {
       const tasks: Tasks = Object.entries(data).reduce((acc, [key, value]) => {
         if (isTask1(value)) {
           acc[key] = value;
+          return acc;
         }
         if (isTask2(value)) {
           acc[key] = value;
+          return acc;
         }
         if (isTask3(value)) {
           acc[key] = value;
+          return acc;
         } else {
           console.warn(`Невідомий тип завдання для ключа: ${key}`, value);
         }
@@ -264,6 +268,16 @@ const Tests = () => {
             {isTask3(task) && (
               <TaskOpenAnswer
                 task={task.task}
+                correctAnswer={task.correctAnswer}
+                typeOfTask={task.typeOfTask}
+                number={key}
+                func={EditUserAnswer}
+              />
+            )}
+            {isTask1(task) && (
+              <TaskChoice
+                task={task.task}
+                answers={task.answers}
                 correctAnswer={task.correctAnswer}
                 typeOfTask={task.typeOfTask}
                 number={key}
