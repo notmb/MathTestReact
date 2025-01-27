@@ -5,6 +5,7 @@ import { getDoc, doc } from "firebase/firestore";
 import TestsItem from "./testItem";
 import TaskOpenAnswer from "./taskOpenAnswer";
 import TaskChoice from "./taskChoice";
+import TaskComparison from "./taskComparison";
 
 interface Task1 {
   //тип даних для завдання з з вибором 1 відповіді
@@ -33,19 +34,17 @@ interface Task2 {
       value1: string[];
       velue2: string[];
     };
-    image?: string;
+    picture?: string;
     list?: string[];
   };
   comparisonTable: {
-    list: {
-      list1: {
-        text?: string;
-        image?: string;
-      };
-      list2: {
-        text?: string;
-        image?: string;
-      };
+    list1: {
+      texts?: string[];
+      pictures?: string[];
+    };
+    list2: {
+      texts?: string[];
+      picture?: string[];
     };
   };
   сorrectComparison: {
@@ -62,7 +61,7 @@ interface Task3 {
       value1: string[];
       velue2: string[];
     };
-    image?: string;
+    picture?: string;
     list?: string[];
   };
   correctAnswer: string;
@@ -171,18 +170,16 @@ const Tests = () => {
 
         const finalData: TestItem = Object.entries(data).reduce(
           (acc, [key, taskData]) => {
-            if (taskData.typeOfTask == "choice") {
-              acc[key] = {
-                task: taskData?.task ?? ["Немає завдання"],
-                answers: taskData?.answers ?? { values: [], pictures: [] },
-                correctAnswer: taskData?.correctAnswer ?? "Немає відповіді",
-                typeOfTask: taskData?.typeOfTask ?? "unknown",
-                comparisonTable: taskData?.comparisonTable ?? {
-                  list1: [],
-                  list2: [],
-                },
-              };
-            }
+            acc[key] = {
+              task: taskData?.task ?? ["Немає завдання"],
+              answers: taskData?.answers ?? { values: [], pictures: [] },
+              correctAnswer: taskData?.correctAnswer ?? "Немає відповіді",
+              typeOfTask: taskData?.typeOfTask ?? "unknown",
+              comparisonTable: taskData?.comparisonTable ?? {
+                list1: [],
+                list2: [],
+              },
+            };
             addAnswer(key, "");
 
             return acc;
@@ -279,6 +276,16 @@ const Tests = () => {
                 task={task.task}
                 answers={task.answers}
                 correctAnswer={task.correctAnswer}
+                typeOfTask={task.typeOfTask}
+                number={key}
+                func={EditUserAnswer}
+              />
+            )}
+            {isTask2(task) && (
+              <TaskComparison
+                task={task.task}
+                comparisonTable={task.comparisonTable}
+                сorrectComparison={task.сorrectComparison}
                 typeOfTask={task.typeOfTask}
                 number={key}
                 func={EditUserAnswer}
