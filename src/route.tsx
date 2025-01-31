@@ -3,6 +3,7 @@ import Tests from "./components/mainContent/tests";
 import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
 import SortingByClass from "./components/mainContent/sortingbyclass";
+import AddVariant from "./components/mainContent/addVariant";
 
 const routes = [
   {
@@ -15,7 +16,7 @@ const routes = [
   },
   {
     path: "/MathTestReact/conspectus",
-    component: Tests,
+    component: AddVariant,
   },
   {
     path: "/MathTestReact/study",

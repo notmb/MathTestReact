@@ -194,11 +194,11 @@ const AnswerToComparisonTask = (props: {
                 {index + 1})
                 <input
                   id={props.number}
-                  list={`fruits-${index}`}
+                  list={`answer-${index}`}
                   placeholder="your answer..."
                   onChange={(event) => handleChoiceChange(event, index)}
                 />
-                <datalist id={`fruits-${index}`}>
+                <datalist id={`answer-${index}`}>
                   {["А", "Б", "В", "Г", "Д"].map((option, index) => (
                     <option key={index} value={option} />
                   ))}

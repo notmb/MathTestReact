@@ -1,0 +1,55 @@
+.add_task {
+  padding: 10px 32px;
+}
+.form_for_description_new_variant,
+.creator_new_variant {
+  border: 4px solid aliceblue;
+}
+.number_of_tasks_new_variant,
+.name_new_variant {
+  margin-bottom: 24px;
+}
+.form_for_data_tasks {
+}
+.list_item {
+  padding: 24px 8px;
+  border: 2px solid aliceblue;
+  display: flex;
+  flex-direction: column;
+}
+.data_task {
+  padding: 16px;
+  border-bottom: 2px solid sandybrown;
+  border-top: 2px solid sandybrown;
+}
+.form_for_task {
+  display: flex;
+  flex-direction: column;
+}
+.more_conditions {
+  padding: 8px;
+}
+.add_condition {
+  margin: 0 8px;
+}
+.data_answers {
+  padding: 16px;
+  border-bottom: 2px solid rgb(242, 211, 183);
+  border-top: 2px solid rgb(242, 211, 183);
+}
+.set_answers {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+.box_for_answer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+.data_correct_answer {
+  padding-left: 16px;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}

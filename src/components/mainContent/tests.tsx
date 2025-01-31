@@ -2,7 +2,6 @@ import "./tests.css";
 import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
-import TestsItem from "./testItem";
 import TaskOpenAnswer from "./taskOpenAnswer";
 import TaskChoice from "./taskChoice";
 import TaskComparison from "./taskComparison";
@@ -157,49 +156,6 @@ const Tests = () => {
   useEffect(() => {
     getDocument1();
   }, []);
-  console.log(document1);
-
-  const getDocument = async () => {
-    try {
-      const docRef = doc(db, "topic 1", "variant 1"); // Створюємо посилання на документ
-      const docSnap = await getDoc(docRef); // Отримуємо дані документа
-
-      if (docSnap.exists()) {
-        // const data = docSnap.data() as Partial<TestItem>;
-        const data = docSnap.data();
-
-        const finalData: TestItem = Object.entries(data).reduce(
-          (acc, [key, taskData]) => {
-            acc[key] = {
-              task: taskData?.task ?? ["Немає завдання"],
-              answers: taskData?.answers ?? { values: [], pictures: [] },
-              correctAnswer: taskData?.correctAnswer ?? "Немає відповіді",
-              typeOfTask: taskData?.typeOfTask ?? "unknown",
-              comparisonTable: taskData?.comparisonTable ?? {
-                list1: [],
-                list2: [],
-              },
-            };
-            addAnswer(key, "");
-
-            return acc;
-          },
-          {} as TestItem
-        );
-        setDocument(finalData);
-      } else {
-        console.log("No such document!");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error getting document:", error);
-      throw error;
-    }
-  };
-
-  useEffect(() => {
-    getDocument();
-  }, []);
 
   const CheckComparison = (
     correctAnswer: CorrectComparison,
@@ -259,55 +215,42 @@ const Tests = () => {
   //ГЕНЕРУЄМО ТЕСТ
   return (
     <div>
-      {document1 &&
-        Object.entries(document1).map(([key, task]) => (
-          <div key={key}>
-            {isTask3(task) && (
-              <TaskOpenAnswer
-                task={task.task}
-                correctAnswer={task.correctAnswer}
-                typeOfTask={task.typeOfTask}
-                number={key}
-                func={EditUserAnswer}
-              />
-            )}
-            {isTask1(task) && (
-              <TaskChoice
-                task={task.task}
-                answers={task.answers}
-                correctAnswer={task.correctAnswer}
-                typeOfTask={task.typeOfTask}
-                number={key}
-                func={EditUserAnswer}
-              />
-            )}
-            {isTask2(task) && (
-              <TaskComparison
-                task={task.task}
-                comparisonTable={task.comparisonTable}
-                сorrectComparison={task.сorrectComparison}
-                typeOfTask={task.typeOfTask}
-                number={key}
-                func={EditUserAnswer}
-              />
-            )}
-          </div>
-        ))}
       <div className="tests">
-        {document &&
-          Object.entries(document).map(([key, task]) => (
+        {document1 &&
+          Object.entries(document1).map(([key, task]) => (
             <div key={key}>
-              <TestsItem
-                task={task.task}
-                answers={task.answers}
-                typeOfTask={task.typeOfTask}
-                comparisonTable={task.comparisonTable}
-                number={key}
-                func={EditUserAnswer}
-              />
+              {isTask3(task) && (
+                <TaskOpenAnswer
+                  task={task.task}
+                  correctAnswer={task.correctAnswer}
+                  typeOfTask={task.typeOfTask}
+                  number={key}
+                  func={EditUserAnswer}
+                />
+              )}
+              {isTask1(task) && (
+                <TaskChoice
+                  task={task.task}
+                  answers={task.answers}
+                  correctAnswer={task.correctAnswer}
+                  typeOfTask={task.typeOfTask}
+                  number={key}
+                  func={EditUserAnswer}
+                />
+              )}
+              {isTask2(task) && (
+                <TaskComparison
+                  task={task.task}
+                  comparisonTable={task.comparisonTable}
+                  сorrectComparison={task.сorrectComparison}
+                  typeOfTask={task.typeOfTask}
+                  number={key}
+                  func={EditUserAnswer}
+                />
+              )}
             </div>
           ))}
-        {!document && <p>Loading...</p>}
+        {!document1 && <p>Loading...</p>}
         <button className="check_button" onClick={TestCheck}>
           Перевірити
         </button>
