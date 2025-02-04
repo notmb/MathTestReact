@@ -11,13 +11,17 @@
 }
 .form_for_data_tasks {
 }
+
+.list_tasks {
+  padding-left: 0;
+}
 .list_item {
   padding: 24px 8px;
   border: 2px solid aliceblue;
   display: flex;
   flex-direction: column;
 }
-.data_task {
+.creator_task {
   padding: 16px;
   border-bottom: 2px solid sandybrown;
   border-top: 2px solid sandybrown;
@@ -34,22 +38,21 @@
 }
 .data_answers {
   padding: 16px;
-  border-bottom: 2px solid rgb(242, 211, 183);
-  border-top: 2px solid rgb(242, 211, 183);
 }
-.set_answers {
+.form_answers {
   width: 50%;
   display: flex;
   flex-direction: column;
 }
-.box_for_answer {
+.box_for_answer,
+.box_for_qestion {
   display: flex;
   flex-direction: column;
   margin-top: 16px;
 }
 .data_correct_answer {
   padding-left: 16px;
-  width: 50%;
+
   display: flex;
   flex-direction: column;
 }
