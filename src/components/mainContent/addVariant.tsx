@@ -177,62 +177,6 @@ const FormIsChoice = (props: {
   formRef: (el: HTMLFormElement | null) => void;
   index: number;
 }) => {
-  // const [question, setQuestion] = useState<{
-  //   text: string;
-  //   table?: {
-  //     value1: string[];
-  //     velue2: string[];
-  //   };
-  //   picture?: string;
-  //   list?: string[];
-  // }>({ text: "" });
-
-  // const [answers, setAnswers] = useState<{
-  //   values: string[];
-  //   pictures?: string[];
-  // }>({
-  //   values: Array(5).fill(""),
-  // });
-  // const [correctAnswer, setCorrectAnswer] = useState<string>("");
-  // const [task, setTask] = useState<Task1>();
-
-  // const handleClick = (
-  //   event: React.FormEvent<HTMLFormElement>
-  //   // numTask: string
-  // ) => {
-  //   event.preventDefault();
-  //   const formData = new FormData(event.currentTarget);
-  //   const task = formData.get(`task-${props.numTask}`) as string;
-  //   const answerA = formData.get(`answer-A-${props.numTask}`) as string;
-  //   const answerB = formData.get(`answer-B-${props.numTask}`) as string;
-  //   const answerC = formData.get(`answer-C-${props.numTask}`) as string;
-  //   const answerD = formData.get(`answer-D-${props.numTask}`) as string;
-  //   const answerE = formData.get(`answer-E-${props.numTask}`) as string;
-  //   const correctAnswer = formData.get(
-  //     `correct_answer-${props.numTask}`
-  //   ) as string;
-
-  //   setQuestion((prev) => ({
-  //     ...prev,
-  //     text: task,
-  //   }));
-  //   setAnswers({
-  //     values: [answerA, answerB, answerC, answerD, answerE],
-  //   });
-  //   setCorrectAnswer(correctAnswer);
-
-  //   setTask({
-  //     task: {
-  //       text: question.text,
-  //     },
-  //     answers: {
-  //       values: answers.values,
-  //     },
-  //     correctAnswer: correctAnswer,
-  //     typeOfTask: "choice",
-  //   });
-  // };
-
   return (
     <div className="creator_task">
       <form className="form_for_creator" ref={props.formRef}>
@@ -261,92 +205,31 @@ const FormIsChoice = (props: {
             </button>
           </div>
         </fieldset>
-        {/* Група "Дані для варіантів відповіді" */}
 
+        {/* Група "Дані для варіантів відповіді" */}
         <fieldset className="data_answers">
           <legend>Дані для варіантів відповіді</legend>
-          <div>
-            <div className="box_for_answer">
-              <label className="" htmlFor={`answer-A-${props.numTask}`}>
-                Вкажіть відповідь А
-              </label>
-              <textarea
-                id={`answer-A-${props.numTask}`}
-                name={`answer-A-${props.numTask}`}
-              ></textarea>
+          {["А", "Б", "В", "Г", "Д"].map((item, index) => (
+            <div key={index}>
+              <div className="box_for_answer">
+                <label
+                  className=""
+                  htmlFor={`task-${props.numTask}-answer-${item}`}
+                >
+                  Вкажіть відповідь {item}
+                </label>
+                <textarea
+                  id={`task-${props.numTask}-answer-${item}`}
+                  name={`task-${props.numTask}-answer-${item}`}
+                ></textarea>
+              </div>
+              <div className="more_conditions">
+                <button type="button" className="add_condition">
+                  Додати картинку
+                </button>
+              </div>
             </div>
-            <div className="more_conditions">
-              <button type="button" className="add_condition">
-                Додати картинку
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <div className="box_for_answer">
-              <label className="" htmlFor={`answer-B-${props.numTask}`}>
-                Вкажіть відповідь Б
-              </label>
-              <textarea
-                id={`answer-B-${props.numTask}`}
-                name={`answer-B-${props.numTask}`}
-              ></textarea>
-            </div>
-            <div className="more_conditions">
-              <button type="button" className="add_condition">
-                Додати картинку
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <div className="box_for_answer">
-              <label className="" htmlFor={`answer-C-${props.numTask}`}>
-                Вкажіть відповідь В
-              </label>
-              <textarea
-                id={`answer-C-${props.numTask}`}
-                name={`answer-C-${props.numTask}`}
-              ></textarea>
-            </div>
-            <div className="more_conditions">
-              <button type="button" className="add_condition">
-                Додати картинку
-              </button>
-            </div>
-          </div>
-          <div>
-            <div className="box_for_answer">
-              <label className="" htmlFor={`answer-D-${props.numTask}`}>
-                Вкажіть відповідь Г
-              </label>
-              <textarea
-                id={`answer-D-${props.numTask}`}
-                name={`answer-D-${props.numTask}`}
-              ></textarea>
-            </div>
-            <div className="more_conditions">
-              <button type="button" className="add_condition">
-                Додати картинку
-              </button>
-            </div>
-          </div>
-          <div>
-            <div className="box_for_answer">
-              <label className="" htmlFor={`answer-E-${props.numTask}`}>
-                Вкажіть відповідь Д
-              </label>
-              <textarea
-                id={`answer-E-${props.numTask}`}
-                name={`answer-E-${props.numTask}`}
-              ></textarea>
-            </div>
-            <div className="more_conditions">
-              <button type="button" className="add_condition">
-                Додати картинку
-              </button>
-            </div>
-          </div>
+          ))}
         </fieldset>
 
         <fieldset className="data_correct_answer">
