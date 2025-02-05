@@ -1,5 +1,6 @@
 .add_task {
   padding: 10px 32px;
+  min-height: 600px;
 }
 .form_for_description_new_variant,
 .creator_new_variant {
@@ -55,4 +56,8 @@
 
   display: flex;
   flex-direction: column;
+}
+.saveAndCreate_button {
+  display: flex;
+  justify-content: space-around;
 }

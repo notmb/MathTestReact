@@ -31,7 +31,6 @@ const AddVariant = () => {
     variantName: "",
     num: "",
   });
-  const [variant, setVariant] = useState<Tasks>();
 
   const [isFormData, setIsFormData] = useState<boolean>(false);
 
@@ -89,25 +88,48 @@ const InfaAboutVariant = (props: {
 
 //ФОРМА ДЛЯ СТВОРЕННЯ ВАРІАНТУ
 const CreatorNewVariant = (props: { namberTask: string }) => {
-  const [typeTasks, setTypeTasks] = useState<string[]>(
-    Array(+props.namberTask).fill("")
-  );
   const items = Array.from(
     { length: +props.namberTask },
     (_, index) => index + 1
   );
 
+  const [typeTasks, setTypeTasks] = useState<string[]>(
+    Array(+props.namberTask).fill("")
+  );
+
   // Ref для збору даних із всіх завдань
   const formRefs = useRef<(HTMLFormElement | null)[]>([]);
 
+  const [variant, setVariant] = useState<Tasks>();
+
   const handleSubmitAll = () => {
+    const allTasks: Tasks = {}; // Масив для збереження всіх завдань
     formRefs.current.forEach((form, index) => {
       if (form) {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
         console.log(`Форма ${index + 1}:`, data);
+        // Створення нового завдання
+        const oneTask: Task1 = {
+          task: {
+            text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
+          },
+          answers: {
+            values: [
+              data[`task-${index + 1}-answer-А`] as string,
+              data[`task-${index + 1}-answer-Б`] as string,
+              data[`task-${index + 1}-answer-В`] as string,
+              data[`task-${index + 1}-answer-Г`] as string,
+              data[`task-${index + 1}-answer-Д`] as string,
+            ],
+          },
+          correctAnswer: data[`correct_answer-${index + 1}`] as string,
+          typeOfTask: "choice" as string,
+        };
+        allTasks[index + 1] = oneTask; // Додаємо завдання до масиву
       }
     });
+    setVariant(allTasks);
   };
   // Ref для збору даних із всіх завдань
 
@@ -162,9 +184,14 @@ const CreatorNewVariant = (props: { namberTask: string }) => {
               )}
             </li>
           ))}
-        <button type="button" onClick={handleSubmitAll}>
-          Створити
-        </button>
+        <div className="saveAndCreate_button">
+          <button type="button" onClick={handleSubmitAll}>
+            Створити
+          </button>
+          <button type="button" onClick={() => console.log(variant)}>
+            Зберегти
+          </button>
+        </div>
       </ul>
     </div>
   );
