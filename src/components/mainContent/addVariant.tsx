@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
-
 import { db } from "../../firebaseConfig";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, getDoc, doc, collection, addDoc } from "firebase/firestore";
 import "./addVariant.css";
 
 interface Task1 {
@@ -54,7 +53,10 @@ const AddVariant = () => {
         <InfaAboutVariant handleClick={handleClick}></InfaAboutVariant>
       )}
       {isFormData && (
-        <CreatorNewVariant namberTask={mainData.num}></CreatorNewVariant>
+        <CreatorNewVariant
+          namberTask={mainData.num}
+          nameVariant={mainData.variantName}
+        ></CreatorNewVariant>
       )}
     </div>
   );
@@ -87,7 +89,10 @@ const InfaAboutVariant = (props: {
 //ФОРМА ДЛЯ ОСНОВНОЇ ІНФОРМАЦІЇ
 
 //ФОРМА ДЛЯ СТВОРЕННЯ ВАРІАНТУ
-const CreatorNewVariant = (props: { namberTask: string }) => {
+const CreatorNewVariant = (props: {
+  namberTask: string;
+  nameVariant: string;
+}) => {
   const items = Array.from(
     { length: +props.namberTask },
     (_, index) => index + 1
@@ -133,6 +138,18 @@ const CreatorNewVariant = (props: { namberTask: string }) => {
   };
   // Ref для збору даних із всіх завдань
 
+  const addVariant = async (nameVariant: string) => {
+    const userDocRef = doc(db, "topic 1", nameVariant);
+    const docSnapshot = await getDoc(userDocRef);
+
+    if (docSnapshot.exists()) {
+      console.log("Документ з таким ID вже існує.");
+    } else {
+      await setDoc(userDocRef, variant);
+      console.log("Документ успішно створено з ID:", nameVariant);
+    }
+    console.log(variant);
+  };
   //встановлюємо тип завдання
   const SetTypeTask = (
     event: React.FormEvent<HTMLFormElement>,
@@ -188,7 +205,7 @@ const CreatorNewVariant = (props: { namberTask: string }) => {
           <button type="button" onClick={handleSubmitAll}>
             Створити
           </button>
-          <button type="button" onClick={() => console.log(variant)}>
+          <button type="button" onClick={() => addVariant(props.nameVariant)}>
             Зберегти
           </button>
         </div>
@@ -274,3 +291,7 @@ const FormIsChoice = (props: {
   );
 };
 //ФОРМА ДЛЯ ЗАВДАННЯ CHOISE
+
+//ФОРМА ДЛЯ ЗАВДАННЯ OPEN ANSWER
+
+//ФОРМА ДЛЯ ЗАВДАННЯ OPEN ANSWER
