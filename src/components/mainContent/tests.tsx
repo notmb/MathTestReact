@@ -122,7 +122,7 @@ const Tests = () => {
 
   const getDocument1 = async () => {
     try {
-      const docRef = doc(db, "topic 1", "variant 2"); // Створюємо посилання на документ
+      const docRef = doc(db, "topic 1", "variant 3"); // Створюємо посилання на документ
       const docSnap = await getDoc(docRef); // Отримуємо дані документа
 
       if (!docSnap.exists()) {
@@ -170,12 +170,12 @@ const Tests = () => {
     return mark;
   };
 
-  const TestCheck = () => {
+  const TestCheck1 = () => {
     const comparison: { [key: string]: number } = {};
-    document &&
-      Object.entries(document).forEach(([key, item]) => {
+    document1 &&
+      Object.entries(document1).forEach(([key, item]) => {
         console.log(key);
-        if (item.typeOfTask === "choice") {
+        if (isTask1(item)) {
           if (item.correctAnswer === userAnswers[key]) {
             comparison[key] = 1;
             console.log(comparison);
@@ -183,20 +183,19 @@ const Tests = () => {
             comparison[key] = 0;
           }
         }
-        if (item.typeOfTask === "openAnswer") {
+        if (isTask3(item)) {
           if (item.correctAnswer === userAnswers[key]) {
             comparison[key] = 2;
             console.log(comparison);
           } else {
             comparison[key] = 0;
           }
-        } else {
-          if (typeof item.correctAnswer == "object") {
-            comparison[key] = CheckComparison(
-              item.correctAnswer,
-              userAnswers[key]
-            );
-          }
+        }
+        if (isTask2(item)) {
+          comparison[key] = CheckComparison(
+            item.сorrectComparison,
+            userAnswers[key]
+          );
         }
       });
     console.log(comparison);
@@ -251,7 +250,7 @@ const Tests = () => {
             </div>
           ))}
         {!document1 && <p>Loading...</p>}
-        <button className="check_button" onClick={TestCheck}>
+        <button className="check_button" onClick={TestCheck1}>
           Перевірити
         </button>
       </div>

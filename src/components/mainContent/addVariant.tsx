@@ -21,8 +21,48 @@ interface Task1 {
   correctAnswer: string;
   typeOfTask: string;
 }
+interface Task2 {
+  //тип даних для завдання співставлення
+  task: {
+    text: string;
+    table?: {
+      value1: string[];
+      velue2: string[];
+    };
+    picture?: string;
+    list?: string[];
+  };
+  comparisonTable: {
+    list1: {
+      texts?: string[];
+      pictures?: string[];
+    };
+    list2: {
+      texts?: string[];
+      picture?: string[];
+    };
+  };
+  сorrectComparison: {
+    [key: string]: string;
+  };
+  typeOfTask: string;
+}
+interface Task3 {
+  //тип даних для завдання з відкритою відповіддю
+  task: {
+    text: string;
+    table?: {
+      value1: string[];
+      velue2: string[];
+    };
+    picture?: string;
+    list?: string[];
+  };
+  correctAnswer: string;
+  typeOfTask: string;
+}
 interface Tasks {
-  [key: string]: Task1; // Колекція з різними завданнями
+  [key: string]: Task1 | Task2 | Task3; // Колекція з різними завданнями
 }
 
 const AddVariant = () => {
@@ -109,31 +149,76 @@ const CreatorNewVariant = (props: {
 
   const handleSubmitAll = () => {
     const allTasks: Tasks = {}; // Масив для збереження всіх завдань
+
     formRefs.current.forEach((form, index) => {
       if (form) {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
         console.log(`Форма ${index + 1}:`, data);
-        // Створення нового завдання
-        const oneTask: Task1 = {
-          task: {
-            text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
-          },
-          answers: {
-            values: [
-              data[`task-${index + 1}-answer-А`] as string,
-              data[`task-${index + 1}-answer-Б`] as string,
-              data[`task-${index + 1}-answer-В`] as string,
-              data[`task-${index + 1}-answer-Г`] as string,
-              data[`task-${index + 1}-answer-Д`] as string,
-            ],
-          },
-          correctAnswer: data[`correct_answer-${index + 1}`] as string,
-          typeOfTask: "choice" as string,
-        };
-        allTasks[index + 1] = oneTask; // Додаємо завдання до масиву
+
+        if (typeTasks[index] === "choice") {
+          allTasks[index + 1] = {
+            task: {
+              text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
+            },
+            answers: {
+              values: [
+                data[`task-${index + 1}-answer-А`] as string,
+                data[`task-${index + 1}-answer-Б`] as string,
+                data[`task-${index + 1}-answer-В`] as string,
+                data[`task-${index + 1}-answer-Г`] as string,
+                data[`task-${index + 1}-answer-Д`] as string,
+              ],
+            },
+            correctAnswer: data[`correct_answer-${index + 1}`] as string,
+            typeOfTask: "choice" as string,
+          };
+        }
+        if (typeTasks[index] === "openAnswer") {
+          allTasks[index + 1] = {
+            task: {
+              text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
+            },
+            correctAnswer: data[`correct_answer-${index + 1}`] as string,
+            typeOfTask: "openAnswer" as string,
+          };
+        }
+        if (typeTasks[index] === "comparison") {
+          allTasks[index + 1] = {
+            task: {
+              text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
+            },
+            comparisonTable: {
+              list1: {
+                texts: [
+                  data[`task-${index + 1}-list1-1`],
+                  data[`task-${index + 1}-list1-2`],
+                  data[`task-${index + 1}-list1-3`],
+                ] as string[],
+              },
+              list2: {
+                texts: [
+                  data[`task-${index + 1}-list2-А`],
+                  data[`task-${index + 1}-list2-Б`],
+                  data[`task-${index + 1}-list2-В`],
+                  data[`task-${index + 1}-list2-Г`],
+                  data[`task-${index + 1}-list2-Д`],
+                ] as string[],
+              },
+            },
+            сorrectComparison: {
+              ["1"]: data[`task-${index + 1}-answer-1`] as string,
+              ["2"]: data[`task-${index + 1}-answer-2`] as string,
+              ["3"]: data[`task-${index + 1}-answer-3`] as string,
+            },
+            typeOfTask: "comparison" as string,
+          };
+        }
+
+        // allTasks[index + 1] = oneTask; // Додаємо завдання до масиву
       }
     });
+
     setVariant(allTasks);
   };
   // Ref для збору даних із всіх завдань
@@ -149,6 +234,7 @@ const CreatorNewVariant = (props: {
       console.log("Документ успішно створено з ID:", nameVariant);
     }
     console.log(variant);
+    console.log(typeTasks);
   };
   //встановлюємо тип завдання
   const SetTypeTask = (
@@ -198,6 +284,19 @@ const CreatorNewVariant = (props: {
                   formRef={(el) => (formRefs.current[index] = el)}
                   index={index}
                 ></FormIsChoice>
+              )}
+              {typeTasks[item - 1] === "openAnswer" && (
+                <FormIsOpenAnswer
+                  numTask={item.toString()}
+                  formRef={(el) => (formRefs.current[index] = el)}
+                ></FormIsOpenAnswer>
+              )}
+              {typeTasks[item - 1] === "comparison" && (
+                <FormIsComparison
+                  numTask={item.toString()}
+                  formRef={(el) => (formRefs.current[index] = el)}
+                  index={index}
+                ></FormIsComparison>
               )}
             </li>
           ))}
@@ -293,5 +392,163 @@ const FormIsChoice = (props: {
 //ФОРМА ДЛЯ ЗАВДАННЯ CHOISE
 
 //ФОРМА ДЛЯ ЗАВДАННЯ OPEN ANSWER
+const FormIsOpenAnswer = (props: {
+  numTask: string;
+  formRef: (el: HTMLFormElement | null) => void;
+}) => {
+  return (
+    <div className="creator_task">
+      <form className="form_for_creator" ref={props.formRef}>
+        {/* Група "Дані для запитання" */}
+        <fieldset>
+          <legend>Дані для запитання</legend>
+          <div className="box_for_qestion">
+            <label className="set_task" htmlFor={`task-${props.numTask}`}>
+              Вкажіть умову задачі
+            </label>
+            <textarea
+              id={`task-${props.numTask}`}
+              name={`task-${props.numTask}`}
+            ></textarea>
+          </div>
 
+          <div className="more_conditions">
+            <button type="button" className="add_condition">
+              Додати картинку
+            </button>
+            <button type="button" className="add_condition">
+              Додати таблицю
+            </button>
+            <button type="button" className="add_condition">
+              Додати картинку
+            </button>
+          </div>
+        </fieldset>
+
+        <fieldset className="data_correct_answer">
+          <legend>Дані для правильної відповіді</legend>
+          <label className="" htmlFor={`correct_answer-${props.numTask}`}>
+            Вкажіть правильну відповідь
+          </label>
+          <textarea
+            id={`correct_answer-${props.numTask}`}
+            name={`correct_answer-${props.numTask}`}
+          ></textarea>
+        </fieldset>
+      </form>
+    </div>
+  );
+};
 //ФОРМА ДЛЯ ЗАВДАННЯ OPEN ANSWER
+
+//ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
+const FormIsComparison = (props: {
+  numTask: string;
+  formRef: (el: HTMLFormElement | null) => void;
+  index: number;
+}) => {
+  return (
+    <div className="creator_task">
+      <form className="form_for_creator" ref={props.formRef}>
+        {/* Група "Дані для запитання" */}
+        <fieldset>
+          <legend>Дані для запитання</legend>
+          <div className="box_for_qestion">
+            <label className="set_task" htmlFor={`task-${props.numTask}`}>
+              Вкажіть умову задачі
+            </label>
+            <textarea
+              id={`task-${props.numTask}`}
+              name={`task-${props.numTask}`}
+            ></textarea>
+          </div>
+
+          <div className="more_conditions">
+            <button type="button" className="add_condition">
+              Додати картинку
+            </button>
+            <button type="button" className="add_condition">
+              Додати таблицю
+            </button>
+            <button type="button" className="add_condition">
+              Додати картинку
+            </button>
+          </div>
+        </fieldset>
+
+        {/* Група "Дані для співставлення" */}
+        <fieldset className="data_for_comparison">
+          <legend>Дані для співставлення</legend>
+          {["1", "2", "3"].map((item, index) => (
+            <div key={index} className="box_for_list1">
+              <div className="box_for_answer">
+                <label
+                  className=""
+                  htmlFor={`task-${props.numTask}-list1-${item}`}
+                >
+                  Вкажіть відповідь {item}
+                </label>
+                <textarea
+                  id={`task-${props.numTask}-list1-${item}`}
+                  name={`task-${props.numTask}-list1-${item}`}
+                ></textarea>
+              </div>
+              <div className="more_conditions">
+                <button type="button" className="add_condition">
+                  Додати картинку
+                </button>
+              </div>
+            </div>
+          ))}
+          {["А", "Б", "В", "Г", "Д"].map((item, index) => (
+            <div key={index} className="box_for_list2">
+              <div className="box_for_answer">
+                <label
+                  className=""
+                  htmlFor={`task-${props.numTask}-list2-${item}`}
+                >
+                  Вкажіть відповідь {item}
+                </label>
+                <textarea
+                  id={`task-${props.numTask}-list2-${item}`}
+                  name={`task-${props.numTask}-list2-${item}`}
+                ></textarea>
+              </div>
+              <div className="more_conditions">
+                <button type="button" className="add_condition">
+                  Додати картинку
+                </button>
+              </div>
+            </div>
+          ))}
+        </fieldset>
+
+        <fieldset className="data_correct_answer">
+          <legend>Дані для правильної відповіді</legend>
+          {["1", "2", "3"].map((item, index) => (
+            <div key={index} className="box_for_list1">
+              <div className="box_for_answer">
+                <label
+                  className=""
+                  htmlFor={`task-${props.numTask}-answer-${item}`}
+                >
+                  Вкажіть відповідь {item}
+                </label>
+                <textarea
+                  id={`task-${props.numTask}-answer-${item}`}
+                  name={`task-${props.numTask}-answer-${item}`}
+                ></textarea>
+              </div>
+              <div className="more_conditions">
+                <button type="button" className="add_condition">
+                  Додати картинку
+                </button>
+              </div>
+            </div>
+          ))}
+        </fieldset>
+      </form>
+    </div>
+  );
+};
+//ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
