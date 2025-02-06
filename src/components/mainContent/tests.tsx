@@ -8,103 +8,59 @@ import TaskComparison from "./taskComparison";
 
 interface Task1 {
   //тип даних для завдання з з вибором 1 відповіді
-  task: {
-    text: string;
-    table?: {
-      value1: string[];
-      velue2: string[];
-    };
-    picture?: string;
-    list?: string[];
-  };
-  answers: {
-    values: string[];
-    pictures?: string[];
-  };
+  task: Question;
+  answers: Answers;
   correctAnswer: string;
   typeOfTask: string;
 }
-
 interface Task2 {
   //тип даних для завдання співставлення
-  task: {
-    text: string;
-    table?: {
-      value1: string[];
-      velue2: string[];
-    };
-    picture?: string;
-    list?: string[];
-  };
-  comparisonTable: {
-    list1: {
-      texts?: string[];
-      pictures?: string[];
-    };
-    list2: {
-      texts?: string[];
-      picture?: string[];
-    };
-  };
-  сorrectComparison: {
-    [key: string]: string;
-  };
+  task: Question;
+  comparisonTable: ComparisonTable;
+  сorrectComparison: CorrectComparison;
   typeOfTask: string;
 }
-
 interface Task3 {
   //тип даних для завдання з відкритою відповіддю
-  task: {
-    text: string;
-    table?: {
-      value1: string[];
-      velue2: string[];
-    };
-    picture?: string;
-    list?: string[];
-  };
+  task: Question;
   correctAnswer: string;
   typeOfTask: string;
 }
-interface Tasks {
-  [key: string]: Task1 | Task2 | Task3; // Колекція з різними завданнями
+interface Question {
+  text: string;
+  table?: {
+    value1: string[];
+    velue2: string[];
+  };
+  picture?: string;
+  list?: string[];
 }
 interface Answers {
   values: string[];
-  pictures: string[];
+  pictures?: string[];
 }
-interface Comparison {
-  list1: string[];
-  list2: string[];
+interface ComparisonTable {
+  list1: {
+    texts?: string[];
+    pictures?: string[];
+  };
+  list2: {
+    texts?: string[];
+    picture?: string[];
+  };
 }
 interface CorrectComparison {
   [key: string]: string;
 }
-interface TaskData {
-  task: string[];
-  answers: Answers;
-  correctAnswer: string | CorrectComparison;
-  typeOfTask: string;
-  comparisonTable: Comparison;
-}
-
-interface TestItem {
-  [key: string]: TaskData; // Колекція з різними завданнями
+interface Tasks {
+  // Колекція з різними завданнями
+  [key: string]: Task1 | Task2 | Task3;
 }
 
 const Tests = () => {
-  const [document, setDocument] = useState<TestItem>();
-
   const [document1, setDocument1] = useState<Tasks>();
 
   const [userAnswers, setUserAnswers] = useState<{ [key: string]: any }>({});
-
-  const addAnswer = (key: string, answer: string) => {
-    setUserAnswers((prevAnswers) => ({
-      ...prevAnswers,
-      [key]: answer, // Додаємо нову відповідь з власним ключем
-    }));
-  };
 
   const EditUserAnswer = (key: string, newAnswer: any) => {
     setUserAnswers((prevAnswers) => ({
@@ -183,6 +139,12 @@ const Tests = () => {
             comparison[key] = 0;
           }
         }
+        if (isTask2(item)) {
+          comparison[key] = CheckComparison(
+            item.сorrectComparison,
+            userAnswers[key]
+          );
+        }
         if (isTask3(item)) {
           if (item.correctAnswer === userAnswers[key]) {
             comparison[key] = 2;
@@ -190,12 +152,6 @@ const Tests = () => {
           } else {
             comparison[key] = 0;
           }
-        }
-        if (isTask2(item)) {
-          comparison[key] = CheckComparison(
-            item.сorrectComparison,
-            userAnswers[key]
-          );
         }
       });
     console.log(comparison);
@@ -218,6 +174,7 @@ const Tests = () => {
         {document1 &&
           Object.entries(document1).map(([key, task]) => (
             <div key={key}>
+              {key}.
               {isTask3(task) && (
                 <TaskOpenAnswer
                   task={task.task}

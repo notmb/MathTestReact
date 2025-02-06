@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { db } from "../../firebaseConfig";
-import { setDoc, getDoc, doc, collection, addDoc } from "firebase/firestore";
+import { setDoc, getDoc, doc } from "firebase/firestore";
 import "./addVariant.css";
 
 interface Task1 {
