@@ -169,12 +169,11 @@ const Tests = () => {
 
   //ГЕНЕРУЄМО ТЕСТ
   return (
-    <div>
+    <div className="conteiner_for_test">
       <div className="tests">
         {document1 &&
           Object.entries(document1).map(([key, task]) => (
             <div key={key}>
-              {key}.
               {isTask3(task) && (
                 <TaskOpenAnswer
                   task={task.task}

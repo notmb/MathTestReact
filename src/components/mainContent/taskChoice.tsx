@@ -1,27 +1,25 @@
-import "./testItem.css";
+import "./tests.css";
 import { MathJax } from "better-react-mathjax";
 import { app } from "../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
 
+interface Question {
+  text: string;
+  table?: {
+    value1: string[];
+    velue2: string[];
+  };
+  picture?: string;
+  list?: string[];
+}
 interface Answers {
   values: string[];
   pictures?: string[];
 }
 const TaskChoice = (props: {
-  task: {
-    text: string;
-    table?: {
-      value1: string[];
-      velue2: string[];
-    };
-    image?: string;
-    list?: string[];
-  };
-  answers: {
-    values: string[];
-    pictures?: string[];
-  };
+  task: Question;
+  answers: Answers;
   correctAnswer: string;
   typeOfTask: string;
   number: string;
@@ -29,8 +27,8 @@ const TaskChoice = (props: {
 }) => {
   return (
     <div className="tests_item">
+      <p className="container_serial_num_task">Завдання {props.number}</p>
       <Task text={props.task.text}></Task>
-
       <Answers answers={props.answers}></Answers>
       <AnswerChoice
         EditUserAnswer={props.func}
@@ -103,7 +101,7 @@ const Answers = (props: { answers: Answers }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
   // const urlForAnswer = PictureForAnswers(props.imageForAnswers);
   return (
-    <div>
+    <div className="box_for_answer_table">
       <table className="answer_table">
         <thead>
           <tr>
@@ -148,11 +146,11 @@ const AnswerChoice = (props: {
     props.EditUserAnswer(taskKey, userAnswer); // Викликаємо функцію для оновлення відповіді
   };
   return (
-    <div className="box_form">
-      <form className="form_for_answer" action="#" method="post">
+    <div className="box_for_user_answers">
+      <form className="form_for_user_answer" action="#" method="post">
         {mark.map((item, index) => {
           return (
-            <div className="box_choise" key={index}>
+            <div className="item_answer_choise" key={index}>
               <input
                 className="user_choice"
                 key={index}

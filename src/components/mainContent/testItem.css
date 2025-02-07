@@ -1,30 +1,11 @@
-.question_box,
-.task_box {
-  border-bottom: 2px solid rgb(244, 236, 236);
-  background-color: white;
-  padding: 8px 0 8px 15px;
-}
 .picture_for_question {
   width: 100px;
 }
-.answer_table {
-  width: 100%;
-  background-color: rgb(231, 231, 225);
-  border-spacing: 0;
-}
-.mark {
-  border: solid 2px rgb(244, 236, 236);
-  text-align: center;
-  padding: 5px;
-}
+
 .picture_for_answer {
   width: 50px;
 }
-.answer_options {
-  width: 20%;
-  border: solid 2px rgb(244, 236, 236);
-  text-align: center;
-}
+
 .no_picture {
   display: none;
 }
@@ -41,32 +22,14 @@
 .box_choise {
   display: flex;
 }
-.form_for_answer {
-  padding-left: 10px;
-}
+
 .answer {
   display: flex;
 }
 .MathJAx {
   display: inline;
 }
-.tests_item {
-  margin-bottom: 10px;
-  border-bottom: 10px solid; /* Задаємо нижній бордер */
-  border-image: linear-gradient(to right, rgb(218, 224, 230), transparent) 1; /* Градієнт для бордера */
-  border-image-slice: 1; /* Використовуємо весь градієнт для бордера */
-}
-.comparison_table {
-  display: flex;
-}
-.list1,
-.list2 {
-  width: 50%;
-}
-.list_item {
-  display: flex;
-  padding: 4px 16px 4px 16px;
-}
+
 .open_answer {
   padding: 8px 68px;
 }

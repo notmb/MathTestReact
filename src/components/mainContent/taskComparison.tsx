@@ -4,10 +4,6 @@ import { app } from "../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
 
-interface Answers {
-  values: string[];
-  pictures?: string[];
-}
 interface Comparison {
   list1: {
     texts?: string[];
@@ -18,38 +14,30 @@ interface Comparison {
     picture?: string[];
   };
 }
+interface Question {
+  text: string;
+  table?: {
+    value1: string[];
+    velue2: string[];
+  };
+  picture?: string;
+  list?: string[];
+}
+interface CorrectComparison {
+  [key: string]: string;
+}
 
 const TaskComparison = (props: {
-  task: {
-    text: string;
-    table?: {
-      value1: string[];
-      velue2: string[];
-    };
-    image?: string;
-    list?: string[];
-  };
-  comparisonTable: {
-    list1: {
-      texts?: string[];
-      pictures?: string[];
-    };
-    list2: {
-      texts?: string[];
-      picture?: string[];
-    };
-  };
-
-  сorrectComparison: {
-    [key: string]: string;
-  };
-
+  task: Question;
+  comparisonTable: Comparison;
+  сorrectComparison: CorrectComparison;
   typeOfTask: string;
   number: string;
   func: (taskKey: string, userAnswer: string) => void;
 }) => {
   return (
     <div className="tests_item">
+      <p className="container_serial_num_task">Завдання {props.number}</p>
       <Task text={props.task.text}></Task>
       <ComparisonTable
         comparisonTable={props.comparisonTable}
@@ -126,22 +114,22 @@ const ComparisonTable = (props: { comparisonTable: Comparison }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
   return (
     <div className="comparison_table">
-      <div className="list1">
-        <ul>
+      <div className="box_for_list1">
+        <ul className="list1">
           {props.comparisonTable.list1.texts &&
             props.comparisonTable.list1.texts.map((item, index) => (
-              <li key={index} className="list_item">
+              <li key={index} className="item_of_comparison">
                 {index + 1}) <MathJax>{item}</MathJax>
               </li>
             ))}
         </ul>
       </div>
-      <div className="list2">
+      <div className="box_for_list2">
         {" "}
-        <ul>
+        <ul className="list2">
           {props.comparisonTable.list2.texts &&
             props.comparisonTable.list2.texts.map((item, index) => (
-              <li key={index} className="list_item">
+              <li key={index} className="item_of_comparison">
                 {mark[index]}) <MathJax>{item}</MathJax>
               </li>
             ))}
@@ -185,28 +173,27 @@ const AnswerToComparisonTask = (props: {
   };
 
   return (
-    <div>
-      <div className="list1">
-        <ul>
-          {props.comparisonTable.list1.texts &&
-            props.comparisonTable.list1.texts.map((_, index) => (
-              <li key={index} className="list_item">
-                {index + 1})
-                <input
-                  id={props.number}
-                  list={`answer-${index}`}
-                  placeholder="your answer..."
-                  onChange={(event) => handleChoiceChange(event, index)}
-                />
-                <datalist id={`answer-${index}`}>
-                  {["А", "Б", "В", "Г", "Д"].map((option, index) => (
-                    <option key={index} value={option} />
-                  ))}
-                </datalist>
-              </li>
-            ))}
-        </ul>
-      </div>
+    <div className="box_for_answers_comparison">
+      <ul className="list_of_answers_comparison">
+        {props.comparisonTable.list1.texts &&
+          props.comparisonTable.list1.texts.map((_, index) => (
+            <li key={index} className="item_user_answer_comparison">
+              {index + 1})
+              <input
+                className="user_answer_comparison"
+                id={props.number}
+                list={`answer-${index}`}
+                placeholder="your answer..."
+                onChange={(event) => handleChoiceChange(event, index)}
+              />
+              <datalist id={`answer-${index}`}>
+                {["А", "Б", "В", "Г", "Д"].map((option, index) => (
+                  <option key={index} value={option} />
+                ))}
+              </datalist>
+            </li>
+          ))}
+      </ul>
     </div>
   );
 };

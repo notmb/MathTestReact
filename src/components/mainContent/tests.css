@@ -1,8 +1,96 @@
+.conteiner_for_test {
+  background-color: aliceblue;
+  display: flex;
+  padding: 0 40px;
+}
+.tests {
+  width: 100%;
+  height: auto;
+  background-color: white;
+}
+.tests_item {
+  padding: 8px 24px;
+  border-bottom: 10px solid;
+  border-image: linear-gradient(to right, aliceblue, transparent) 1; /* Градієнт для бордера */
+  border-image-slice: 1; /* Використовуємо весь градієнт для бордера */
+}
+
+.container_serial_num_task {
+  padding-left: 16px;
+  font-size: 24px;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.743);
+}
+.task_box {
+  padding: 8px 0;
+  font-size: 20px;
+}
+.box_for_answer_table {
+  padding: 8px 0;
+}
+.answer_table {
+  width: 100%;
+  border-spacing: 0;
+  border: 1px solid rgba(0, 0, 0, 0.89);
+}
+.mark {
+  border: solid 1px rgba(0, 0, 0, 0.89);
+  text-align: center;
+  padding: 5px;
+  font-size: 18px;
+}
+.answer_options {
+  width: 20%;
+  border: solid 1px rgba(0, 0, 0, 0.89);
+  text-align: center;
+  font-size: 18px;
+}
+.box_for_user_answers {
+  padding: 8px;
+}
+.item_answer_choise {
+  font-size: 18px;
+}
+.user_answer_open {
+  font-size: 18px;
+  width: 25%;
+}
+.comparison_table {
+  padding: 8px 0;
+  display: flex;
+}
+.box_for_list1,
+.box_for_list2 {
+  width: 50%;
+}
+.list1,
+.list2 {
+  padding: 0;
+  list-style: none;
+}
+.item_of_comparison {
+  display: flex;
+  font-size: 18px;
+  padding: 8px 0;
+}
+.box_for_answers_comparison {
+  padding-top: 8px;
+}
+.list_of_answers_comparison {
+  padding: 0;
+  list-style: none;
+}
+.user_answer_comparison {
+  width: 25%;
+  font-size: 18px;
+}
+.item_user_answer_comparison {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 18px;
+}
 .check_button {
   margin: 16px 16px;
   cursor: pointer;
-}
-.tests {
-  border-left: 32px solid aliceblue;
-  border-right: 32px solid aliceblue;
+  font-size: 18px;
 }
