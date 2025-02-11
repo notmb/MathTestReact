@@ -1,10 +1,14 @@
-.add_task {
-  padding: 10px 32px;
-  min-height: 600px;
+.add_variant {
+  padding: 16px 32px;
+  min-height: 800px;
+}
+.new_variant {
 }
 .form_for_description_new_variant,
 .creator_new_variant {
-  border: 4px solid aliceblue;
+  border: 2px solid black;
+  padding: 8px 32px;
+  font-size: 18px;
 }
 .number_of_tasks_new_variant,
 .name_new_variant {

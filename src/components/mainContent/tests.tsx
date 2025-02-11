@@ -78,7 +78,7 @@ const Tests = () => {
 
   const getDocument1 = async () => {
     try {
-      const docRef = doc(db, "topic 1", "variant 3"); // Створюємо посилання на документ
+      const docRef = doc(db, "topic 1", "variant 4"); // Створюємо посилання на документ
       const docSnap = await getDoc(docRef); // Отримуємо дані документа
 
       if (!docSnap.exists()) {
@@ -128,10 +128,12 @@ const Tests = () => {
 
   const TestCheck1 = () => {
     const comparison: { [key: string]: number } = {};
+    let maxMark = 0;
     document1 &&
       Object.entries(document1).forEach(([key, item]) => {
         console.log(key);
         if (isTask1(item)) {
+          maxMark = maxMark + 1;
           if (item.correctAnswer === userAnswers[key]) {
             comparison[key] = 1;
             console.log(comparison);
@@ -140,12 +142,14 @@ const Tests = () => {
           }
         }
         if (isTask2(item)) {
+          maxMark = maxMark + 3;
           comparison[key] = CheckComparison(
             item.сorrectComparison,
             userAnswers[key]
           );
         }
         if (isTask3(item)) {
+          maxMark = maxMark + 2;
           if (item.correctAnswer === userAnswers[key]) {
             comparison[key] = 2;
             console.log(comparison);
@@ -155,6 +159,7 @@ const Tests = () => {
         }
       });
     console.log(comparison);
+    console.log(maxMark);
     let sum = 0;
     Object.values(comparison).map((value) => {
       sum = sum + value; // Додаємо значення
@@ -163,7 +168,7 @@ const Tests = () => {
       "Твій бал за тест: " +
         sum +
         "\nТвій бал у форматі НМТ: " +
-        Math.round((sum * 200) / 17)
+        Math.round((sum * 200) / maxMark)
     );
   };
 

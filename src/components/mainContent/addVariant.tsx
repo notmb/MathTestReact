@@ -5,64 +5,53 @@ import "./addVariant.css";
 
 interface Task1 {
   //тип даних для завдання з з вибором 1 відповіді
-  task: {
-    text: string;
-    table?: {
-      value1: string[];
-      velue2: string[];
-    };
-    picture?: string;
-    list?: string[];
-  };
-  answers: {
-    values: string[];
-    pictures?: string[];
-  };
+  task: Question;
+  answers: Answers;
   correctAnswer: string;
   typeOfTask: string;
 }
 interface Task2 {
   //тип даних для завдання співставлення
-  task: {
-    text: string;
-    table?: {
-      value1: string[];
-      velue2: string[];
-    };
-    picture?: string;
-    list?: string[];
-  };
-  comparisonTable: {
-    list1: {
-      texts?: string[];
-      pictures?: string[];
-    };
-    list2: {
-      texts?: string[];
-      picture?: string[];
-    };
-  };
-  сorrectComparison: {
-    [key: string]: string;
-  };
+  task: Question;
+  comparisonTable: ComparisonTable;
+  сorrectComparison: CorrectComparison;
   typeOfTask: string;
 }
 interface Task3 {
   //тип даних для завдання з відкритою відповіддю
-  task: {
-    text: string;
-    table?: {
-      value1: string[];
-      velue2: string[];
-    };
-    picture?: string;
-    list?: string[];
-  };
+  task: Question;
   correctAnswer: string;
   typeOfTask: string;
 }
+interface Question {
+  text: string;
+  table?: {
+    value1: string[];
+    velue2: string[];
+  };
+  picture?: string;
+  list?: string[];
+}
+interface Answers {
+  values: string[];
+  pictures?: string[];
+}
+interface ComparisonTable {
+  list1: {
+    texts?: string[];
+    pictures?: string[];
+  };
+  list2: {
+    texts?: string[];
+    picture?: string[];
+  };
+}
+interface CorrectComparison {
+  [key: string]: string;
+}
 interface Tasks {
-  [key: string]: Task1 | Task2 | Task3; // Колекція з різними завданнями
+  // Колекція з різними завданнями
+  [key: string]: Task1 | Task2 | Task3;
 }
 
 const AddVariant = () => {
@@ -88,7 +77,7 @@ const AddVariant = () => {
 
   console.log(mainData);
   return (
-    <div className="add_task">
+    <div className="add_variant">
       {!isFormData && (
         <InfaAboutVariant handleClick={handleClick}></InfaAboutVariant>
       )}
