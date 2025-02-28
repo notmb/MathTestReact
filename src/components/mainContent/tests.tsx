@@ -26,11 +26,15 @@ interface Task3 {
   correctAnswer: string;
   typeOfTask: string;
 }
+interface Tasks {
+  // Колекція з різними завданнями
+  [key: string]: Task1 | Task2 | Task3;
+}
 interface Question {
   text: string;
   table?: {
     value1: string[];
-    velue2: string[];
+    value2: string[];
   };
   picture?: string;
   list?: string[];
@@ -51,10 +55,6 @@ interface ComparisonTable {
 }
 interface CorrectComparison {
   [key: string]: string;
-}
-interface Tasks {
-  // Колекція з різними завданнями
-  [key: string]: Task1 | Task2 | Task3;
 }
 
 const Tests = () => {
@@ -171,6 +171,7 @@ const Tests = () => {
         Math.round((sum * 200) / maxMark)
     );
   };
+  console.log();
 
   //ГЕНЕРУЄМО ТЕСТ
   return (

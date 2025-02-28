@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
-import { db } from "../../firebaseConfig";
 import { setDoc, getDoc, doc } from "firebase/firestore";
+import { db, storage } from "../../firebaseConfig";
+import { ref, uploadBytes } from "firebase/storage";
+
 import "./addVariant.css";
 
 interface Task1 {
@@ -78,9 +80,10 @@ const AddVariant = () => {
   console.log(mainData);
   return (
     <div className="add_variant">
-      {!isFormData && (
-        <InfaAboutVariant handleClick={handleClick}></InfaAboutVariant>
-      )}
+      <InfaAboutVariant
+        handleClick={handleClick}
+        isFormData={isFormData}
+      ></InfaAboutVariant>
       {isFormData && (
         <CreatorNewVariant
           namberTask={mainData.num}
@@ -95,22 +98,58 @@ export default AddVariant;
 //ФОРМА ДЛЯ ОСНОВНОЇ ІНФОРМАЦІЇ
 const InfaAboutVariant = (props: {
   handleClick: (event: React.FormEvent<HTMLFormElement>) => void;
+  isFormData: boolean;
 }) => {
+  const [isActive, setIsActive] = useState(false);
+  const handleClick = () => {
+    setIsActive(!isActive); // Перемикаємо клас
+  };
   return (
     <div className="new_variant">
       <form
         className="form_for_description_new_variant"
         onSubmit={props.handleClick}
       >
-        <div className="name_new_variant">
-          <label htmlFor="variantname">Ідентифікація (назва) варіанту:</label>
-          <input type="text" id="variantname" name="variantName" />
+        <div
+          className={
+            isActive
+              ? "conteiner_for_description h-8"
+              : "conteiner_for_description "
+          }
+        >
+          <div className="name_new_variant">
+            <label htmlFor="variantname">Ідентифікація (назва) варіанту:</label>
+            <input type="text" id="variantname" name="variantName" />
+          </div>
+          <div className="number_of_tasks_new_variant">
+            <label htmlFor="number_of_tasks">Кількість завдань:</label>
+            <input type="text" id="number_of_tasks" name="numberOfTasks" />
+          </div>
         </div>
-        <div className="number_of_tasks_new_variant">
-          <label htmlFor="number_of_tasks">Кількість завдань:</label>
-          <input type="text" id="number_of_tasks" name="numberOfTasks" />
+        <div>
+          <button
+            className={
+              isActive
+                ? "custom-button"
+                : "button_in_form_for_description hidden"
+            }
+            type="button"
+            onClick={handleClick}
+          >
+            Редагувати
+          </button>
+          <button
+            className={
+              isActive
+                ? "button_in_form_for_description hidden"
+                : "custom-button"
+            }
+            type="submit"
+            onClick={handleClick}
+          >
+            Далі
+          </button>
         </div>
-        <button type="submit">Далі</button>
       </form>
     </div>
   );
@@ -218,6 +257,12 @@ const CreatorNewVariant = (props: {
 
     if (docSnapshot.exists()) {
       console.log("Документ з таким ID вже існує.");
+      const userInput = window.prompt("Введіть ваше ім'я:", "Ім'я");
+      if (userInput !== null) {
+        console.log("Користувач ввів:", userInput);
+      } else {
+        console.log("Користувач скасував ввід");
+      }
     } else {
       await setDoc(userDocRef, variant);
       console.log("Документ успішно створено з ID:", nameVariant);
@@ -309,6 +354,33 @@ const FormIsChoice = (props: {
   formRef: (el: HTMLFormElement | null) => void;
   index: number;
 }) => {
+  const [image, setImage] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("Файл вибрано:", file.name);
+      setFileName(file.name);
+      setImage(file);
+    } else {
+      console.warn("Файл не вибрано!");
+    }
+  };
+  const handleUpload = async () => {
+    if (!image) {
+      alert("Виберіть зображення перед завантаженням!");
+      return;
+    }
+
+    const imageRef = ref(storage, `images/${image.name}`);
+
+    try {
+      await uploadBytes(imageRef, image); // Завантаження файлу
+      console.log("Зображення завантажене");
+    } catch (error) {
+      console.error("Помилка завантаження:", error);
+    }
+  };
   return (
     <div className="creator_task">
       <form className="form_for_creator" ref={props.formRef}>
@@ -326,7 +398,22 @@ const FormIsChoice = (props: {
           </div>
 
           <div className="more_conditions">
-            <button type="button" className="add_condition">
+            <input
+              type="file"
+              accept="image/*"
+              id="fileInput"
+              onChange={handleFileChange}
+              className="load_picture"
+            />
+
+            <label htmlFor="fileInput" className="upload_picture">
+              {fileName ? `Файл: ${fileName}` : "Додати зображення"}
+            </label>
+            <button
+              type="button"
+              className="add_condition"
+              onClick={handleUpload}
+            >
               Додати картинку
             </button>
             <button type="button" className="add_condition">

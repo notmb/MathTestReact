@@ -18,7 +18,7 @@ interface Question {
   text: string;
   table?: {
     value1: string[];
-    velue2: string[];
+    value2: string[];
   };
   picture?: string;
   list?: string[];

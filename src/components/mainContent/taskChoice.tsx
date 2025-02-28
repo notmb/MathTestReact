@@ -8,7 +8,7 @@ interface Question {
   text: string;
   table?: {
     value1: string[];
-    velue2: string[];
+    value2: string[];
   };
   picture?: string;
   list?: string[];
@@ -25,10 +25,18 @@ const TaskChoice = (props: {
   number: string;
   func: (taskKey: string, userAnswer: string) => void;
 }) => {
+  if (props.number === (3).toString()) {
+    console.log(props.task.table);
+  }
   return (
     <div className="tests_item">
       <p className="container_serial_num_task">Завдання {props.number}</p>
-      <Task text={props.task.text}></Task>
+      <Task
+        text={props.task.text}
+        picture={props.task.picture}
+        list={props.task.list}
+        table={props.task.table}
+      ></Task>
       <Answers answers={props.answers}></Answers>
       <AnswerChoice
         EditUserAnswer={props.func}
@@ -45,7 +53,7 @@ const Task = (props: {
   text: string;
   table?: {
     value1: string[];
-    velue2: string[];
+    value2: string[];
   };
   picture?: string;
   list?: string[];
@@ -55,6 +63,13 @@ const Task = (props: {
       <div>
         <MathJax>{props.text}</MathJax>
       </div>
+      {props.list && <ListToQestion list={props.list}></ListToQestion>}
+      {props.table && (
+        <TableToQestion
+          list1={props.table.value1}
+          list2={props.table.value2}
+        ></TableToQestion>
+      )}
       {props.picture && (
         <Picture
           url={props.picture}
@@ -81,7 +96,7 @@ const Picture = (props: { url: string; classForPicture: string }) => {
     fetchImage(props.url).then((newUrl) => setImageUrl(newUrl)); // Викликаємо завантаження зображення при завантаженні компонента
   }, [props.url]);
   return (
-    <div>
+    <div className="container_for_picture">
       {imageUrl ? (
         <img
           className={props.classForPicture}
@@ -95,6 +110,47 @@ const Picture = (props: { url: string; classForPicture: string }) => {
   );
 };
 //КОМПОНЕНТ ЗОБРАЖЕННЯ
+
+//КОМПОНЕНТ СПИСКУ ДО ЗАПИТАННЯ
+const ListToQestion = (props: { list: string[] }) => {
+  return (
+    <div className="box_for_list_in_task">
+      {props.list.map((item, index) => (
+        <span key={index} className="list_in_task">
+          {index + 1}. <MathJax>{item}</MathJax>
+        </span>
+      ))}
+    </div>
+  );
+};
+//КОМПОНЕНТ СПИСКУ ДО ЗАПИТАННЯ
+
+//КОМПОНЕНТ ТАБЛИЦІ ДО ЗАПИТАННЯ
+const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
+  return (
+    <div className="box_for_table_in_task">
+      <table className="table_to_qestion">
+        <tbody>
+          <tr>
+            {props.list1.map((item, index) => (
+              <td key={index} className="table_to_qestion_list1">
+                <MathJax>{item}</MathJax>
+              </td>
+            ))}
+          </tr>
+          <tr>
+            {props.list2.map((item, index) => (
+              <td key={index} className="table_to_qestion_list2">
+                <MathJax>{item}</MathJax>
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+};
+//КОМПОНЕНТ ТАБЛИЦІ ДО ЗАПИТАННЯ
 
 //КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
 const Answers = (props: { answers: Answers }) => {

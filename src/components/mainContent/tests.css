@@ -24,6 +24,33 @@
   padding: 8px 0;
   font-size: 20px;
 }
+.container_for_picture {
+  padding: 24px;
+  display: flex;
+}
+.box_for_list_in_task,
+.box_for_table_in_task {
+  padding: 16px 0 0 24px;
+}
+.box_for_table_in_task {
+  display: flex;
+  justify-content: center;
+}
+.table_to_qestion {
+  border-collapse: collapse;
+  border: 1px solid rgba(0, 0, 0, 0.89);
+}
+.table_to_qestion_list1,
+.table_to_qestion_list2 {
+  border: solid 1px rgba(0, 0, 0, 0.89);
+  text-align: center;
+  font-size: 18px;
+  padding: 0 16px;
+}
+
+.list_in_task {
+  display: flex;
+}
 .box_for_answer_table {
   padding: 8px 0;
 }
