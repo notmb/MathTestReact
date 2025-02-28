@@ -128,26 +128,18 @@ const InfaAboutVariant = (props: {
         </div>
         <div>
           <button
-            className={
-              isActive
-                ? "custom-button"
-                : "button_in_form_for_description hidden"
-            }
+            className={isActive ? "custom_button" : "hidden"}
             type="button"
             onClick={handleClick}
           >
             Редагувати
           </button>
           <button
-            className={
-              isActive
-                ? "button_in_form_for_description hidden"
-                : "custom-button"
-            }
+            className={isActive ? "hidden" : "custom_button"}
             type="submit"
             onClick={handleClick}
           >
-            Далі
+            Ок
           </button>
         </div>
       </form>
@@ -188,6 +180,7 @@ const CreatorNewVariant = (props: {
           allTasks[index + 1] = {
             task: {
               text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
+              picture: data[`task-${index + 1}-picture`] as string,
             },
             answers: {
               values: [
@@ -292,12 +285,13 @@ const CreatorNewVariant = (props: {
         {items.length < 30 &&
           items.map((item, index) => (
             <li key={index} className="list_item">
-              <p> {item}. </p>
               <form
                 onSubmit={(event) => SetTypeTask(event, item)}
                 className="form_for_data_tasks"
               >
-                <label htmlFor="type_of_task">Виберіть тип завдання:</label>
+                <label htmlFor="type_of_task">
+                  {item}. Виберіть тип завдання:
+                </label>
                 <input
                   name={`typeOfTask-${item}`}
                   list={`typeOfTask-${item}`}
@@ -310,13 +304,12 @@ const CreatorNewVariant = (props: {
                     )
                   )}
                 </datalist>
-                <button>Вибрати</button>
+                <button className="ml-1">Вибрати</button>
               </form>
               {typeTasks[item - 1] === "choice" && (
                 <FormIsChoice
                   numTask={item.toString()}
                   formRef={(el) => (formRefs.current[index] = el)}
-                  index={index}
                 ></FormIsChoice>
               )}
               {typeTasks[item - 1] === "openAnswer" && (
@@ -352,7 +345,6 @@ const CreatorNewVariant = (props: {
 const FormIsChoice = (props: {
   numTask: string;
   formRef: (el: HTMLFormElement | null) => void;
-  index: number;
 }) => {
   const [image, setImage] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -366,21 +358,21 @@ const FormIsChoice = (props: {
       console.warn("Файл не вибрано!");
     }
   };
-  const handleUpload = async () => {
-    if (!image) {
-      alert("Виберіть зображення перед завантаженням!");
-      return;
-    }
+  // const handleUpload = async () => {
+  //   if (!image) {
+  //     alert("Виберіть зображення перед завантаженням!");
+  //     return;
+  //   }
 
-    const imageRef = ref(storage, `images/${image.name}`);
+  //   const imageRef = ref(storage, `images/${image.name}`);
 
-    try {
-      await uploadBytes(imageRef, image); // Завантаження файлу
-      console.log("Зображення завантажене");
-    } catch (error) {
-      console.error("Помилка завантаження:", error);
-    }
-  };
+  //   try {
+  //     await uploadBytes(imageRef, image); // Завантаження файлу
+  //     console.log("Зображення завантажене");
+  //   } catch (error) {
+  //     console.error("Помилка завантаження:", error);
+  //   }
+  // };
   return (
     <div className="creator_task">
       <form className="form_for_creator" ref={props.formRef}>
@@ -401,25 +393,28 @@ const FormIsChoice = (props: {
             <input
               type="file"
               accept="image/*"
-              id="fileInput"
+              id={`task-${props.numTask}-picture`}
               onChange={handleFileChange}
-              className="load_picture"
+              className="hidden"
             />
 
-            <label htmlFor="fileInput" className="upload_picture">
+            <label
+              htmlFor={`task-${props.numTask}-picture`}
+              className="upload_picture"
+            >
               {fileName ? `Файл: ${fileName}` : "Додати зображення"}
             </label>
-            <button
+            {/* <button
               type="button"
               className="add_condition"
               onClick={handleUpload}
             >
               Додати картинку
-            </button>
-            <button type="button" className="add_condition">
+            </button> */}
+            <button type="button" className="more_condition mx-4">
               Додати таблицю
             </button>
-            <button type="button" className="add_condition">
+            <button type="button" className="more_condition">
               Додати картинку
             </button>
           </div>
@@ -472,6 +467,18 @@ const FormIsOpenAnswer = (props: {
   numTask: string;
   formRef: (el: HTMLFormElement | null) => void;
 }) => {
+  const [image, setImage] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("Файл вибрано:", file.name);
+      setFileName(file.name);
+      setImage(file);
+    } else {
+      console.warn("Файл не вибрано!");
+    }
+  };
   return (
     <div className="creator_task">
       <form className="form_for_creator" ref={props.formRef}>
@@ -489,13 +496,28 @@ const FormIsOpenAnswer = (props: {
           </div>
 
           <div className="more_conditions">
-            <button type="button" className="add_condition">
+            <input
+              type="file"
+              accept="image/*"
+              id="fileInput"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+
+            <label htmlFor="fileInput" className="upload_picture">
+              {fileName ? `Файл: ${fileName}` : "Додати зображення"}
+            </label>
+            {/* <button
+              type="button"
+              className="add_condition"
+              onClick={handleUpload}
+            >
               Додати картинку
-            </button>
-            <button type="button" className="add_condition">
+            </button> */}
+            <button type="button" className="more_condition mx-4">
               Додати таблицю
             </button>
-            <button type="button" className="add_condition">
+            <button type="button" className="more_condition">
               Додати картинку
             </button>
           </div>

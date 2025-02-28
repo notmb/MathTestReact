@@ -4,17 +4,6 @@
   padding: 16px 32px;
   min-height: 800px;
 }
-.new_variant {
-}
-.load_picture {
-  display: none;
-}
-.upload_picture {
-  background-color: rgba(242, 242, 242, 0.815);
-  border: 1px solid black;
-  padding: 2px;
-}
-
 .creator_new_variant {
   border: 2px solid black;
   padding: 8px 32px;
@@ -37,7 +26,7 @@
   display: flex;
   justify-content: space-between;
 }
-.custom-button {
+.custom_button {
   background-color: #90bde8; /* Зелений фон */
   color: white; /* Білий текст */
   border: 2px solid #90bde8; /* Зелені рамки */
@@ -48,14 +37,9 @@
   margin: 4px 0 16px 0;
 }
 
-.custom-button:hover {
+.custom_button:hover {
   background-color: #90bde8; /* Темніший зелений при наведенні */
   border-color: #6389ac; /* Зміна кольору рамки */
-}
-.button_in_form_for_description {
-  cursor: pointer;
-  /* width: 60px; */
-  margin: 16px;
 }
 .number_of_tasks_new_variant,
 .name_new_variant {
@@ -66,14 +50,11 @@
 }
 .list_item {
   padding: 24px 8px;
-  border: 2px solid aliceblue;
   display: flex;
   flex-direction: column;
 }
 .creator_task {
   padding: 16px;
-  border-bottom: 2px solid sandybrown;
-  border-top: 2px solid sandybrown;
 }
 .form_for_task {
   display: flex;
@@ -81,9 +62,21 @@
 }
 .more_conditions {
   padding: 8px;
+  display: flex;
 }
-.add_condition {
-  margin: 0 8px;
+.upload_picture {
+  background-color: rgb(240, 240, 240);
+  border: 1px solid rgba(27, 25, 25, 0.414);
+  border-radius: 3px;
+  padding: 2px 4px;
+}
+.more_condition {
+  background-color: rgb(240, 240, 240);
+  border: 1px solid rgba(27, 25, 25, 0.414);
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
 }
 .data_answers {
   padding: 16px;
