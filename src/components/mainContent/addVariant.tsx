@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { setDoc, getDoc, doc } from "firebase/firestore";
-import { db, storage } from "../../firebaseConfig";
-import { ref, uploadBytes } from "firebase/storage";
+import { storage, db } from "../../firebaseConfig";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import "./addVariant.css";
 
@@ -167,80 +167,148 @@ const CreatorNewVariant = (props: {
 
   const [variant, setVariant] = useState<Tasks>();
 
-  const handleSubmitAll = () => {
+  const uploadFile = async (file: File) => {
+    try {
+      if (!file || !file.name) {
+        console.error("Invalid file:", file);
+        return;
+      }
+      console.log("Uploading file:", file.name);
+
+      const fileRef = ref(storage, `taskFiles/${file.name}`);
+      await uploadBytes(fileRef, file);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const handleSubmitAll = async () => {
     const allTasks: Tasks = {}; // Масив для збереження всіх завдань
 
-    formRefs.current.forEach((form, index) => {
-      if (form) {
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-        console.log(`Форма ${index + 1}:`, data);
+    for (const [index, form] of formRefs.current.entries()) {
+      if (!form) continue;
 
-        if (typeTasks[index] === "choice") {
-          allTasks[index + 1] = {
-            task: {
-              text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
-              picture: data[`task-${index + 1}-picture`] as string,
-            },
-            answers: {
-              values: [
-                data[`task-${index + 1}-answer-А`] as string,
-                data[`task-${index + 1}-answer-Б`] as string,
-                data[`task-${index + 1}-answer-В`] as string,
-                data[`task-${index + 1}-answer-Г`] as string,
-                data[`task-${index + 1}-answer-Д`] as string,
-              ],
-            },
-            correctAnswer: data[`correct_answer-${index + 1}`] as string,
-            typeOfTask: "choice" as string,
-          };
-        }
-        if (typeTasks[index] === "openAnswer") {
-          allTasks[index + 1] = {
-            task: {
-              text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
-            },
-            correctAnswer: data[`correct_answer-${index + 1}`] as string,
-            typeOfTask: "openAnswer" as string,
-          };
-        }
-        if (typeTasks[index] === "comparison") {
-          allTasks[index + 1] = {
-            task: {
-              text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
-            },
-            comparisonTable: {
-              list1: {
-                texts: [
-                  data[`task-${index + 1}-list1-1`],
-                  data[`task-${index + 1}-list1-2`],
-                  data[`task-${index + 1}-list1-3`],
-                ] as string[],
-              },
-              list2: {
-                texts: [
-                  data[`task-${index + 1}-list2-А`],
-                  data[`task-${index + 1}-list2-Б`],
-                  data[`task-${index + 1}-list2-В`],
-                  data[`task-${index + 1}-list2-Г`],
-                  data[`task-${index + 1}-list2-Д`],
-                ] as string[],
-              },
-            },
-            сorrectComparison: {
-              ["1"]: data[`task-${index + 1}-answer-1`] as string,
-              ["2"]: data[`task-${index + 1}-answer-2`] as string,
-              ["3"]: data[`task-${index + 1}-answer-3`] as string,
-            },
-            typeOfTask: "comparison" as string,
-          };
-        }
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
 
-        // allTasks[index + 1] = oneTask; // Додаємо завдання до масиву
+      const taskFile = formData.get(`task-${index + 1}-picture`) as File; // Оголошуємо змінну file
+
+      if (typeTasks[index] === "choice") {
+        const answerFiles = [
+          formData.get(`task-${index + 1}-answer-А-picture`),
+          formData.get(`task-${index + 1}-answer-Б-picture`),
+          formData.get(`task-${index + 1}-answer-В-picture`),
+          formData.get(`task-${index + 1}-answer-Г-picture`),
+          formData.get(`task-${index + 1}-answer-Д-picture`),
+        ] as File[];
+
+        // .filter((file): file is File => file instanceof File); // Фільтруємо тільки файли
+
+        // Завантажуємо файли в Firebase Storage
+
+        if (taskFile) await uploadFile(taskFile);
+        if (
+          answerFiles[0] &&
+          answerFiles[1] &&
+          answerFiles[2] &&
+          answerFiles[3] &&
+          answerFiles[4]
+        )
+          await Promise.all(answerFiles.map(uploadFile));
+
+        // await Promise.all(answerFiles.map((file) => uploadFile(file))); `task-${props.numTask}-answer-${item}-picture`
+
+        allTasks[index + 1] = {
+          task: {
+            text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
+            ...(taskFile instanceof File && taskFile.name
+              ? { picture: taskFile.name }
+              : {}),
+          },
+          answers: {
+            values: [
+              data[`task-${index + 1}-answer-А`] as string,
+              data[`task-${index + 1}-answer-Б`] as string,
+              data[`task-${index + 1}-answer-В`] as string,
+              data[`task-${index + 1}-answer-Г`] as string,
+              data[`task-${index + 1}-answer-Д`] as string,
+            ],
+            ...(answerFiles[0] instanceof File &&
+            answerFiles[0].name &&
+            answerFiles[1] instanceof File &&
+            answerFiles[1].name &&
+            answerFiles[2] instanceof File &&
+            answerFiles[2].name &&
+            answerFiles[3] instanceof File &&
+            answerFiles[3].name &&
+            answerFiles[4] instanceof File &&
+            answerFiles[4].name
+              ? {
+                  picture: [
+                    answerFiles[0].name,
+                    answerFiles[1].name,
+                    answerFiles[2].name,
+                    answerFiles[3].name,
+                    answerFiles[4].name,
+                  ],
+                }
+              : {}),
+          },
+          correctAnswer: data[`correct_answer-${index + 1}`] as string,
+          typeOfTask: "choice" as string,
+        };
       }
-    });
+
+      if (typeTasks[index] === "openAnswer") {
+        allTasks[index + 1] = {
+          task: {
+            text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
+          },
+          correctAnswer: data[`correct_answer-${index + 1}`] as string,
+          typeOfTask: "openAnswer" as string,
+        };
+      }
+
+      if (typeTasks[index] === "comparison") {
+        allTasks[index + 1] = {
+          task: {
+            text: data[`task-${index + 1}`] as string, // Доступ до значення поля завдання
+            ...(taskFile instanceof File && taskFile.name
+              ? { picture: taskFile.name }
+              : {}),
+          },
+          comparisonTable: {
+            list1: {
+              texts: [
+                data[`task-${index + 1}-list1-1`],
+                data[`task-${index + 1}-list1-2`],
+                data[`task-${index + 1}-list1-3`],
+              ] as string[],
+            },
+            list2: {
+              texts: [
+                data[`task-${index + 1}-list2-А`],
+                data[`task-${index + 1}-list2-Б`],
+                data[`task-${index + 1}-list2-В`],
+                data[`task-${index + 1}-list2-Г`],
+                data[`task-${index + 1}-list2-Д`],
+              ] as string[],
+            },
+          },
+          сorrectComparison: {
+            ["1"]: data[`task-${index + 1}-answer-1`] as string,
+            ["2"]: data[`task-${index + 1}-answer-2`] as string,
+            ["3"]: data[`task-${index + 1}-answer-3`] as string,
+          },
+          typeOfTask: "comparison" as string,
+        };
+      }
+
+      // allTasks[index + 1] = oneTask; // Додаємо завдання до масиву
+    }
 
     setVariant(allTasks);
+    console.log(allTasks);
   };
   // Ref для збору даних із всіх завдань
 
@@ -263,6 +331,7 @@ const CreatorNewVariant = (props: {
     console.log(variant);
     console.log(typeTasks);
   };
+
   //встановлюємо тип завдання
   const SetTypeTask = (
     event: React.FormEvent<HTMLFormElement>,
@@ -331,6 +400,7 @@ const CreatorNewVariant = (props: {
           <button type="button" onClick={handleSubmitAll}>
             Створити
           </button>
+
           <button type="button" onClick={() => addVariant(props.nameVariant)}>
             Зберегти
           </button>
@@ -346,17 +416,39 @@ const FormIsChoice = (props: {
   numTask: string;
   formRef: (el: HTMLFormElement | null) => void;
 }) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [image, setImage] = useState<File | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [fileTaskName, setFileTaskName] = useState<string | null>(null);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log("Файл вибрано:", file.name);
-      setFileName(file.name);
+      setFileTaskName(file.name);
       setImage(file);
     } else {
       console.warn("Файл не вибрано!");
     }
+  };
+  const [qestoinFileName, setQestoinFileName] = useState<{
+    [key: string]: string;
+  } | null>(null);
+  const handleQestoinFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputId = e.target.id;
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("Файл вибрано:", file.name);
+      qestoinFileName
+        ? setQestoinFileName((prev) => ({
+            ...prev, // копіюємо попередній стан
+            [inputId]: file.name, // додаємо новий ключ або оновлюємо існуючий
+          }))
+        : setQestoinFileName({ [inputId]: file.name });
+      setImage(file);
+    } else {
+      console.warn("Файл не вибрано!");
+    }
+    console.log(qestoinFileName);
   };
   // const handleUpload = async () => {
   //   if (!image) {
@@ -394,6 +486,7 @@ const FormIsChoice = (props: {
               type="file"
               accept="image/*"
               id={`task-${props.numTask}-picture`}
+              name={`task-${props.numTask}-picture`}
               onChange={handleFileChange}
               className="hidden"
             />
@@ -402,15 +495,9 @@ const FormIsChoice = (props: {
               htmlFor={`task-${props.numTask}-picture`}
               className="upload_picture"
             >
-              {fileName ? `Файл: ${fileName}` : "Додати зображення"}
+              {fileTaskName ? `Файл: ${fileTaskName}` : "Додати зображення"}
             </label>
-            {/* <button
-              type="button"
-              className="add_condition"
-              onClick={handleUpload}
-            >
-              Додати картинку
-            </button> */}
+
             <button type="button" className="more_condition mx-4">
               Додати таблицю
             </button>
@@ -438,9 +525,29 @@ const FormIsChoice = (props: {
                 ></textarea>
               </div>
               <div className="more_conditions">
-                <button type="button" className="add_condition">
-                  Додати картинку
-                </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id={`task-${props.numTask}-answer-${item}-picture`}
+                  name={`task-${props.numTask}-answer-${item}-picture`}
+                  onChange={handleQestoinFileChange}
+                  className="hidden"
+                />
+
+                <label
+                  htmlFor={`task-${props.numTask}-answer-${item}-picture`}
+                  className="upload_picture"
+                >
+                  {qestoinFileName?.[
+                    `task-${props.numTask}-answer-${item}-picture`
+                  ]
+                    ? `Файл: ${
+                        qestoinFileName[
+                          `task-${props.numTask}-answer-${item}-picture`
+                        ]
+                      }`
+                    : "Додати зображення"}
+                </label>
               </div>
             </div>
           ))}
@@ -545,6 +652,39 @@ const FormIsComparison = (props: {
   formRef: (el: HTMLFormElement | null) => void;
   index: number;
 }) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const [fileTaskName, setFileTaskName] = useState<string | null>(null);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("Файл вибрано:", file.name);
+      setFileTaskName(file.name);
+      setImage(file);
+    } else {
+      console.warn("Файл не вибрано!");
+    }
+  };
+  const [listFileName, setListFileName] = useState<{
+    [key: string]: string;
+  } | null>(null);
+  const handleQestoinFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputId = e.target.id;
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log("Файл вибрано:", file.name);
+      listFileName
+        ? setListFileName((prev) => ({
+            ...prev, // копіюємо попередній стан
+            [inputId]: file.name, // додаємо новий ключ або оновлюємо існуючий
+          }))
+        : setListFileName({ [inputId]: file.name });
+      setImage(file);
+    } else {
+      console.warn("Файл не вибрано!");
+    }
+    console.log(listFileName);
+  };
   return (
     <div className="creator_task">
       <form className="form_for_creator" ref={props.formRef}>
@@ -562,13 +702,25 @@ const FormIsComparison = (props: {
           </div>
 
           <div className="more_conditions">
-            <button type="button" className="add_condition">
-              Додати картинку
-            </button>
-            <button type="button" className="add_condition">
+            <input
+              type="file"
+              accept="image/*"
+              id={`task-${props.numTask}-picture`}
+              name={`task-${props.numTask}-picture`}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <label
+              htmlFor={`task-${props.numTask}-picture`}
+              className="upload_picture"
+            >
+              {fileTaskName ? `Файл: ${fileTaskName}` : "Додати зображення"}
+            </label>
+
+            <button type="button" className="more_condition mx-4">
               Додати таблицю
             </button>
-            <button type="button" className="add_condition">
+            <button type="button" className="more_condition">
               Додати картинку
             </button>
           </div>
@@ -592,9 +744,27 @@ const FormIsComparison = (props: {
                 ></textarea>
               </div>
               <div className="more_conditions">
-                <button type="button" className="add_condition">
-                  Додати картинку
-                </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id={`task-${props.numTask}-list1-${item}-picture`}
+                  name={`task-${props.numTask}-list1-${item}-picture`}
+                  onChange={handleQestoinFileChange}
+                  className="hidden"
+                />
+
+                <label
+                  htmlFor={`task-${props.numTask}-list1-${item}-picture`}
+                  className="upload_picture"
+                >
+                  {listFileName?.[`task-${props.numTask}-list1-${item}-picture`]
+                    ? `Файл: ${
+                        listFileName[
+                          `task-${props.numTask}-list1-${item}-picture`
+                        ]
+                      }`
+                    : "Додати зображення"}
+                </label>
               </div>
             </div>
           ))}
@@ -613,9 +783,27 @@ const FormIsComparison = (props: {
                 ></textarea>
               </div>
               <div className="more_conditions">
-                <button type="button" className="add_condition">
-                  Додати картинку
-                </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id={`task-${props.numTask}-list2-${item}-picture`}
+                  name={`task-${props.numTask}-list2-${item}-picture`}
+                  onChange={handleQestoinFileChange}
+                  className="hidden"
+                />
+
+                <label
+                  htmlFor={`task-${props.numTask}-list2-${item}-picture`}
+                  className="upload_picture"
+                >
+                  {listFileName?.[`task-${props.numTask}-list2-${item}-picture`]
+                    ? `Файл: ${
+                        listFileName[
+                          `task-${props.numTask}-list2-${item}-picture`
+                        ]
+                      }`
+                    : "Додати зображення"}
+                </label>
               </div>
             </div>
           ))}
@@ -636,11 +824,6 @@ const FormIsComparison = (props: {
                   id={`task-${props.numTask}-answer-${item}`}
                   name={`task-${props.numTask}-answer-${item}`}
                 ></textarea>
-              </div>
-              <div className="more_conditions">
-                <button type="button" className="add_condition">
-                  Додати картинку
-                </button>
               </div>
             </div>
           ))}
