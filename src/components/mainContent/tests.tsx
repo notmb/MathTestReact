@@ -78,7 +78,7 @@ const Tests = () => {
 
   const getDocument1 = async () => {
     try {
-      const docRef = doc(db, "topic 1", "variant 4"); // Створюємо посилання на документ
+      const docRef = doc(db, "topic 1", "variant 5"); // Створюємо посилання на документ
       const docSnap = await getDoc(docRef); // Отримуємо дані документа
 
       if (!docSnap.exists()) {

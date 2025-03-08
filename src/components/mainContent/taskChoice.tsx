@@ -83,7 +83,7 @@ const Task = (props: {
 
 const fetchImage = async (url: string) => {
   const storage = getStorage(app); // Отримуємо екземпляр Storage
-  const storageRef = ref(storage, url); // Шлях до файлу в Storage
+  const storageRef = ref(storage, `variant 5/${url}`); // Шлях до файлу в Storage
 
   return getDownloadURL(storageRef);
 };
@@ -169,7 +169,7 @@ const Answers = (props: { answers: Answers }) => {
           </tr>
         </thead>
         <tbody>
-          <tr id="answers">
+          <tr id="answers" className="box_answers">
             {props.answers.values.map((item, index) => (
               <td key={index} className="answer_options">
                 {props.answers.pictures && (

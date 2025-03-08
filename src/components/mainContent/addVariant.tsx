@@ -175,7 +175,7 @@ const CreatorNewVariant = (props: {
       }
       console.log("Uploading file:", file.name);
 
-      const fileRef = ref(storage, `taskFiles/${file.name}`);
+      const fileRef = ref(storage, `${props.nameVariant}/${file.name}`);
       await uploadBytes(fileRef, file);
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -244,7 +244,7 @@ const CreatorNewVariant = (props: {
             answerFiles[4] instanceof File &&
             answerFiles[4].name
               ? {
-                  picture: [
+                  pictures: [
                     answerFiles[0].name,
                     answerFiles[1].name,
                     answerFiles[2].name,
@@ -450,21 +450,7 @@ const FormIsChoice = (props: {
     }
     console.log(qestoinFileName);
   };
-  // const handleUpload = async () => {
-  //   if (!image) {
-  //     alert("Виберіть зображення перед завантаженням!");
-  //     return;
-  //   }
 
-  //   const imageRef = ref(storage, `images/${image.name}`);
-
-  //   try {
-  //     await uploadBytes(imageRef, image); // Завантаження файлу
-  //     console.log("Зображення завантажене");
-  //   } catch (error) {
-  //     console.error("Помилка завантаження:", error);
-  //   }
-  // };
   return (
     <div className="creator_task">
       <form className="form_for_creator" ref={props.formRef}>
@@ -614,13 +600,6 @@ const FormIsOpenAnswer = (props: {
             <label htmlFor="fileInput" className="upload_picture">
               {fileName ? `Файл: ${fileName}` : "Додати зображення"}
             </label>
-            {/* <button
-              type="button"
-              className="add_condition"
-              onClick={handleUpload}
-            >
-              Додати картинку
-            </button> */}
             <button type="button" className="more_condition mx-4">
               Додати таблицю
             </button>
@@ -652,7 +631,6 @@ const FormIsComparison = (props: {
   formRef: (el: HTMLFormElement | null) => void;
   index: number;
 }) => {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [fileTaskName, setFileTaskName] = useState<string | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
