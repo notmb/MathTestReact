@@ -81,8 +81,7 @@
 }
 .picture_for_question {
   padding: 8px;
-  width: 400px;
-  height: 230px;
+  width: 40%;
 }
 
 /* .answer_options {
