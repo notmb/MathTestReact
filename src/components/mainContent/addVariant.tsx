@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { setDoc, getDoc, doc } from "firebase/firestore";
 import { storage, db } from "../../firebaseConfig";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes } from "firebase/storage";
 
 import "./addVariant.css";
 
@@ -416,8 +416,8 @@ const FormIsChoice = (props: {
   numTask: string;
   formRef: (el: HTMLFormElement | null) => void;
 }) => {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [image, setImage] = useState<File | null>(null);
+  // const fileInputRef = useRef<HTMLInputElement | null>(null);
+  // const [image, setImage] = useState<File | null>(null);
   const [fileTaskName, setFileTaskName] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -425,7 +425,7 @@ const FormIsChoice = (props: {
     if (file) {
       console.log("Файл вибрано:", file.name);
       setFileTaskName(file.name);
-      setImage(file);
+      // setImage(file);
     } else {
       console.warn("Файл не вибрано!");
     }
@@ -444,7 +444,7 @@ const FormIsChoice = (props: {
             [inputId]: file.name, // додаємо новий ключ або оновлюємо існуючий
           }))
         : setQestoinFileName({ [inputId]: file.name });
-      setImage(file);
+      // setImage(file);
     } else {
       console.warn("Файл не вибрано!");
     }
@@ -560,14 +560,14 @@ const FormIsOpenAnswer = (props: {
   numTask: string;
   formRef: (el: HTMLFormElement | null) => void;
 }) => {
-  const [image, setImage] = useState<File | null>(null);
+  // const [image, setImage] = useState<File | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log("Файл вибрано:", file.name);
       setFileName(file.name);
-      setImage(file);
+      // setImage(file);
     } else {
       console.warn("Файл не вибрано!");
     }
@@ -631,14 +631,14 @@ const FormIsComparison = (props: {
   formRef: (el: HTMLFormElement | null) => void;
   index: number;
 }) => {
-  const [image, setImage] = useState<File | null>(null);
+  // const [image, setImage] = useState<File | null>(null);
   const [fileTaskName, setFileTaskName] = useState<string | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log("Файл вибрано:", file.name);
       setFileTaskName(file.name);
-      setImage(file);
+      // setImage(file);
     } else {
       console.warn("Файл не вибрано!");
     }
@@ -657,7 +657,7 @@ const FormIsComparison = (props: {
             [inputId]: file.name, // додаємо новий ключ або оновлюємо існуючий
           }))
         : setListFileName({ [inputId]: file.name });
-      setImage(file);
+      // setImage(file);
     } else {
       console.warn("Файл не вибрано!");
     }
