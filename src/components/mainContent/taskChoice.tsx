@@ -25,9 +25,9 @@ const TaskChoice = (props: {
   number: string;
   func: (taskKey: string, userAnswer: string) => void;
 }) => {
-  if (props.number === (3).toString()) {
-    console.log(props.task.table);
-  }
+  // if (props.number === (3).toString()) {
+  //   console.log(props.task.table);
+  // }
   return (
     <div className="tests_item">
       <p className="container_serial_num_task">Завдання {props.number}</p>

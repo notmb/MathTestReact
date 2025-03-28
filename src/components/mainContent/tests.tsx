@@ -74,8 +74,8 @@ const Tests = () => {
     task.typeOfTask === "comparison";
   const isTask3 = (task: any): task is Task3 =>
     task.typeOfTask === "openAnswer";
-  //ГЕНЕРУЄМО ТЕСТ
 
+  //ГЕНЕРУЄМО ТЕСТ
   const getDocument1 = async () => {
     try {
       const docRef = doc(db, "topic 1", "variant 5"); // Створюємо посилання на документ
@@ -143,10 +143,12 @@ const Tests = () => {
         }
         if (isTask2(item)) {
           maxMark = maxMark + 3;
-          comparison[key] = CheckComparison(
-            item.сorrectComparison,
-            userAnswers[key]
-          );
+          if (userAnswers[key]) {
+            comparison[key] = CheckComparison(
+              item.сorrectComparison,
+              userAnswers[key]
+            );
+          } else comparison[key] = 0;
         }
         if (isTask3(item)) {
           maxMark = maxMark + 2;

@@ -1,0 +1,18 @@
+.transition-height {
+  transition: max-height 0.5s ease-in-out;
+  overflow: hidden;
+}
+.box_for_numbers_of {
+  display: flex;
+
+  gap: 8px;
+}
+.number_of_task {
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+.creator_task {
+  margin-top: 24px;
+}

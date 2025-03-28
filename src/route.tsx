@@ -4,6 +4,7 @@ import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
 import SortingByClass from "./components/mainContent/sortingbyclass";
 import AddVariant from "./components/mainContent/addVariant";
+import AddVariant2 from "./components/mainContent/creatorVariant/addVariant2";
 
 const routes = [
   {
@@ -20,7 +21,7 @@ const routes = [
   },
   {
     path: "/MathTestReact/study",
-    component: MainPage,
+    component: AddVariant2,
   },
   {
     path: "/MathTestReact/account/login",

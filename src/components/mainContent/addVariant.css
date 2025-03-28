@@ -53,9 +53,9 @@
   display: flex;
   flex-direction: column;
 }
-.creator_task {
+/* .creator_task {
   padding: 16px;
-}
+} */
 .form_for_task {
   display: flex;
   flex-direction: column;
