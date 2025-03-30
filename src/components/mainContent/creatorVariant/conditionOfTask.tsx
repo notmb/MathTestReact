@@ -1,39 +1,15 @@
 import { useState } from "react";
-
-interface Task1 {
-  //тип даних для завдання з з вибором 1 відповіді
-  task: Question;
-  answers: Answers;
-  correctAnswer: string;
-  typeOfTask: string;
-}
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    velue2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}
-interface Answers {
-  values: string[];
-  pictures?: string[];
-}
+import { Task1, Task2, Task3 } from "./types";
 
 const ConditionOfTask = (props: {
   numTask: string;
-  updataTaskData: (update: (draft: Task1) => void) => void;
+  updataTaskData: (update: (draft: Task1 | Task2 | Task3) => void) => void;
 }) => {
-  const [conditionOfTask, setConditionOfTask] = useState<Question>({
-    text: "",
-  });
   const [nameFileTask, setNameFileTask] = useState<string | null>(null);
 
   const handleTextOfTaskChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setConditionOfTask({ text: e.target.value });
     props.updataTaskData((draft) => {
       draft.task.text = e.target.value;
     });

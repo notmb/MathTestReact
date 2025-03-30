@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useImmer } from "use-immer";
 import { db } from "../../../firebaseConfig"; // Імпорт Firestore
 import { doc, setDoc } from "firebase/firestore";
-import { useImmer } from "use-immer";
 import ConditionOfTask from "./conditionOfTask";
-import AnswersToSinglChoiceTask from "./answersToSingleChoiceTask";
-interface Task1 {
-  //тип даних для завдання з з вибором 1 відповіді
+import ComparisonToMatchingTask from "./comparisonToMatchingTask";
+import CorrectAnswerToTaskMatching from "./correctAnswerToTaskMatching";
+interface Task2 {
   task: Question;
-  answers: Answers;
-  correctAnswer: string;
+  comparisonTable: ComparisonTable;
+  correctComparison: CorrectComparison;
   typeOfTask: string;
 }
 interface Question {
@@ -20,25 +19,36 @@ interface Question {
   picture?: string;
   list?: string[];
 }
-interface Answers {
-  values: string[];
-  pictures?: string[];
+interface ComparisonTable {
+  list1: {
+    texts?: string[];
+    pictures?: string[];
+  };
+  list2: {
+    texts?: string[];
+    pictures?: string[];
+  };
 }
-const CreatorTaskChoice = (props: {
+interface CorrectComparison {
+  [key: string]: string;
+}
+//ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
+
+const CreatorTaskMatching = (props: {
   numTask: string;
   nameOfVariant: string;
 }) => {
-  const [taskData, updataTaskData] = useImmer<Task1>({
+  const [taskData, updataTaskData] = useImmer<Task2>({
     task: {
       text: "",
     },
-    answers: {
-      values: [],
+    comparisonTable: {
+      list1: {},
+      list2: {},
     },
-    correctAnswer: "",
-    typeOfTask: "choice",
+    correctComparison: {},
+    typeOfTask: "comparison",
   });
-
   const handleClick = async () => {
     console.log(taskData);
     try {
@@ -72,30 +82,19 @@ const CreatorTaskChoice = (props: {
           numTask={props.numTask}
           updataTaskData={updataTaskData}
         ></ConditionOfTask>
-
-        {/* Група "Дані для варіантів відповіді" */}
-        <AnswersToSinglChoiceTask
+        <ComparisonToMatchingTask
           numTask={props.numTask}
           updataTaskData={updataTaskData}
-        ></AnswersToSinglChoiceTask>
-
-        <fieldset className="data_correct_answer">
-          <legend>Дані для правильної відповіді</legend>
-          <label className="" htmlFor={`correct_answer-${props.numTask}`}>
-            Вкажіть правильну відповідь
-          </label>
-          <textarea
-            id={`correct_answer-${props.numTask}`}
-            name={`correct_answer-${props.numTask}`}
-          ></textarea>
-        </fieldset>
-        <button type="button" className="custom_button" onClick={handleClick}>
-          Зберегти завдання
-        </button>
+        ></ComparisonToMatchingTask>
+        {/* Група "Дані для співставлення" */}
+        <CorrectAnswerToTaskMatching
+          numTask={props.numTask}
+          updataTaskData={updataTaskData}
+        ></CorrectAnswerToTaskMatching>
       </form>
+      <button onClick={handleClick}>see</button>
     </div>
   );
 };
-//ФОРМА ДЛЯ ЗАВДАННЯ CHOISE
-
-export default CreatorTaskChoice;
+//ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
+export default CreatorTaskMatching;

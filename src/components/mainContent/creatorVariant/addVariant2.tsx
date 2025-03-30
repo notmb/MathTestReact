@@ -1,5 +1,6 @@
 import "./addVariant2.css";
 import CreatorTaskChoice from "./creatorTaskChoice";
+import CreatorTaskMatching from "./creatorTaskMatching";
 import { useState, useRef } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig"; // Імпорт Firestore
@@ -271,6 +272,12 @@ const CreatorTask = (props: {
           numTask={props.number}
           nameOfVariant={props.nameOfVarint}
         ></CreatorTaskChoice>
+      )}
+      {props.typeOfTasks[+props.number - 1] === "comparison" && (
+        <CreatorTaskMatching
+          numTask={props.number}
+          nameOfVariant={props.nameOfVarint}
+        ></CreatorTaskMatching>
       )}
     </div>
   );
