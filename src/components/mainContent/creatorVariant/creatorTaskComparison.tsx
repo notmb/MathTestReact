@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useImmer } from "use-immer";
+import { db } from "../../../firebaseConfig"; // Імпорт Firestore
+import { doc, setDoc } from "firebase/firestore";
 interface Task2 {
-  //тип даних для завдання співставлення
   task: Question;
   comparisonTable: ComparisonTable;
   сorrectComparison: CorrectComparison;
@@ -34,7 +36,41 @@ const FormIsComparison = (props: {
   numTask: string;
   nameOfVariant: string;
 }) => {
-  // const [image, setImage] = useState<File | null>(null);
+  const [taskData, updataTaskData] = useImmer<Task2>({
+    task: {
+      text: "",
+    },
+    comparisonTable: {
+      list1: {},
+      list2: {},
+    },
+    сorrectComparison: {},
+    typeOfTask: "comparison",
+  });
+  const handalClick = async () => {
+    console.log(taskData);
+    try {
+      // Створюємо посилання на документ
+      const variantRef = doc(
+        db,
+        "Subjects",
+        "Math",
+        "Algebra",
+        "Topics",
+        "Mix",
+        props.nameOfVariant,
+        "tasks",
+        props.numTask
+      );
+
+      // Записуємо об'єкт у Firestore
+      await setDoc(variantRef, taskData);
+
+      console.log("Завдання успішно додано!");
+    } catch (error) {
+      console.error("Помилка при додаванні завдання:", error);
+    }
+  };
   const [fileTaskName, setFileTaskName] = useState<string | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
