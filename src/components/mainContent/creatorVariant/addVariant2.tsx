@@ -16,7 +16,7 @@ interface Task2 {
   //тип даних для завдання співставлення
   task: Question;
   comparisonTable: ComparisonTable;
-  сorrectComparison: CorrectComparison;
+  correctComparison: CorrectComparison;
   typeOfTask: string;
 }
 interface Task3 {
