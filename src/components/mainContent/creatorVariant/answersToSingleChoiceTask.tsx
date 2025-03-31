@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useImmer } from "use-immer";
 interface Task1 {
   //тип даних для завдання з з вибором 1 відповіді
