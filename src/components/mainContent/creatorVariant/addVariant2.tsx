@@ -1,6 +1,7 @@
 import "./addVariant2.css";
 import CreatorTaskChoice from "./creatorTaskChoice";
 import CreatorTaskMatching from "./creatorTaskMatching";
+import CreatorTaskOpenAnswer from "./creatorTaskOpenAnswer";
 import { useState, useRef } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig"; // Імпорт Firestore
@@ -63,7 +64,6 @@ interface TaskData {
 
 const NewVariant = () => {
   const [mainData, setMainData] = useState<TaskData | null>(null);
-  const [variant, setVariant] = useState<Tasks>();
 
   const createVariant = async (
     variantId: string,
@@ -279,10 +279,12 @@ const CreatorTask = (props: {
           nameOfVariant={props.nameOfVarint}
         ></CreatorTaskMatching>
       )}
+      {props.typeOfTasks[+props.number - 1] === "openAnswer" && (
+        <CreatorTaskOpenAnswer
+          numTask={props.number}
+          nameOfVariant={props.nameOfVarint}
+        ></CreatorTaskOpenAnswer>
+      )}
     </div>
   );
 };
-//ФОРМА ДЛЯ СТВОРЕННЯ ЗАВДАННЯ
-//ФОРМА ДЛЯ ЗАВДАННЯ CHOISER
-
-//ФОРМА ДЛЯ ЗАВДАННЯ CHOISER

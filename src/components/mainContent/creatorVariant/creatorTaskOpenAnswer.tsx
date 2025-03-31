@@ -1,42 +1,20 @@
 import { db } from "../../../firebaseConfig"; // Імпорт Firestore
 import { doc, setDoc } from "firebase/firestore";
+import { Task3 } from "./types";
 import { useImmer } from "use-immer";
 import ConditionOfTask from "./conditionOfTask";
-import AnswersToSinglChoiceTask from "./answersToSingleChoiceTask";
-import CorrectAnswerToSinglChoiceTask from "./correctAnswerToSinglChoiceTask";
-interface Task1 {
-  //тип даних для завдання з з вибором 1 відповіді
-  task: Question;
-  answers: Answers;
-  correctAnswer: string;
-  typeOfTask: string;
-}
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    velue2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}
-interface Answers {
-  values: string[];
-  pictures?: string[];
-}
-const CreatorTaskChoice = (props: {
+import CorrectAnswerToTaskOpenAnswer from "./correctAnswerToTaskOpenAnswer";
+//ФОРМА ДЛЯ ЗАВДАННЯ OPEN ANSWER
+const CreatorTaskOpenAnswer = (props: {
   numTask: string;
   nameOfVariant: string;
 }) => {
-  const [taskData, updataTaskData] = useImmer<Task1>({
+  const [taskData, updataTaskData] = useImmer<Task3>({
     task: {
       text: "",
     },
-    answers: {
-      values: [],
-    },
     correctAnswer: "",
-    typeOfTask: "choice",
+    typeOfTask: "openAnswer",
   });
 
   const handleClick = async () => {
@@ -63,7 +41,6 @@ const CreatorTaskChoice = (props: {
       console.error("Помилка при додаванні завдання:", error);
     }
   };
-
   return (
     <div className="creator_task">
       <form className="form_for_creator">
@@ -72,16 +49,11 @@ const CreatorTaskChoice = (props: {
           numTask={props.numTask}
           updataTaskData={updataTaskData}
         ></ConditionOfTask>
-        {/* Група "Дані для варіантів відповіді" */}
-        <AnswersToSinglChoiceTask
-          numTask={props.numTask}
-          updataTaskData={updataTaskData}
-        ></AnswersToSinglChoiceTask>
         {/* Група "Дані для правильної відповіді" */}
-        <CorrectAnswerToSinglChoiceTask
+        <CorrectAnswerToTaskOpenAnswer
           numTask={props.numTask}
           updataTaskData={updataTaskData}
-        ></CorrectAnswerToSinglChoiceTask>
+        ></CorrectAnswerToTaskOpenAnswer>
         <button type="button" className="custom_button" onClick={handleClick}>
           Зберегти завдання
         </button>
@@ -89,6 +61,4 @@ const CreatorTaskChoice = (props: {
     </div>
   );
 };
-//ФОРМА ДЛЯ ЗАВДАННЯ CHOISE
-
-export default CreatorTaskChoice;
+export default CreatorTaskOpenAnswer;
