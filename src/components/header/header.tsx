@@ -23,13 +23,13 @@ const Header = (prop: { navigate: (path: string) => void }) => {
             className="header_navigation_item"
             onClick={() => prop.navigate("/MathTestReact/conspectus")}
           >
-            <h5 className="header_navigation_item_h">Конспекти</h5>
+            <h5 className="header_navigation_item_h">Переглянути тести</h5>
           </div>
           <div
             className="header_navigation_item"
             onClick={() => prop.navigate("/MathTestReact/study")}
           >
-            <h5 className="header_navigation_item_h">Навчання</h5>
+            <h5 className="header_navigation_item_h">Додати тест</h5>
           </div>
         </div>
         <div

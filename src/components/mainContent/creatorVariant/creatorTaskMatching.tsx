@@ -1,37 +1,10 @@
 import { useImmer } from "use-immer";
 import { db } from "../../../firebaseConfig"; // Імпорт Firestore
 import { doc, setDoc } from "firebase/firestore";
+import { Task2 } from "./types";
 import ConditionOfTask from "./conditionOfTask";
 import ComparisonToMatchingTask from "./comparisonToMatchingTask";
 import CorrectAnswerToTaskMatching from "./correctAnswerToTaskMatching";
-interface Task2 {
-  task: Question;
-  comparisonTable: ComparisonTable;
-  correctComparison: CorrectComparison;
-  typeOfTask: string;
-}
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    velue2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}
-interface ComparisonTable {
-  list1: {
-    texts?: string[];
-    pictures?: string[];
-  };
-  list2: {
-    texts?: string[];
-    pictures?: string[];
-  };
-}
-interface CorrectComparison {
-  [key: string]: string;
-}
 //ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
 
 const CreatorTaskMatching = (props: {

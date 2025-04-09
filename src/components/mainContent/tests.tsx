@@ -2,56 +2,14 @@ import "./tests.css";
 import { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
 import { getDoc, doc } from "firebase/firestore";
+import { Task1, Task2, Task3 } from "./creatorVariant/types";
 import TaskOpenAnswer from "./taskOpenAnswer";
 import TaskChoice from "./taskChoice";
 import TaskComparison from "./taskComparison";
 
-interface Task1 {
-  //тип даних для завдання з з вибором 1 відповіді
-  task: Question;
-  answers: Answers;
-  correctAnswer: string;
-  typeOfTask: string;
-}
-interface Task2 {
-  //тип даних для завдання співставлення
-  task: Question;
-  comparisonTable: ComparisonTable;
-  сorrectComparison: CorrectComparison;
-  typeOfTask: string;
-}
-interface Task3 {
-  //тип даних для завдання з відкритою відповіддю
-  task: Question;
-  correctAnswer: string;
-  typeOfTask: string;
-}
 interface Tasks {
   // Колекція з різними завданнями
   [key: string]: Task1 | Task2 | Task3;
-}
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    value2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}
-interface Answers {
-  values: string[];
-  pictures?: string[];
-}
-interface ComparisonTable {
-  list1: {
-    texts?: string[];
-    pictures?: string[];
-  };
-  list2: {
-    texts?: string[];
-    picture?: string[];
-  };
 }
 interface CorrectComparison {
   [key: string]: string;
@@ -145,7 +103,7 @@ const Tests = () => {
           maxMark = maxMark + 3;
           if (userAnswers[key]) {
             comparison[key] = CheckComparison(
-              item.сorrectComparison,
+              item.correctComparison,
               userAnswers[key]
             );
           } else comparison[key] = 0;
@@ -205,7 +163,7 @@ const Tests = () => {
                 <TaskComparison
                   task={task.task}
                   comparisonTable={task.comparisonTable}
-                  сorrectComparison={task.сorrectComparison}
+                  correctComparison={task.correctComparison}
                   typeOfTask={task.typeOfTask}
                   number={key}
                   func={EditUserAnswer}

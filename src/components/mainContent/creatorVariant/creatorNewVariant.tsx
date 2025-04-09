@@ -1,61 +1,69 @@
 import CreatorTask from "./creatorTask";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useImmer } from "use-immer";
+
+interface Task {
+  numberTask: string;
+  typeTask: string | undefined;
+  taskIsAdded: boolean;
+}
+type Tasks = Task[];
 //ФОРМА ДЛЯ СТВОРЕННЯ ВАРІАНТУ
 const CreatorNewVariant = (props: {
-  namberTask: string;
+  tasks: Tasks;
+  updateTypeOfTask: (numTask: number, type: string) => void;
+  updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
   nameVariant: string;
 }) => {
-  const [selectedTask, setSelectedTask] = useState<Number | null>(null);
-
-  const numberOfTasks = Array.from(
-    { length: +props.namberTask },
-    (_, index) => index + 1
-  );
-  const handleClick = (index: number) => {
-    setSelectedTask(index + 1);
+  const [selectedTask, setSelectedTask] = useState<number | null>(null);
+  // console.log(props.namberTask);
+  const handleClick = (item: number) => {
+    // item - номер завдання (1,2,3,4...)
+    setSelectedTask(item);
   };
-
-  const [typeTasks, setTypeTasks] = useState<string[]>(
-    Array(+props.namberTask).fill(undefined)
-  );
+  console.log(props.tasks);
   //встановлюємо тип завдання
-  const SetTypeTask = (
+  const setTypeTask = (
     event: React.FormEvent<HTMLFormElement>,
-    index: number
+    numTask: number
   ) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const inputValue = formData.get(`typeOfTask-${index}`);
-    setTypeTasks((prev) => {
-      const newTasks = [...prev]; // Копіюємо масив
-      newTasks[index - 1] = inputValue as string; // Змінюємо значення конкретного елемента
-      return newTasks; // Повертаємо новий масив
-    });
-    console.log(typeTasks);
+    const inputValue = formData.get(`typeOfTask-${numTask}`) as string;
+    props.updateTypeOfTask(numTask, inputValue);
   };
 
   return (
     <div className="creator_new_variant">
       <p>Додайте завдання до вашого варіанту</p>
       <div className="box_for_numbers_of task">
-        {numberOfTasks.length < 30 &&
-          numberOfTasks.map((item, index) => (
+        {props.tasks.length < 30 &&
+          props.tasks.map((item, index) => (
             <div
               key={index + 1}
-              className="number_of_task"
-              onClick={() => handleClick(index)}
+              className={`number_of_task ${
+                props.tasks[index].taskIsAdded
+                  ? "bg-green-200"
+                  : "bg-neutral-100"
+              }`}
+              onClick={() => handleClick(+props.tasks[index].numberTask)}
             >
-              {item}
+              {props.tasks[index].numberTask}
             </div>
           ))}
       </div>
-      {selectedTask && (
+      {selectedTask && !props.tasks[selectedTask - 1].taskIsAdded && (
         <CreatorTask
           nameOfVarint={props.nameVariant}
-          number={selectedTask?.toString()}
-          SetTypeTask={SetTypeTask}
-          typeOfTasks={typeTasks}
+          numTask={selectedTask?.toString()} // number-№завдання від 1,2,3..
+          setTypeTask={setTypeTask}
+          typeOfTasks={props.tasks[selectedTask - 1].typeTask}
+          updateTaskIsAdded={props.updateTaskIsAdded}
+          taskIsAdded={props.tasks[selectedTask - 1].taskIsAdded}
         ></CreatorTask>
+      )}
+      {selectedTask && props.tasks[selectedTask - 1].taskIsAdded && (
+        <div>TASK #{selectedTask} IS ADDED</div>
       )}
     </div>
   );

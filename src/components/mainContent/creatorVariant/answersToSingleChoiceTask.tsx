@@ -1,24 +1,5 @@
 import { useImmer } from "use-immer";
-interface Task1 {
-  //тип даних для завдання з з вибором 1 відповіді
-  task: Question;
-  answers: Answers;
-  correctAnswer: string;
-  typeOfTask: string;
-}
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    velue2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}
-interface Answers {
-  values: string[];
-  pictures?: string[];
-}
+import { Task1 } from "./types";
 
 const AnswersToSinglChoiceTask = (props: {
   numTask: string;

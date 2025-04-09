@@ -9,6 +9,7 @@ import CorrectAnswerToSinglChoiceTask from "./correctAnswerToSinglChoiceTask";
 const CreatorTaskChoice = (props: {
   numTask: string;
   nameOfVariant: string;
+  updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
 }) => {
   const [taskData, updataTaskData] = useImmer<Task1>({
     task: {
@@ -44,6 +45,7 @@ const CreatorTaskChoice = (props: {
     } catch (error) {
       console.error("Помилка при додаванні завдання:", error);
     }
+    props.updateTaskIsAdded(+props.numTask - 1, true);
   };
 
   return (

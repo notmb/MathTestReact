@@ -1,11 +1,11 @@
 const ChoosingTypeTask = (props: {
   number: string;
-  SetTypeTask: (event: React.FormEvent<HTMLFormElement>, index: number) => void;
+  setTypeTask: (event: React.FormEvent<HTMLFormElement>, index: number) => void;
 }) => {
   return (
     <form
       key={props.number}
-      onSubmit={(event) => props.SetTypeTask(event, +props.number)}
+      onSubmit={(event) => props.setTypeTask(event, +props.number)}
       className="form_for_data_tasks"
     >
       <label htmlFor="type_of_task">

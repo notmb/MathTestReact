@@ -20,7 +20,7 @@ interface Question {
     value1: string[];
     value2: string[];
   };
-  picture?: string;
+  pictures?: string;
   list?: string[];
 }
 interface CorrectComparison {
@@ -30,7 +30,7 @@ interface CorrectComparison {
 const TaskComparison = (props: {
   task: Question;
   comparisonTable: Comparison;
-  сorrectComparison: CorrectComparison;
+  correctComparison: CorrectComparison;
   typeOfTask: string;
   number: string;
   func: (taskKey: string, userAnswer: string) => void;
@@ -90,7 +90,7 @@ const Task = (props: {
     value1: string[];
     velue2: string[];
   };
-  picture?: string;
+  pictures?: string;
   list?: string[];
 }) => {
   return (
@@ -98,9 +98,9 @@ const Task = (props: {
       <div>
         <MathJax>{props.text}</MathJax>
       </div>
-      {props.picture && (
+      {props.pictures && (
         <Picture
-          url={props.picture}
+          url={props.pictures}
           classForPicture="picture_for_question"
         ></Picture>
       )}
