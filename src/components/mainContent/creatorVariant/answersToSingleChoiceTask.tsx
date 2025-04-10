@@ -1,9 +1,9 @@
 import { useImmer } from "use-immer";
-import { Task1 } from "./types";
 
 const AnswersToSinglChoiceTask = (props: {
   numTask: string;
-  updataTaskData: (update: (draft: Task1) => void) => void;
+  updateAnswerText: (index: number, text: string) => void;
+  updateAnswerPictures: (index: number, picture: File) => void;
 }) => {
   const [nameFileAnswers, updateNameFileAnswers] = useImmer<string[]>([]);
   const letterToIndex: Record<string, number> = {
@@ -20,13 +20,11 @@ const AnswersToSinglChoiceTask = (props: {
     const index = letterToIndex[letter];
 
     if (index !== undefined) {
-      props.updataTaskData((draft) => {
-        draft.answers.values[index] = e.target.value;
-      });
+      props.updateAnswerText(index, e.currentTarget.value);
     }
   };
 
-  const handleQestoinFileChange = (
+  const handleFileAnswersChange = (
     letter: string,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -40,14 +38,7 @@ const AnswersToSinglChoiceTask = (props: {
         draft[index] = file.name; // Записуємо в масив назву файлу за індексом
       });
       console.log([]);
-
-      props.updataTaskData((draft) => {
-        if (!draft.answers.pictures) {
-          console.log("pictures ще не існує, створюємо масив");
-          draft.answers.pictures = []; // Спочатку створюємо масив
-        }
-        draft.answers.pictures[index] = file.name;
-      });
+      props.updateAnswerPictures(index, file);
     } else {
       console.warn("Файл не вибрано!");
     }
@@ -77,7 +68,7 @@ const AnswersToSinglChoiceTask = (props: {
               accept="image/*"
               id={`task-${props.numTask}-answer-${item}-picture`}
               name={`task-${props.numTask}-answer-${item}-picture`}
-              onChange={(e) => handleQestoinFileChange(item, e)}
+              onChange={(e) => handleFileAnswersChange(item, e)}
               className="hidden"
             />
 

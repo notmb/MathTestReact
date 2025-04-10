@@ -32,9 +32,15 @@ const NewVariant = () => {
       }));
     });
   };
-  const updateTypeOfTask = (numTask: number, type: string) => {
+  const updateTypeOfTask = (
+    numTask: number,
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const inputValue = formData.get(`typeOfTask-${numTask}`) as string;
     updateTasks((draft) => {
-      draft[numTask - 1].typeTask = type;
+      draft[numTask - 1].typeTask = inputValue;
     });
   };
   const updateTaskIsAdded = (numTask: number, isAdded: boolean) => {
@@ -42,6 +48,7 @@ const NewVariant = () => {
       draft[numTask].taskIsAdded = isAdded;
     });
   };
+
   const createVariant = async (
     variantId: string,
     name: string,

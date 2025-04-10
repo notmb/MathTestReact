@@ -1,14 +1,11 @@
-import { Task3 } from "./types";
 const CorrectAnswerToTaskOpenAnswer = (props: {
   numTask: string;
-  updataTaskData: (update: (draft: Task3) => void) => void;
+  updateCorrectAnswerText: (text: string) => void;
 }) => {
   const handleCorrectAnswerOfTaskChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    props.updataTaskData((draft) => {
-      draft.correctAnswer = e.target.value;
-    });
+    props.updateCorrectAnswerText(e.currentTarget.value);
   };
   return (
     <fieldset className="data_correct_answer">

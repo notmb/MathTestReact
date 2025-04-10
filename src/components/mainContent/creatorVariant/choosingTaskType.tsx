@@ -1,22 +1,25 @@
 const ChoosingTypeTask = (props: {
-  number: string;
-  setTypeTask: (event: React.FormEvent<HTMLFormElement>, index: number) => void;
+  numSelectedTask: string;
+  setTypeTask: (
+    numTask: number,
+    event: React.FormEvent<HTMLFormElement>
+  ) => void;
 }) => {
   return (
     <form
-      key={props.number}
-      onSubmit={(event) => props.setTypeTask(event, +props.number)}
+      key={props.numSelectedTask}
+      onSubmit={(event) => props.setTypeTask(+props.numSelectedTask, event)}
       className="form_for_data_tasks"
     >
       <label htmlFor="type_of_task">
-        {props.number}. Виберіть тип завдання:
+        {props.numSelectedTask}. Виберіть тип завдання:
       </label>
       <input
-        name={`typeOfTask-${props.number}`}
-        list={`typeOfTask-${props.number}`}
+        name={`typeOfTask-${props.numSelectedTask}`}
+        list={`typeOfTask-${props.numSelectedTask}`}
         placeholder="type of task is..."
       />
-      <datalist id={`typeOfTask-${props.number}`}>
+      <datalist id={`typeOfTask-${props.numSelectedTask}`}>
         {["choice", "comparison", "openAnswer"].map((option, index) => (
           <option key={index} value={option} />
         ))}

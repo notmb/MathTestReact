@@ -1,5 +1,6 @@
 import { useImmer } from "use-immer";
-import { db } from "../../../firebaseConfig"; // Імпорт Firestore
+import { db, storage } from "../../../firebaseConfig"; // Імпорт Firestore
+import { ref, uploadBytes } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { Task2 } from "./types";
 import ConditionOfTask from "./conditionOfTask";
@@ -8,10 +9,11 @@ import CorrectAnswerToTaskMatching from "./correctAnswerToTaskMatching";
 //ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
 
 const CreatorTaskMatching = (props: {
-  numTask: string;
+  numSelectedTask: string;
   nameOfVariant: string;
+  updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
 }) => {
-  const [taskData, updataTaskData] = useImmer<Task2>({
+  const [taskData, updateTaskData] = useImmer<Task2>({
     task: {
       text: "",
     },
@@ -22,6 +24,23 @@ const CreatorTaskMatching = (props: {
     correctComparison: {},
     typeOfTask: "comparison",
   });
+  const [files, updateFiels] = useImmer<File[]>([]);
+
+  const uploadFile = async (file: File) => {
+    try {
+      if (!file || !file.name) {
+        console.error("Invalid file:", file);
+        return;
+      }
+      console.log("Uploading file:", file.name);
+
+      const fileRef = ref(storage, `${props.nameOfVariant}/${file.name}`);
+      await uploadBytes(fileRef, file);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
   const handleClick = async () => {
     console.log(taskData);
     try {
@@ -35,7 +54,7 @@ const CreatorTaskMatching = (props: {
         "Mix",
         props.nameOfVariant,
         "tasks",
-        props.numTask
+        props.numSelectedTask
       );
 
       // Записуємо об'єкт у Firestore
@@ -45,6 +64,8 @@ const CreatorTaskMatching = (props: {
     } catch (error) {
       console.error("Помилка при додаванні завдання:", error);
     }
+    if (files.length > 0) await Promise.all(files.map(uploadFile));
+    props.updateTaskIsAdded(+props.numSelectedTask - 1, true);
   };
 
   return (
@@ -52,20 +73,77 @@ const CreatorTaskMatching = (props: {
       <form className="form_for_creator">
         {/* Група "Дані для запитання" */}
         <ConditionOfTask
-          numTask={props.numTask}
-          updataTaskData={updataTaskData}
+          numTask={props.numSelectedTask}
+          updateTaskText={(text) => {
+            updateTaskData((draft) => {
+              draft.task.text = text;
+            });
+          }}
+          updateTaskPicture={(picture) => {
+            updateTaskData((draft) => {
+              draft.task.picture = picture.name;
+            });
+            updateFiels((draft) => {
+              draft.push(picture);
+            });
+          }}
         ></ConditionOfTask>
         <ComparisonToMatchingTask
-          numTask={props.numTask}
-          updataTaskData={updataTaskData}
+          numTask={props.numSelectedTask}
+          updateList1Text={(index, text) =>
+            updateTaskData((draft) => {
+              if (!draft.comparisonTable.list1.texts) {
+                draft.comparisonTable.list1.texts = [];
+              }
+              draft.comparisonTable.list1.texts[index] = text;
+            })
+          }
+          updateList2Text={(index, text) =>
+            updateTaskData((draft) => {
+              if (!draft.comparisonTable.list1.texts) {
+                draft.comparisonTable.list1.texts = [];
+              }
+              draft.comparisonTable.list1.texts[index] = text;
+            })
+          }
+          updateList1Pictures={(index, picture) => {
+            updateTaskData((draft) => {
+              if (!draft.comparisonTable.list1.pictures) {
+                console.log("pictures ще не існує, створюємо масив");
+                draft.comparisonTable.list1.pictures = []; // Спочатку створюємо масив
+              }
+              draft.comparisonTable.list1.pictures[index] = picture.name;
+            });
+            updateFiels((draft) => {
+              draft.push(picture);
+            });
+          }}
+          updateList2Pictures={(index, picture) => {
+            updateTaskData((draft) => {
+              if (!draft.comparisonTable.list2.pictures) {
+                console.log("pictures ще не існує, створюємо масив");
+                draft.comparisonTable.list2.pictures = []; // Спочатку створюємо масив
+              }
+              draft.comparisonTable.list2.pictures[index] = picture.name;
+            });
+            updateFiels((draft) => {
+              draft.push(picture);
+            });
+          }}
         ></ComparisonToMatchingTask>
         {/* Група "Дані для співставлення" */}
         <CorrectAnswerToTaskMatching
-          numTask={props.numTask}
-          updataTaskData={updataTaskData}
+          numTask={props.numSelectedTask}
+          updateCorrectAwswerText={(index, text) => {
+            updateTaskData((draft) => {
+              draft.correctComparison[index] = text;
+            });
+          }}
         ></CorrectAnswerToTaskMatching>
+        <button type="button" className="custom_button" onClick={handleClick}>
+          Зберегти завдання
+        </button>
       </form>
-      <button onClick={handleClick}>see</button>
     </div>
   );
 };

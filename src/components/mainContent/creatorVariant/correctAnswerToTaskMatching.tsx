@@ -1,19 +1,13 @@
-import { Task2 } from "./types";
 const CorrectAnswerToTaskMatching = (props: {
   numTask: string;
-  updataTaskData: (update: (draft: Task2) => void) => void;
+  updateCorrectAwswerText: (index: string, text: string) => void;
 }) => {
   const handleCorrectAnswerChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     item: string
   ) => {
     console.log(item);
-    props.updataTaskData((draft) => {
-      if (!draft.correctComparison) {
-        draft.correctComparison = {};
-      }
-      draft.correctComparison[item] = e.target.value;
-    });
+    props.updateCorrectAwswerText(item, e.currentTarget.value);
   };
   return (
     <fieldset className="data_correct_answer">

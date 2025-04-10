@@ -8,11 +8,16 @@
   gap: 8px;
 }
 .number_of_task {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 30px;
   height: 30px;
-  border: 1px solid black;
   cursor: pointer;
 }
 .creator_task {
   margin-top: 24px;
+}
+.task_is_added {
+  padding: 16px;
 }

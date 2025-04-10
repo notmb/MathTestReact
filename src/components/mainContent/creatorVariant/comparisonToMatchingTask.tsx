@@ -2,7 +2,10 @@ import { useImmer } from "use-immer";
 import { Task2 } from "./types";
 const ComparisonToMatchingTask = (props: {
   numTask: string;
-  updataTaskData: (update: (draft: Task2) => void) => void;
+  updateList1Text: (index: number, text: string) => void;
+  updateList2Text: (index: number, text: string) => void;
+  updateList1Pictures: (index: number, picture: File) => void;
+  updateList2Pictures: (index: number, picture: File) => void;
 }) => {
   const [listFileName, updataListFileName] = useImmer<{
     [key: string]: string;
@@ -16,17 +19,10 @@ const ComparisonToMatchingTask = (props: {
     const file = e.target.files?.[0];
     if (file) {
       console.log("Файл вибрано:", file.name);
-      props.updataTaskData((draft) => {
-        if (draft.comparisonTable.list1.pictures) {
-          draft.comparisonTable.list1.pictures[index] = file.name;
-        } else {
-          draft.comparisonTable.list1.pictures = [];
-          draft.comparisonTable.list1.pictures[index] = file.name;
-        }
-      });
       updataListFileName((draft) => {
         draft[inputId] = file.name;
       });
+      props.updateList1Pictures(index, file);
     } else {
       console.warn("Файл не вибрано!");
     }
@@ -40,14 +36,7 @@ const ComparisonToMatchingTask = (props: {
     const file = e.target.files?.[0];
     if (file) {
       console.log("Файл вибрано:", file.name);
-      props.updataTaskData((draft) => {
-        if (draft.comparisonTable.list2.pictures) {
-          draft.comparisonTable.list2.pictures[index] = file.name;
-        } else {
-          draft.comparisonTable.list2.pictures = [];
-          draft.comparisonTable.list2.pictures[index] = file.name;
-        }
-      });
+      props.updateList2Pictures(index, file);
       updataListFileName((draft) => {
         draft[inputId] = file.name;
       });
@@ -60,24 +49,14 @@ const ComparisonToMatchingTask = (props: {
     index: number
   ) => {
     console.log(index);
-    props.updataTaskData((draft) => {
-      if (!draft.comparisonTable.list1.texts) {
-        draft.comparisonTable.list1.texts = [];
-      }
-      draft.comparisonTable.list1.texts[index] = e.target.value;
-    });
+    props.updateList1Text(index, e.currentTarget.value);
   };
   const handleList2Change = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     index: number
   ) => {
     console.log(index);
-    props.updataTaskData((draft) => {
-      if (!draft.comparisonTable.list2.texts) {
-        draft.comparisonTable.list2.texts = [];
-      }
-      draft.comparisonTable.list2.texts[index] = e.target.value;
-    });
+    props.updateList2Text(index, e.currentTarget.value);
   };
   return (
     <fieldset className="data_for_comparison">

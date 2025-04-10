@@ -119,7 +119,7 @@ const ComparisonTable = (props: { comparisonTable: Comparison }) => {
           {props.comparisonTable.list1.texts &&
             props.comparisonTable.list1.texts.map((item, index) => (
               <li key={index} className="item_of_comparison">
-                {index + 1}) <MathJax>{item}</MathJax>
+                {index + 1} <MathJax>{item}</MathJax>
               </li>
             ))}
         </ul>
@@ -130,7 +130,7 @@ const ComparisonTable = (props: { comparisonTable: Comparison }) => {
           {props.comparisonTable.list2.texts &&
             props.comparisonTable.list2.texts.map((item, index) => (
               <li key={index} className="item_of_comparison">
-                {mark[index]}) <MathJax>{item}</MathJax>
+                {mark[index]} <MathJax>{item}</MathJax>
               </li>
             ))}
         </ul>
@@ -178,7 +178,7 @@ const AnswerToComparisonTask = (props: {
         {props.comparisonTable.list1.texts &&
           props.comparisonTable.list1.texts.map((_, index) => (
             <li key={index} className="item_user_answer_comparison">
-              {index + 1})
+              {index + 1}
               <input
                 className="user_answer_comparison"
                 id={props.number}

@@ -1,27 +1,24 @@
 import { useState } from "react";
-import { Task1, Task2, Task3 } from "./types";
 
 const ConditionOfTask = (props: {
   numTask: string;
-  updateTaskData: (update: (draft: Task1 | Task2 | Task3) => void) => void;
+  updateTaskText: (text: string) => void;
+  updateTaskPicture: (picture: File) => void;
 }) => {
   const [nameFileTask, setNameFileTask] = useState<string | null>(null);
 
   const handleTextOfTaskChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    props.updateTaskData((draft) => {
-      draft.task.text = e.target.value;
-    });
+    props.updateTaskText(e.currentTarget.value);
   };
+
   const handleTaskFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log("Файл вибрано:", file.name);
       setNameFileTask(file.name);
-      props.updateTaskData((draft) => {
-        draft.task.picture = file.name;
-      });
+      props.updateTaskPicture(file);
     } else {
       console.warn("Файл не вибрано!");
     }

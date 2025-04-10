@@ -6,8 +6,11 @@ import CreatorTaskOpenAnswer from "./creatorTaskOpenAnswer";
 //ФОРМА ДЛЯ СТВОРЕННЯ ЗАВДАННЯ
 const CreatorTask = (props: {
   nameOfVarint: string;
-  numTask: string;
-  setTypeTask: (event: React.FormEvent<HTMLFormElement>, index: number) => void;
+  numSelectedTask: string;
+  updateTypeOfTask: (
+    numTask: number,
+    event: React.FormEvent<HTMLFormElement>
+  ) => void;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
   taskIsAdded: boolean;
   typeOfTasks: string | undefined;
@@ -15,26 +18,28 @@ const CreatorTask = (props: {
   return (
     <div className="creator_task">
       <ChoosingTypeTask
-        number={props.numTask}
-        setTypeTask={props.setTypeTask}
+        numSelectedTask={props.numSelectedTask}
+        setTypeTask={props.updateTypeOfTask}
       ></ChoosingTypeTask>
       {props.typeOfTasks === "choice" && (
         <CreatorTaskChoice
-          numTask={props.numTask}
+          numSelectedTask={props.numSelectedTask}
           nameOfVariant={props.nameOfVarint}
           updateTaskIsAdded={props.updateTaskIsAdded}
         ></CreatorTaskChoice>
       )}
       {props.typeOfTasks === "comparison" && (
         <CreatorTaskMatching
-          numTask={props.numTask}
+          numSelectedTask={props.numSelectedTask}
           nameOfVariant={props.nameOfVarint}
+          updateTaskIsAdded={props.updateTaskIsAdded}
         ></CreatorTaskMatching>
       )}
       {props.typeOfTasks === "openAnswer" && (
         <CreatorTaskOpenAnswer
-          numTask={props.numTask}
+          numSelectedTask={props.numSelectedTask}
           nameOfVariant={props.nameOfVarint}
+          updateTaskIsAdded={props.updateTaskIsAdded}
         ></CreatorTaskOpenAnswer>
       )}
     </div>
