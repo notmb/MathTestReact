@@ -3,14 +3,14 @@ import { Task1, Task2, Task3 } from "./types";
 
 const ConditionOfTask = (props: {
   numTask: string;
-  updataTaskData: (update: (draft: Task1 | Task2 | Task3) => void) => void;
+  updateTaskData: (update: (draft: Task1 | Task2 | Task3) => void) => void;
 }) => {
   const [nameFileTask, setNameFileTask] = useState<string | null>(null);
 
   const handleTextOfTaskChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    props.updataTaskData((draft) => {
+    props.updateTaskData((draft) => {
       draft.task.text = e.target.value;
     });
   };
@@ -19,7 +19,7 @@ const ConditionOfTask = (props: {
     if (file) {
       console.log("Файл вибрано:", file.name);
       setNameFileTask(file.name);
-      props.updataTaskData((draft) => {
+      props.updateTaskData((draft) => {
         draft.task.picture = file.name;
       });
     } else {
