@@ -129,6 +129,7 @@ const MathTest = (props: { selectedVariant: string }) => {
               <div key={key}>
                 {isTask1(task) && (
                   <TaskChoice
+                    selectedVariant={props.selectedVariant}
                     task={task.task}
                     answers={task.answers}
                     number={key}

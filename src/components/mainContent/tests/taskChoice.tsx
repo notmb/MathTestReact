@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import type { Question, Answers } from "../creatorVariant/types";
 
 const TaskChoice = (props: {
+  selectedVariant: string;
   task: Question;
   answers: Answers;
   number: string;
@@ -15,12 +16,16 @@ const TaskChoice = (props: {
     <div className="tests_item">
       <p className="container_serial_num_task">Завдання {props.number}</p>
       <Task
+        selectedVariant={props.selectedVariant}
         text={props.task.text}
         picture={props.task.picture}
         list={props.task.list}
         table={props.task.table}
       ></Task>
-      <Answers answers={props.answers}></Answers>
+      <Answers
+        selectedVariant={props.selectedVariant}
+        answers={props.answers}
+      ></Answers>
       <AnswerChoice
         updateUserAnswer={props.updateUserAnswer}
         number={props.number}
@@ -33,6 +38,7 @@ export default TaskChoice;
 
 //КОМПОНЕНТ ЗАВДАННЯ
 const Task = (props: {
+  selectedVariant: string;
   text: string;
   table?: {
     value1: string[];
@@ -55,7 +61,7 @@ const Task = (props: {
       )}
       {props.picture && (
         <Picture
-          url={props.picture}
+          url={`${props.selectedVariant}/${props.picture}`}
           classForPicture="picture_for_question"
         ></Picture>
       )}
@@ -136,7 +142,7 @@ const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
 //КОМПОНЕНТ ТАБЛИЦІ ДО ЗАПИТАННЯ
 
 //КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
-const Answers = (props: { answers: Answers }) => {
+const Answers = (props: { answers: Answers; selectedVariant: string }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
   return (
     <div className="box_for_answer_table">
@@ -156,7 +162,7 @@ const Answers = (props: { answers: Answers }) => {
               <td key={index} className="answer_options">
                 {props.answers.pictures && (
                   <Picture
-                    url={props.answers.pictures[index]}
+                    url={`${props.selectedVariant}/${props.answers.pictures[index]}`}
                     classForPicture="picture_for_answer"
                   ></Picture>
                 )}
