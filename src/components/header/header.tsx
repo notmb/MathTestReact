@@ -13,12 +13,12 @@ const Header = (props: { navigate: (path: string) => void }) => {
         ></img>
 
         <div className="header_navigation">
-          <div
+          {/* <div
             className="header_navigation_item"
             onClick={() => props.navigate("/MathTestReact/tests")}
           >
             <h5 className="header_navigation_item_h">Тести</h5>
-          </div>
+          </div> */}
           <div
             className="header_navigation_item"
             onClick={() => props.navigate("/MathTestReact/allTest")}

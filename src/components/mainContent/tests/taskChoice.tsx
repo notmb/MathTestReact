@@ -72,7 +72,7 @@ const Task = (props: {
 
 const fetchImage = async (url: string) => {
   const storage = getStorage(app); // Отримуємо екземпляр Storage
-  const storageRef = ref(storage, `/івів/${url}`); // Шлях до файлу в Storage
+  const storageRef = ref(storage, url); // Шлях до файлу в Storage
 
   return getDownloadURL(storageRef);
 };
@@ -143,6 +143,9 @@ const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
 
 //КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
 const Answers = (props: { answers: Answers; selectedVariant: string }) => {
+  console.log(!!props.answers.values);
+  props.answers.pictures &&
+    console.log(`${props.selectedVariant}/${props.answers.pictures[0]}`);
   const mark = ["А", "Б", "В", "Г", "Д"];
   return (
     <div className="box_for_answer_table">
@@ -158,15 +161,17 @@ const Answers = (props: { answers: Answers; selectedVariant: string }) => {
         </thead>
         <tbody>
           <tr id="answers" className="box_answers">
-            {props.answers.values.map((item, index) => (
+            {[0, 1, 2, 3, 4].map((_, index) => (
               <td key={index} className="answer_options">
-                {props.answers.pictures && (
+                {props.answers.pictures && props.answers.pictures[index] && (
                   <Picture
                     url={`${props.selectedVariant}/${props.answers.pictures[index]}`}
                     classForPicture="picture_for_answer"
                   ></Picture>
                 )}
-                <MathJax>{item}</MathJax>
+                {props.answers.values && props.answers.values[index] && (
+                  <MathJax>{props.answers.values[index]}</MathJax>
+                )}
               </td>
             ))}
           </tr>

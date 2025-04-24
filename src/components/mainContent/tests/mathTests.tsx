@@ -13,7 +13,6 @@ interface CorrectComparison {
 const MathTest = (props: { selectedVariant: string }) => {
   const [tasks, updateTasks] = useImmer<Tasks>({});
   const [userAnswers, updateUserAnswers] = useImmer<{ [key: string]: any }>({});
-  console.log(userAnswers);
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
     task.typeOfTask === "comparison";
