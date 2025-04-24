@@ -1,0 +1,12 @@
+.box_for_list_of_tests {
+  padding: 16px 32px;
+}
+.list_of_variant {
+  border: 2px solid black;
+  height: 200px;
+}
+.variant_item {
+  font-size: 20px;
+  margin: 8px 0;
+  cursor: pointer;
+}

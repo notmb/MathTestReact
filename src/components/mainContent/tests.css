@@ -143,3 +143,30 @@
   cursor: pointer;
   font-size: 18px;
 }
+.no_picture {
+  display: none;
+}
+.is_picture {
+  display: block;
+}
+.label {
+  display: inline-block;
+  padding: 5px;
+}
+.user_choice {
+  margin: 0;
+}
+.box_choise {
+  display: flex;
+}
+
+.answer {
+  display: flex;
+}
+.MathJAx {
+  display: inline;
+}
+
+.open_answer {
+  padding: 8px 68px;
+}

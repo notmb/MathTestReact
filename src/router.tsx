@@ -1,0 +1,99 @@
+import MainPage from "./components/mainPage";
+import AllTest from "./components/mainContent/tests/allTests";
+import SingIn from "./components/account/singIn";
+import SingUp from "./components/account/signUp";
+import MathTest from "./components/mainContent/tests/mathTests";
+import AddNewVariant from "./components/mainContent/creatorVariant/addVariant2";
+
+const routes = [
+  {
+    path: "/MathTestReact/main",
+    component: MainPage,
+  },
+  {
+    path: "/MathTestReact/tests",
+    component: MainPage,
+  },
+  {
+    path: "/MathTestReact/allTest",
+    component: AllTest,
+  },
+  {
+    path: "/MathTestReact/allTest/:variant",
+    component: MathTest,
+  },
+  {
+    path: "/MathTestReact/study",
+    component: AddNewVariant,
+  },
+  {
+    path: "/MathTestReact/account/login",
+    component: SingIn,
+  },
+  {
+    path: "/MathTestReact/account/singup",
+    component: SingUp,
+  },
+
+  {
+    path: "/MathTestReact/tests/sortingbyclass",
+    component: MathTest,
+  },
+];
+
+const matchPath = (
+  routePath: string,
+  currentPath: string
+): null | { [key: string]: string } => {
+  const routeSegments = routePath.split("/");
+  const currentSegments = currentPath.split("/");
+
+  if (routeSegments.length !== currentSegments.length) return null;
+
+  const params: { [key: string]: string } = {};
+
+  for (let i = 0; i < routeSegments.length; i++) {
+    const routeSegment = routeSegments[i];
+    const currentSegment = currentSegments[i];
+
+    if (routeSegment.startsWith(":")) {
+      const paramName = routeSegment.slice(1);
+      params[paramName] = currentSegment;
+      console.log(params[paramName]);
+    } else if (routeSegment !== currentSegment) {
+      return null; // не співпадає
+    }
+  }
+
+  return params;
+};
+
+const Router = (props: {
+  currentPath: string;
+  navigate: (path: string) => void;
+}) => {
+  let matchedRoute = routes[0]; // fallback
+  let routeParams: { [key: string]: string } = {};
+
+  for (const route of routes) {
+    const match = matchPath(route.path, props.currentPath);
+    if (match) {
+      matchedRoute = route;
+      routeParams = match;
+      break;
+    }
+  }
+
+  const Component = matchedRoute.component;
+  const selectedVariant = routeParams.variant ?? routeParams.variantName ?? "";
+  // console.log(routeParams.paramName);
+
+  // const route =
+  //   routes.find((route) => route.path === props.currentPath) || routes[0];
+  // const Component = route.component;
+
+  return (
+    <Component navigate={props.navigate} selectedVariant={selectedVariant} />
+  );
+};
+export default Router;

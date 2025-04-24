@@ -1,31 +1,16 @@
-import "./tests.css";
+import "../tests.css";
 import { MathJax } from "better-react-mathjax";
-import { app } from "../../firebaseConfig";
+import { app } from "../../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
+import type { Question, Answers } from "../creatorVariant/types";
 
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    value2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}
-interface Answers {
-  values: string[];
-  pictures?: string[];
-}
 const TaskChoice = (props: {
   task: Question;
   answers: Answers;
-  correctAnswer: string;
-  typeOfTask: string;
   number: string;
-  func: (taskKey: string, userAnswer: string) => void;
+  updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
-  console.log(props.answers);
   return (
     <div className="tests_item">
       <p className="container_serial_num_task">Завдання {props.number}</p>
@@ -37,7 +22,7 @@ const TaskChoice = (props: {
       ></Task>
       <Answers answers={props.answers}></Answers>
       <AnswerChoice
-        EditUserAnswer={props.func}
+        updateUserAnswer={props.updateUserAnswer}
         number={props.number}
       ></AnswerChoice>
     </div>
@@ -153,8 +138,6 @@ const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
 //КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
 const Answers = (props: { answers: Answers }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
-  // const urlForAnswer = PictureForAnswers(props.imageForAnswers);
-  console.log(props.answers.pictures);
   return (
     <div className="box_for_answer_table">
       <table className="answer_table">
@@ -191,14 +174,13 @@ const Answers = (props: { answers: Answers }) => {
 //КОМПОНЕНТ ДЛЯ ВИБОРУ ВІДПОВІДІ
 const AnswerChoice = (props: {
   number: string;
-  EditUserAnswer: (taskKey: string, userAnswer: string) => void;
+  updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
   // Обробник зміни відповіді
   const handleChoiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const userAnswer = event.target.value; // Отримуємо вибрану відповідь
-    const taskKey = event.target.id;
-    props.EditUserAnswer(taskKey, userAnswer); // Викликаємо функцію для оновлення відповіді
+    props.updateUserAnswer(props.number, userAnswer); // Викликаємо функцію для оновлення відповіді
   };
   return (
     <div className="box_for_user_answers">

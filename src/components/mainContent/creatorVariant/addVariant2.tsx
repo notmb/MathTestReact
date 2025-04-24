@@ -17,7 +17,7 @@ interface Task {
 }
 type Tasks = Task[];
 
-const NewVariant = () => {
+const AddNewVariant = () => {
   const [mainDataAboutNewVariant, setmainDataAboutNewVariant] =
     useState<MainDataAboutVariant | null>(null);
 
@@ -107,4 +107,4 @@ const NewVariant = () => {
     </div>
   );
 };
-export default NewVariant;
+export default AddNewVariant;

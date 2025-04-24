@@ -24,17 +24,6 @@ const CreatorNewVariant = (props: {
     setSelectedTask(item);
   };
   console.log(props.tasks);
-  //встановлюємо тип завдання
-
-  // const setTypeTask = (
-  //   event: React.FormEvent<HTMLFormElement>,
-  //   numTask: number
-  // ) => {
-  //   event.preventDefault();
-  //   const formData = new FormData(event.currentTarget);
-  //   const inputValue = formData.get(`typeOfTask-${numTask}`) as string;
-  //   props.updateTypeOfTask(numTask, inputValue);
-  // };
 
   return (
     <div className="creator_new_variant">

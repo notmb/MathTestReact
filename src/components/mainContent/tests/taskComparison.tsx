@@ -1,50 +1,33 @@
+import "../tests.css";
 import { MathJax } from "better-react-mathjax";
-import { app } from "../../firebaseConfig";
+import { app } from "../../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { useState, useEffect } from "react";
-
-interface Comparison {
-  list1: {
-    texts?: string[];
-    pictures?: string[];
-  };
-  list2: {
-    texts?: string[];
-    picture?: string[];
-  };
-}
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    value2: string[];
-  };
-  pictures?: string;
-  list?: string[];
-}
-interface CorrectComparison {
-  [key: string]: string;
-}
+import { useState, useEffect, useRef } from "react";
+import { useImmer } from "use-immer";
+import type { Question, Comparison } from "../creatorVariant/types";
 
 const TaskComparison = (props: {
+  selectedVariant: string;
   task: Question;
   comparisonTable: Comparison;
-  correctComparison: CorrectComparison;
-  typeOfTask: string;
   number: string;
-  func: (taskKey: string, userAnswer: string) => void;
+  updateUserAnswer: (userAnswer: string) => void;
 }) => {
   return (
     <div className="tests_item">
       <p className="container_serial_num_task">Завдання {props.number}</p>
-      <Task text={props.task.text}></Task>
+      <Task
+        text={props.task.text}
+        selectedVariant={props.selectedVariant}
+      ></Task>
       <ComparisonTable
+        selectedVariant={props.selectedVariant}
         comparisonTable={props.comparisonTable}
       ></ComparisonTable>
       <AnswerToComparisonTask
         number={props.number}
         comparisonTable={props.comparisonTable}
-        EditUserAnswer={props.func}
+        updateUserAnswer={props.updateUserAnswer}
       ></AnswerToComparisonTask>
     </div>
   );
@@ -84,12 +67,13 @@ const Picture = (props: { url: string; classForPicture: string }) => {
 
 //КОМПОНЕНТ ЗАВДАННЯ
 const Task = (props: {
+  selectedVariant: string;
   text: string;
   table?: {
     value1: string[];
     velue2: string[];
   };
-  pictures?: string;
+  picture?: string;
   list?: string[];
 }) => {
   return (
@@ -97,9 +81,9 @@ const Task = (props: {
       <div>
         <MathJax>{props.text}</MathJax>
       </div>
-      {props.pictures && (
+      {props.picture && (
         <Picture
-          url={`/івів/${props.pictures}`}
+          url={`${props.selectedVariant}/${props.picture}`}
           classForPicture="picture_for_question"
         ></Picture>
       )}
@@ -109,7 +93,10 @@ const Task = (props: {
 //КОМПОНЕНТ ЗАВДАННЯ
 
 //КОМПОНЕНТ СПИСКИ ДЛЯ СПІВСТАВЛЕННЯ
-const ComparisonTable = (props: { comparisonTable: Comparison }) => {
+const ComparisonTable = (props: {
+  comparisonTable: Comparison;
+  selectedVariant: string;
+}) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
   return (
     <div className="comparison_table">
@@ -143,32 +130,33 @@ const ComparisonTable = (props: { comparisonTable: Comparison }) => {
 const AnswerToComparisonTask = (props: {
   number: string;
   comparisonTable: Comparison;
-  EditUserAnswer: (taskKey: string, userAnswer: any) => void;
+  updateUserAnswer: (userAnswer: any) => void;
 }) => {
-  const [inputValues, setInputValues] = useState<{ [key: string]: string }>(
+  const [inputValues, updateInputValues] = useImmer<{ [key: string]: string }>(
     () => {
-      if (props.comparisonTable.list1.texts) {
-        return props.comparisonTable.list1.texts.reduce((acc, _, index) => {
-          acc[(index + 1).toString()] = ""; // Ініціалізуємо пустими рядками
+      return (
+        props.comparisonTable.list1.texts?.reduce((acc, _, index) => {
+          acc[(index + 1).toString()] = "";
           return acc;
-        }, {} as { [key: string]: string });
-      }
-      return {}; // Якщо texts відсутній, повертаємо порожній об'єкт
+        }, {} as { [key: string]: string }) ?? {}
+      );
     }
   );
-
+  // Оновлюємо батьківський стан
+  const updateUserAnswerRef = useRef(props.updateUserAnswer);
+  updateUserAnswerRef.current = props.updateUserAnswer;
+  useEffect(() => {
+    updateUserAnswerRef.current(inputValues);
+  }, [inputValues]);
   // Обробник зміни відповіді
   const handleChoiceChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     const userAnswer = event.target.value; // Отримуємо вибрану відповідь
-    const updatedAnswers = {
-      ...inputValues,
-      [(index + 1).toString()]: userAnswer,
-    };
-    setInputValues(updatedAnswers);
-    props.EditUserAnswer(props.number, updatedAnswers); // Оновлюємо батьківський стан
+    updateInputValues((draft) => {
+      draft[(index + 1).toString()] = userAnswer;
+    });
   };
 
   return (

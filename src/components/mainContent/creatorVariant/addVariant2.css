@@ -1,3 +1,106 @@
+@reference '../../../index.css';
+
+.add_variant {
+  padding: 16px 32px;
+  min-height: 800px;
+}
+.creator_new_variant {
+  border: 2px solid black;
+  padding: 8px 32px;
+  font-size: 18px;
+}
+.form_for_description_new_variant {
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+}
+.conteiner_for_description {
+  width: 100%;
+  border: 2px solid black;
+  padding: 8px 32px;
+  overflow: hidden;
+  @apply bg-red-100/30;
+}
+.container_for_button {
+  display: flex;
+  justify-content: space-between;
+}
+.custom_button {
+  background-color: #90bde8; /* Зелений фон */
+  color: white; /* Білий текст */
+  border: 2px solid #90bde8; /* Зелені рамки */
+  padding: 4px 8px; /* Відступи всередині кнопки */
+  font-size: 16px; /* Розмір шрифту */
+  cursor: pointer; /* Курсор у вигляді руки при наведенні */
+  transition: background-color 0.3s, border-color 0.3s; /* Анімація для змін кольору */
+  margin: 4px 0 16px 0;
+}
+
+.custom_button:hover {
+  background-color: #90bde8; /* Темніший зелений при наведенні */
+  border-color: #6389ac; /* Зміна кольору рамки */
+}
+.number_of_tasks_new_variant,
+.name_new_variant {
+  margin-bottom: 24px;
+}
+.list_tasks {
+  padding-left: 0;
+}
+.list_item {
+  padding: 24px 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form_for_task {
+  display: flex;
+  flex-direction: column;
+}
+.more_conditions {
+  padding: 8px;
+  display: flex;
+}
+.upload_picture {
+  background-color: rgb(240, 240, 240);
+  border: 1px solid rgba(27, 25, 25, 0.414);
+  border-radius: 3px;
+  padding: 2px 4px;
+}
+.more_condition {
+  background-color: rgb(240, 240, 240);
+  border: 1px solid rgba(27, 25, 25, 0.414);
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 18px;
+  font-family: "Times New Roman", Times, serif;
+}
+.data_answers {
+  padding: 16px;
+}
+.form_answers {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+.box_for_answer,
+.box_for_qestion {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+.data_correct_answer {
+  padding-left: 16px;
+
+  display: flex;
+  flex-direction: column;
+}
+.saveAndCreate_button {
+  display: flex;
+  justify-content: space-around;
+}
+
 .transition-height {
   transition: max-height 0.5s ease-in-out;
   overflow: hidden;

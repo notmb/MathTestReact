@@ -100,10 +100,10 @@ const CreatorTaskMatching = (props: {
           }
           updateList2Text={(index, text) =>
             updateTaskData((draft) => {
-              if (!draft.comparisonTable.list1.texts) {
-                draft.comparisonTable.list1.texts = [];
+              if (!draft.comparisonTable.list2.texts) {
+                draft.comparisonTable.list2.texts = [];
               }
-              draft.comparisonTable.list1.texts[index] = text;
+              draft.comparisonTable.list2.texts[index] = text;
             })
           }
           updateList1Pictures={(index, picture) => {

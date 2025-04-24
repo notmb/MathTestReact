@@ -1,32 +1,27 @@
+import "../tests.css";
 import { MathJax } from "better-react-mathjax";
-import { app } from "../../firebaseConfig";
+import { app } from "../../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
-
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    value2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}
+import type { Question } from "../creatorVariant/types";
 
 const TaskOpenAnswer = (props: {
+  selectedVariant: string;
   task: Question;
-  correctAnswer: string;
-  typeOfTask: string;
   number: string;
-  func: (taskKey: string, userAnswer: string) => void;
+  updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
   return (
     <div className="tests_item">
       <p className="container_serial_num_task">Завдання {props.number}</p>
-      <Task text={props.task.text} picture={props.task.picture}></Task>
+      <Task
+        selectedVariant={props.selectedVariant}
+        text={props.task.text}
+        picture={props.task.picture}
+      ></Task>
       <OpenAnswer
         number={props.number}
-        EditUserAnswer={props.func}
+        updateUserAnswer={props.updateUserAnswer}
       ></OpenAnswer>
     </div>
   );
@@ -36,6 +31,7 @@ export default TaskOpenAnswer;
 
 //КОМПОНЕНТ ЗАВДАННЯ
 const Task = (props: {
+  selectedVariant: string;
   text: string;
   table?: {
     value1: string[];
@@ -51,7 +47,7 @@ const Task = (props: {
       </div>
       {props.picture && (
         <Picture
-          url={`/івів/${props.picture}`}
+          url={`${props.selectedVariant}/${props.picture}`}
           classForPicture="picture_for_question"
         ></Picture>
       )}
@@ -93,12 +89,12 @@ const Picture = (props: { url: string; classForPicture: string }) => {
 //КОМПОНЕНТ ВІДПОВІДІ ДО ЗАВДАННЯ З ВІДКРИТОЮ ВІДПОВІДДЮ
 const OpenAnswer = (props: {
   number: string;
-  EditUserAnswer: (taskKey: string, userAnswer: string) => void;
+  updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
   const handleChoiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const userAnswer = event.target.value; // Отримуємо вибрану відповідь
-    const taskKey = event.target.id;
-    props.EditUserAnswer(taskKey, userAnswer); // Викликаємо функцію для оновлення відповіді
+
+    props.updateUserAnswer(props.number, userAnswer); // Викликаємо функцію для оновлення відповіді
   };
   return (
     <div className="box_for_user_answer">

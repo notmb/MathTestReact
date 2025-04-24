@@ -1,5 +1,5 @@
 import { MathJaxContext } from "better-react-mathjax";
-import Router from "./route";
+import Router from "./router";
 import Header from "./components/header/header";
 import { useState, useEffect } from "react";
 import Footer from "./components/footer/footer";
@@ -10,10 +10,12 @@ function App() {
   const [currentPath, setcurrentPath] = useState<string>(
     window.location.pathname
   );
+
   const navigate = (path: string) => {
     window.history.pushState({}, "", path);
     setcurrentPath(path);
   };
+
   useEffect(() => {
     const onLocationChange = () => {
       setcurrentPath(window.location.pathname);

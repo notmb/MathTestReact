@@ -1,5 +1,4 @@
 import { useImmer } from "use-immer";
-import { Task2 } from "./types";
 const ComparisonToMatchingTask = (props: {
   numTask: string;
   updateList1Text: (index: number, text: string) => void;

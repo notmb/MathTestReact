@@ -48,3 +48,13 @@ export interface Tasks {
   // Колекція з різними завданнями
   [key: string]: Task1 | Task2 | Task3;
 }
+export interface Comparison {
+  list1: {
+    texts?: string[];
+    pictures?: string[];
+  };
+  list2: {
+    texts?: string[];
+    picture?: string[];
+  };
+}
