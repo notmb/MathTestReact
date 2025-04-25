@@ -52,7 +52,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
               className="variant_item"
               key={variant.id}
               onClick={() => {
-                selectTest(variant.name);
+                selectTest(variant.id);
               }}
             >
               {variant.name}

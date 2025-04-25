@@ -17,7 +17,7 @@ const CreatorTaskChoice = (props: {
       text: "",
     },
     answers: {
-      values: [],
+      values: Array(5).fill(""),
     },
     correctAnswer: "",
     typeOfTask: "choice",
@@ -54,7 +54,7 @@ const CreatorTaskChoice = (props: {
         "tasks",
         props.numSelectedTask
       );
-
+      console.log(taskData);
       // Записуємо об'єкт у Firestore
       await setDoc(variantRef, taskData);
 
@@ -98,7 +98,7 @@ const CreatorTaskChoice = (props: {
             updateTaskData((draft) => {
               if (!draft.answers.pictures) {
                 console.log("pictures ще не існує, створюємо масив");
-                draft.answers.pictures = []; // Спочатку створюємо масив
+                draft.answers.pictures = Array(5).fill(""); // Спочатку створюємо масив
               }
               draft.answers.pictures[index] = picture.name;
             });

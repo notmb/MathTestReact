@@ -3,7 +3,7 @@ import InfoAboutNewVariant from "./infoAboutNewVariant";
 import CreatorNewVariant from "./creatorNewVariant";
 import { useState } from "react";
 import { useImmer } from "use-immer";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig"; // Імпорт Firestore
 
 interface MainDataAboutVariant {
@@ -18,8 +18,9 @@ interface Task {
 type Tasks = Task[];
 
 const AddNewVariant = () => {
-  const [mainDataAboutNewVariant, setmainDataAboutNewVariant] =
+  const [mainDataAboutNewVariant, setMainDataAboutNewVariant] =
     useState<MainDataAboutVariant | null>(null);
+  const [id, setId] = useState<string>("");
 
   const [tasks, updateTasks] = useImmer<Tasks>([]);
 
@@ -49,24 +50,23 @@ const AddNewVariant = () => {
     });
   };
 
-  const createVariant = async (
-    variantId: string,
-    name: string,
-    numberOfTask: string
-  ) => {
+  const createVariant = async (nameVariant: string, numberOfTask: string) => {
+    const variantsCollectionRef = collection(
+      db,
+      "Subjects",
+      "Math",
+      "Algebra",
+      "Topics",
+      "Mix"
+    );
     try {
-      const variantRef = doc(
-        db,
-        "Subjects",
-        "Math",
-        "Algebra",
-        "Topics",
-        "Mix",
-        variantId
-      );
-      await setDoc(variantRef, { name, numberOfTask });
-
+      const docRef = await addDoc(variantsCollectionRef, {
+        name: nameVariant,
+        numberOfTasks: numberOfTask,
+        createdAt: new Date(),
+      });
       console.log("Тестовий варіант створено!");
+      setId(docRef.id);
     } catch (error) {
       console.error("Помилка створення:", error);
     }
@@ -81,13 +81,9 @@ const AddNewVariant = () => {
       variantName: newVariantName,
       numberOfTask: newNum,
     };
-    setmainDataAboutNewVariant(dataOfTask);
+    setMainDataAboutNewVariant(dataOfTask);
     initializeTasks(+newNum);
-    createVariant(
-      dataOfTask.variantName,
-      dataOfTask.variantName,
-      dataOfTask.numberOfTask
-    );
+    createVariant(dataOfTask.variantName, dataOfTask.numberOfTask);
   };
 
   return (
@@ -101,7 +97,7 @@ const AddNewVariant = () => {
           tasks={tasks}
           updateTypeOfTask={updateTypeOfTask}
           updateTaskIsAdded={updateTaskIsAdded}
-          nameVariant={mainDataAboutNewVariant.variantName}
+          nameVariant={id}
         ></CreatorNewVariant>
       )}
     </div>

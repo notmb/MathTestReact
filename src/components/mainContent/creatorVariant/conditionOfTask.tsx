@@ -55,12 +55,12 @@ const ConditionOfTask = (props: {
           {nameFileTask ? `Файл: ${nameFileTask}` : "Додати зображення"}
         </label>
 
-        <button type="button" className="more_condition mx-4">
+        {/* <button type="button" className="more_condition mx-4">
           Додати таблицю
         </button>
         <button type="button" className="more_condition">
           Додати картинку
-        </button>
+        </button> */}
       </div>
     </fieldset>
   );

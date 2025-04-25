@@ -2,16 +2,7 @@ import { MathJax } from "better-react-mathjax";
 import { app } from "../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
-
-interface Question {
-  text: string;
-  table?: {
-    value1: string[];
-    value2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}
+import type { Question } from "./creatorVariant/types";
 
 const TaskOpenAnswer = (props: {
   task: Question;
