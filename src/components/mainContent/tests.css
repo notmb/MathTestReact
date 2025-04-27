@@ -75,23 +75,7 @@
   padding-top: 4px;
   padding-bottom: 4px;
 }
-.picture_for_answer {
-  width: 100%;
-  margin: 0 auto; /* Вирівнювання зображення по горизонталі (для блочних елементів) */
-}
-.picture_for_question {
-  padding: 8px;
-  width: 40%;
-}
 
-/* .answer_options {
-
-  padding: 10px;
-  width: 20%;
-  border: solid 1px rgba(0, 0, 0, 0.89);
-  text-align: center;
-  font-size: 18px;
-} */
 .box_for_user_answers {
   padding: 8px;
 }

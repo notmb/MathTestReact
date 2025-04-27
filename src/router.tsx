@@ -4,6 +4,7 @@ import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
 import MathTest from "./components/mainContent/tests/mathTests";
 import AddNewVariant from "./components/mainContent/creatorVariant/addVariant2";
+import SelectedVariant from "./components/mainContent/tests/selectedTest";
 
 const routes = [
   {
@@ -20,6 +21,10 @@ const routes = [
   },
   {
     path: "/MathTestReact/allTest/:variant",
+    component: SelectedVariant,
+  },
+  {
+    path: "/MathTestReact/allTest/:variant/test",
     component: MathTest,
   },
   {

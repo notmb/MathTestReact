@@ -1,4 +1,4 @@
-import "./signUp.css";
+import "./personalAccount";
 import { useState } from "react";
 import PersonalAccount from "./personalAccount";
 import { createUserWithEmailAndPassword } from "firebase/auth";

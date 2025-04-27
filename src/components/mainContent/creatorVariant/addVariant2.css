@@ -2,7 +2,7 @@
 
 .add_variant {
   padding: 16px 32px;
-  min-height: 800px;
+  min-height: 550px;
 }
 .creator_new_variant {
   border: 2px solid black;
@@ -20,7 +20,7 @@
   border: 2px solid black;
   padding: 8px 32px;
   overflow: hidden;
-  @apply bg-red-100/30;
+  /* @apply bg-red-100/30; */
 }
 .container_for_button {
   display: flex;

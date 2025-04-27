@@ -1,12 +1,63 @@
 .box_for_list_of_tests {
   padding: 16px 32px;
+  min-height: 550px;
 }
 .list_of_variant {
   border: 2px solid black;
-  height: 200px;
+  /* height: 200px; */
 }
 .variant_item {
   font-size: 20px;
   margin: 8px 0;
-  cursor: pointer;
+}
+.picture_for_question {
+  height: 250px;
+  padding: 8px;
+  width: auto;
+}
+.picture_for_answer {
+  height: 150px;
+  width: auto;
+  margin: 0 auto; /* Вирівнювання зображення по горизонталі (для блочних елементів) */
+}
+.selected_test {
+  padding: 8px 0;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 40px;
+}
+.left_side {
+  display: flex;
+  justify-content: left;
+  gap: 16px;
+}
+.right_side {
+  display: flex;
+  justify-content: right;
+  gap: 16px;
+}
+
+.box_for_test_review {
+  padding: 16px 40px;
+  min-height: 550px;
+}
+.test_review {
+  width: 100%;
+  border: 2px solid black;
+  padding: 8px 32px;
+}
+.boxs_for_review_task {
+  display: flex;
+}
+.box_for_view_answers {
+  display: flex;
+  justify-content: space-between;
+}
+.view_answer {
+  display: flex;
+}
+.picture_for_view {
+  height: 50px;
 }

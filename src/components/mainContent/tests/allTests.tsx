@@ -36,29 +36,31 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
 
     fetchVariants();
   }, []);
+
   const selectTest = (nameTest: string) => {
     setSelectedVariant(nameTest);
     props.navigate(`/MathTestReact/allTest/${nameTest}`);
   };
-  console.log(selectedVariant);
+
   return (
     <div className="box_for_list_of_tests">
       <div
         className={!selectedVariant ? "conteiner_for_variant_list" : "hidden"}
       >
-        <ul className="list_of_variant">
+        <ol className="list_of_variant">
           {variants.map((variant) => (
-            <li
-              className="variant_item"
-              key={variant.id}
-              onClick={() => {
-                selectTest(variant.id);
-              }}
-            >
-              {variant.name}
+            <li className="variant_item" key={variant.id}>
+              <p
+                className="cursor-pointer m-1"
+                onClick={() => {
+                  selectTest(variant.id);
+                }}
+              >
+                {variant.name}
+              </p>
             </li>
           ))}
-        </ul>
+        </ol>
       </div>
       {selectedVariant && (
         <MathTest selectedVariant={selectedVariant}></MathTest>

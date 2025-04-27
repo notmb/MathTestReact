@@ -1,3 +1,6 @@
+body {
+  margin: 0;
+}
 .section1 {
   padding: 40 20px;
   display: flex;
