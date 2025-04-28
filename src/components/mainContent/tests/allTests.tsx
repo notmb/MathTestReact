@@ -37,9 +37,9 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
     fetchVariants();
   }, []);
 
-  const selectTest = (nameTest: string) => {
-    setSelectedVariant(nameTest);
-    props.navigate(`/MathTestReact/allTest/${nameTest}`);
+  const selectTest = (IdTest: string) => {
+    setSelectedVariant(IdTest);
+    props.navigate(`/MathTestReact/allTest/${IdTest}`);
   };
 
   return (

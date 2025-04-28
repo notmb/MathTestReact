@@ -5,6 +5,9 @@ import SingUp from "./components/account/signUp";
 import MathTest from "./components/mainContent/tests/mathTests";
 import AddNewVariant from "./components/mainContent/creatorVariant/addVariant2";
 import SelectedVariant from "./components/mainContent/tests/selectedTest";
+import Header from "./components/header/header";
+import Footer from "./components/footer/footer";
+import OneTimeTest from "./components/mainContent/tests/oneTimeTest/oneTimeTest";
 
 const routes = [
   {
@@ -26,6 +29,11 @@ const routes = [
   {
     path: "/MathTestReact/allTest/:variant/test",
     component: MathTest,
+  },
+  {
+    path: "/MathTestReact/allTest/:variant/one-time-test",
+    component: OneTimeTest,
+    withoutLayout: true,
   },
   {
     path: "/MathTestReact/study",
@@ -64,7 +72,7 @@ const matchPath = (
     if (routeSegment.startsWith(":")) {
       const paramName = routeSegment.slice(1);
       params[paramName] = currentSegment;
-      console.log(params[paramName]);
+      // console.log(params[paramName]);
     } else if (routeSegment !== currentSegment) {
       return null; // не співпадає
     }
@@ -91,14 +99,17 @@ const Router = (props: {
 
   const Component = matchedRoute.component;
   const selectedVariant = routeParams.variant ?? routeParams.variantName ?? "";
-  // console.log(routeParams.paramName);
-
-  // const route =
-  //   routes.find((route) => route.path === props.currentPath) || routes[0];
-  // const Component = route.component;
+  const withoutLayout = matchedRoute.withoutLayout;
 
   return (
-    <Component navigate={props.navigate} selectedVariant={selectedVariant} />
+    <>
+      {!withoutLayout && <Header navigate={props.navigate} />}
+      <Component
+        navigate={props.navigate}
+        selectedVariant={selectedVariant}
+      ></Component>
+      {!withoutLayout && <Footer />}
+    </>
   );
 };
 export default Router;

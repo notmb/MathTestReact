@@ -143,7 +143,6 @@ const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
 
 //КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
 const Answers = (props: { answers: Answers; selectedVariant: string }) => {
-  console.log(!!props.answers.values);
   props.answers.pictures &&
     console.log(`${props.selectedVariant}/${props.answers.pictures[0]}`);
   const mark = ["А", "Б", "В", "Г", "Д"];

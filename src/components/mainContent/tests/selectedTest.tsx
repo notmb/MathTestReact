@@ -11,6 +11,11 @@ const SelectedVariant = (props: {
     setPassTheTest(true);
   };
 
+  const handleOneTimePassTheTest = (nameTest: string) => {
+    props.navigate(`/MathTestReact/allTest/${nameTest}/one-time-test`);
+    setPassTheTest(true);
+  };
+
   return (
     <div className="selected_test">
       <div className="buttons">
@@ -18,7 +23,12 @@ const SelectedVariant = (props: {
           <button className="custom_button">Редагувати</button>
           <button className="custom_button">Переіменувати</button>
           <button className="custom_button">Видалити</button>
-          <button className="custom_button">Додати одноразове посилання</button>
+          <button
+            className="custom_button"
+            onClick={() => handleOneTimePassTheTest(props.selectedVariant)}
+          >
+            Одноразове посилання
+          </button>
         </div>
         <div className="right_side">
           <button

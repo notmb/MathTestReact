@@ -52,6 +52,7 @@ const TestReview = (props: { selectedVariant: string }) => {
   useEffect(() => {
     fetchTasks();
   }, []);
+  console.log(tasks);
   return (
     <div className="box_for_test_review">
       <div className="test_review">
@@ -66,20 +67,32 @@ const TestReview = (props: { selectedVariant: string }) => {
                 list={task.task.list}
                 table={task.task.table}
               ></Task>
+
               {isTask1(task) && (
-                <Answers
-                  selectedVariant={props.selectedVariant}
-                  answers={task.answers}
-                />
+                <div>
+                  <Answers
+                    selectedVariant={props.selectedVariant}
+                    answers={task.answers}
+                  />
+                  <p>Відповідь: {task.correctAnswer}</p>
+                </div>
               )}
               {isTask2(task) && (
-                <ComparisonData
-                  selectedVariant={props.selectedVariant}
-                  comparisonTable={task.comparisonTable}
-                />
+                <div>
+                  <ComparisonData
+                    selectedVariant={props.selectedVariant}
+                    comparisonTable={task.comparisonTable}
+                  />
+                  <p>
+                    Відповідь: 1-{task.correctComparison[1]}; 2-
+                    {task.correctComparison[2]}; 3-{task.correctComparison[3]}
+                  </p>
+                </div>
               )}
+              {isTask3(task) && <p>Відповідь: {task.correctAnswer}</p>}
             </div>
           ))}
+
         {!tasks && <p>Loading...</p>}
       </div>
     </div>

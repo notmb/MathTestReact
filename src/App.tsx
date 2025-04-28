@@ -1,8 +1,6 @@
 import { MathJaxContext } from "better-react-mathjax";
 import Router from "./router";
-import Header from "./components/header/header";
 import { useState, useEffect } from "react";
-import Footer from "./components/footer/footer";
 
 import "./App.css";
 
@@ -29,9 +27,7 @@ function App() {
     <>
       <div className="app">
         <MathJaxContext>
-          <Header navigate={navigate} />
           <Router currentPath={currentPath} navigate={navigate} />
-          <Footer />
         </MathJaxContext>
       </div>
     </>
