@@ -12,7 +12,7 @@ const SelectedVariant = (props: {
   };
 
   const handleOneTimePassTheTest = (nameTest: string) => {
-    props.navigate(`/MathTestReact/allTest/${nameTest}/one-time-test`);
+    props.navigate(`/MathTestReact/allTest/${nameTest}/one-time-links`);
     setPassTheTest(true);
   };
 
@@ -27,7 +27,7 @@ const SelectedVariant = (props: {
             className="custom_button"
             onClick={() => handleOneTimePassTheTest(props.selectedVariant)}
           >
-            Одноразове посилання
+            Одноразові посилання
           </button>
         </div>
         <div className="right_side">

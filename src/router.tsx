@@ -7,6 +7,7 @@ import AddNewVariant from "./components/mainContent/creatorVariant/addVariant2";
 import SelectedVariant from "./components/mainContent/tests/selectedTest";
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
+import OneTimeLinks from "./components/mainContent/tests/oneTimeTest/oneTimeLinks";
 import OneTimeTest from "./components/mainContent/tests/oneTimeTest/oneTimeTest";
 
 const routes = [
@@ -31,10 +32,16 @@ const routes = [
     component: MathTest,
   },
   {
-    path: "/MathTestReact/allTest/:variant/one-time-test",
-    component: OneTimeTest,
-    withoutLayout: true,
+    path: "/MathTestReact/allTest/:variant/one-time-links",
+    component: OneTimeLinks,
+    withoutLayout: true, // TODO RENAME
   },
+  {
+    path: "/MathTestReact/:variant/one-time-test",
+    component: OneTimeTest,
+    withoutLayout: true, // TODO RENAME
+  },
+
   {
     path: "/MathTestReact/study",
     component: AddNewVariant,
@@ -98,15 +105,17 @@ const Router = (props: {
   }
 
   const Component = matchedRoute.component;
-  const selectedVariant = routeParams.variant ?? routeParams.variantName ?? "";
+  const selectedVariant =
+    routeParams.variant ?? routeParams.variantName ?? "dsds";
   const withoutLayout = matchedRoute.withoutLayout;
-
+  console.log(selectedVariant);
   return (
     <>
       {!withoutLayout && <Header navigate={props.navigate} />}
       <Component
         navigate={props.navigate}
         selectedVariant={selectedVariant}
+        selectedLink={selectedVariant}
       ></Component>
       {!withoutLayout && <Footer />}
     </>

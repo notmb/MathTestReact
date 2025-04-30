@@ -1,62 +1,63 @@
 import { useState, useEffect } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
+import { getDoc, doc } from "firebase/firestore";
 import MathTest from "../mathTests";
-
-interface TestLink {
-  id: string;
+type TestLink = {
   variantId: string;
-  used: boolean;
-  // інші поля, які є в документі
-}
-const OneTimeTest = (props: { selectedVariant: string }) => {
+  isUsed: boolean;
+};
+const OneTimeTest = (props: { selectedLink: string }) => {
+  const [testLink, setTestLink] = useState<TestLink | null>(null);
   const [start, setStart] = useState<boolean>(false);
 
-  const [testLinks, setTestLinks] = useState<TestLink[]>([]);
-
   useEffect(() => {
-    const fetchTestLinks = async () => {
-      const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
-      const q = query(
-        testLinksRef,
-        where("variantId", "==", props.selectedVariant)
+    console.log(props.selectedLink);
+    const fetchData = async () => {
+      const docRef = doc(
+        db,
+        "Subjects",
+        "Math",
+        "TestLinks",
+        props.selectedLink
       );
+      const docSnap = await getDoc(docRef);
 
-      try {
-        const querySnapshot = await getDocs(q);
-
-        const links: TestLink[] = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as TestLink[];
-
-        setTestLinks(links);
-      } catch (error) {
-        console.error("Помилка при отриманні документів:", error);
+      if (docSnap.exists()) {
+        const data = docSnap.data() as TestLink;
+        setTestLink(data);
+      } else {
+        console.warn("Документ не знайдено");
       }
     };
 
-    fetchTestLinks();
+    fetchData();
   }, []);
-  console.log(testLinks);
-  const CheckAdmittance = () => {
-    if (testLinks.length > 0 && testLinks[0].used) {
-      setStart(true);
-    }
-  };
-  console.log(start);
+  testLink && console.log(testLink.variantId);
+
   return (
     <div>
-      {testLinks.map((item, index) => {
-        return (
-          <div key={index}>
-            <p>{item.id}</p>
-          </div>
-        );
-      })}
-
-      {!start && <button onClick={CheckAdmittance}>РОЗПОЧАТИ ТЕСТ</button>}
-      {start && <MathTest selectedVariant={props.selectedVariant}></MathTest>}
+      {!start && (
+        <form id="form_for_user_name" className="form_for_user_name">
+          <label htmlFor="user_name">Введіть своє ім'я</label>
+          <input
+            type="text"
+            id="user_name"
+            placeholder="Ім'я"
+            name="variantName"
+          ></input>
+          <button
+            type="button"
+            form="form_for_user_name"
+            className="custom_button"
+            onClick={() => setStart(true)}
+          >
+            Почати тест
+          </button>
+        </form>
+      )}
+      {testLink && !testLink.isUsed && start && (
+        <MathTest selectedVariant={testLink.variantId}></MathTest>
+      )}
     </div>
   );
 };
