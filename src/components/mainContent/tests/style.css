@@ -1,4 +1,5 @@
-.box_for_list_of_tests {
+.box_for_list_of_tests,
+.one-time-links {
   padding: 16px 32px;
   min-height: 550px;
 }

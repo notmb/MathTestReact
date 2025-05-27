@@ -1,8 +1,7 @@
 import { Tasks, Task1, Task2, Task3 } from "../creatorVariant/types";
 import { useImmer } from "use-immer";
-import { useEffect } from "react";
-import { db } from "../../../firebaseConfig";
-import { getDocs, collection } from "firebase/firestore";
+import { useState } from "react";
+
 import TaskChoice from "./taskChoice";
 import TaskComparison from "./taskComparison";
 import TaskOpenAnswer from "./taskOpenAnswer";
@@ -11,56 +10,29 @@ interface CorrectComparison {
 }
 
 const MathTest = (props: {
+  tasks?: Tasks;
   selectedVariant: string;
-  deactivation?: () => {};
+  endTest?: (
+    userAnswers: { [key: string]: any },
+    mark: string,
+    pointsForTasks: { [key: string]: number },
+    variantId: string,
+    variantName: string
+  ) => void;
 }) => {
-  const [tasks, updateTasks] = useImmer<Tasks>({});
   const [userAnswers, updateUserAnswers] = useImmer<{ [key: string]: any }>({});
+  const [mark, setMark] = useState<string>("0");
+  const [pointsForTasks, updatePointForTask] = useImmer<{ [key: string]: any }>(
+    {}
+  );
+  console.log(mark, pointsForTasks);
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
     task.typeOfTask === "comparison";
   const isTask3 = (task: any): task is Task3 =>
     task.typeOfTask === "openAnswer";
 
-  const fetchTasks = async () => {
-    try {
-      const tasksCollectionRef = collection(
-        db,
-        "Subjects",
-        "Math",
-        "Algebra",
-        "Topics",
-        "Mix",
-        props.selectedVariant,
-        "tasks"
-      );
-
-      const snapshot = await getDocs(tasksCollectionRef);
-      const loadedTasks: Tasks = {};
-
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (isTask1(data)) {
-          loadedTasks[doc.id] = data as Task1;
-        } else if (isTask2(data)) {
-          loadedTasks[doc.id] = data as Task2;
-        } else if (isTask3(data)) {
-          loadedTasks[doc.id] = data as Task3;
-        } else {
-          console.warn(`Невідомий тип завдання (ID: ${doc.id})`, data);
-        }
-      });
-
-      updateTasks(() => loadedTasks);
-    } catch (error) {
-      console.error("Помилка при завантаженні завдань:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
+  //Перевірка
   const CheckComparison = (
     correctAnswer: CorrectComparison,
     userAnswers: CorrectComparison
@@ -77,9 +49,9 @@ const MathTest = (props: {
   const testCheck = () => {
     const comparison: { [key: string]: number } = {};
     let maxMark = 0;
-    tasks &&
-      Object.entries(tasks).forEach(([key, item]) => {
-        console.log(key);
+
+    props.tasks &&
+      Object.entries(props.tasks).forEach(([key, item]) => {
         if (isTask1(item)) {
           maxMark = maxMark + 1;
           if (item.correctAnswer === userAnswers[key]) {
@@ -98,7 +70,7 @@ const MathTest = (props: {
           );
         }
         if (isTask3(item)) {
-          maxMark = maxMark + 2;
+          maxMark += 2;
           if (item.correctAnswer === userAnswers[key]) {
             comparison[key] = 2;
             console.log(comparison);
@@ -107,27 +79,47 @@ const MathTest = (props: {
           }
         }
       });
+    updatePointForTask(() => {
+      return comparison;
+    });
     console.log(comparison);
     console.log(maxMark);
     let sum = 0;
     Object.values(comparison).map((value) => {
       sum = sum + value; // Додаємо значення
     });
+    const nmtMark = Math.round((sum * 200) / maxMark);
+    setMark(
+      sum.toString() + "/" + Math.round((sum * 200) / maxMark).toString()
+    );
     alert(
       "Твій бал за тест: " +
         sum +
         "\nТвій бал у форматі НМТ: " +
         Math.round((sum * 200) / maxMark)
     );
+    return { sum, nmtMark, comparison };
   };
-  console.log();
+  //ПЕРЕВІРКА
+
+  const checkAndEnd = () => {
+    const result = testCheck();
+    props.endTest &&
+      props.endTest(
+        userAnswers,
+        `${result.sum}/${result.nmtMark}`,
+        result.comparison,
+        "",
+        ""
+      );
+  };
 
   return (
     <div>
       <div className="conteiner_for_test">
         <div className="tests">
-          {tasks &&
-            Object.entries(tasks).map(([key, task]) => (
+          {props.tasks &&
+            Object.entries(props.tasks).map(([key, task]) => (
               <div key={key}>
                 {isTask1(task) && (
                   <TaskChoice
@@ -169,8 +161,8 @@ const MathTest = (props: {
                 )}
               </div>
             ))}
-          {!tasks && <p>Loading...</p>}
-          <button className="check_button" onClick={testCheck}>
+          {!props.tasks && <p>Loading...</p>}
+          <button className="check_button" onClick={checkAndEnd}>
             Перевірити
           </button>
         </div>

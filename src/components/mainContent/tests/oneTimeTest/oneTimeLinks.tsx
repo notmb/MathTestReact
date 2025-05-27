@@ -1,76 +1,105 @@
-import { useState, useEffect } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { useEffect } from "react";
+import { useImmer } from "use-immer";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
-import MathTest from "../mathTests";
 
 interface TestLink {
-  id: string;
-  variantId: string;
+  id: string; // id лінку
+  variantId: string; // id варіанту
   used: boolean;
   // інші поля, які є в документі
 }
 const OneTimeLinks = (props: { selectedVariant: string }) => {
-  const [start, setStart] = useState<boolean>(false);
+  const [testLinks, updateTestLinks] = useImmer<TestLink[]>([]);
 
-  const [testLinks, setTestLinks] = useState<TestLink[]>([]);
+  const fetchTestLinks = async () => {
+    const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
+    const q = query(
+      testLinksRef,
+      where("variantId", "==", props.selectedVariant)
+    );
 
-  // const [oneTimeLink, setOneTimeLink] = useState<string | null>(null);
+    try {
+      const querySnapshot = await getDocs(q);
+
+      const links: TestLink[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as TestLink[];
+
+      updateTestLinks(links);
+    } catch (error) {
+      console.error("Помилка при отриманні документів:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchTestLinks = async () => {
-      const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
-      const q = query(
-        testLinksRef,
-        where("variantId", "==", props.selectedVariant)
-      );
-
-      try {
-        const querySnapshot = await getDocs(q);
-
-        const links: TestLink[] = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as TestLink[];
-
-        setTestLinks(links);
-      } catch (error) {
-        console.error("Помилка при отриманні документів:", error);
-      }
-    };
-
     fetchTestLinks();
   }, []);
 
+  const addLink = async () => {
+    const newLink = collection(db, "Subjects", "Math", "TestLinks");
+    try {
+      const docRef = await addDoc(newLink, {
+        variantId: props.selectedVariant,
+        createdAt: new Date(),
+        used: false,
+      });
+      updateTestLinks([
+        ...testLinks,
+        {
+          id: docRef.id,
+          variantId: props.selectedVariant,
+          used: false,
+        },
+      ]);
+      console.log("Користувача додано");
+    } catch (error) {
+      console.error("Помилка створення:", error);
+    }
+  };
+  const host = window.location.host;
   const getLink = (idLink: string) => {
     alert(
-      `твій лінк на тест - http://localhost:5173/MathTestReact/${idLink}/one-time-test`
+      `твій лінк на тест - http://${host}/MathTestReact/${idLink}/one-time-test`
     );
   };
 
-  console.log(testLinks);
-  const CheckAdmittance = () => {
-    if (testLinks.length > 0 && testLinks[0].used) {
-      setStart(true);
-    }
+  const removeLink = async (link: string, index: number) => {
+    await deleteDoc(doc(db, "Subjects", "Math", "TestLinks", link));
+    updateTestLinks((draft) => {
+      draft.splice(index, 1); // ✅ абсолютно нормально — Immer сам зробить копію
+    });
   };
-  console.log(start);
-  return (
-    <div>
-      <p>One TIME LINKS</p>
-      {testLinks.map((item, index) => {
-        return (
-          <div
-            className="border border-black"
-            onClick={() => getLink(item.id)}
-            key={index}
-          >
-            <p>{item.id}</p> <p>{item.used.toString()}</p>
-          </div>
-        );
-      })}
 
-      {!start && <button onClick={CheckAdmittance}>РОЗПОЧАТИ ТЕСТ</button>}
-      {start && <MathTest selectedVariant={props.selectedVariant}></MathTest>}
+  return (
+    <div className="one-time-links">
+      <button onClick={addLink}>Cтворити Link</button>
+      <p>ONE TIME LINKS:</p>
+      {testLinks.length > 0 &&
+        testLinks.map((item, index) => {
+          return (
+            <div className="border border-black" key={item.id}>
+              <span onClick={() => getLink(item.id)}>
+                <p>{item.id}</p> <p>{item.used.toString()}</p>
+              </span>
+              <button
+                onClick={() => removeLink(item.id, index)}
+                className="m-2"
+              >
+                Видалити Link{" "}
+              </button>
+            </div>
+          );
+        })}
     </div>
   );
 };

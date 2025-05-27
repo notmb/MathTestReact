@@ -2,10 +2,12 @@ import "./style.css";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useState, useEffect } from "react";
-import MathTest from "./mathTests";
+import ContainerForMathTest from "./containerForMathTests";
+
 const AllTest = (props: { navigate: (path: string) => void }) => {
   const [variants, setVariants] = useState<{ id: string; name: string }[]>([]);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+
   const getAllVariants = async () => {
     const tasksRef = collection(
       db,
@@ -63,7 +65,9 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
         </ol>
       </div>
       {selectedVariant && (
-        <MathTest selectedVariant={selectedVariant}></MathTest>
+        <ContainerForMathTest
+          selectedVariant={selectedVariant}
+        ></ContainerForMathTest>
       )}
     </div>
   );
