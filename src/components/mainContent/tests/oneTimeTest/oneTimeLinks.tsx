@@ -20,19 +20,19 @@ interface TestLink {
   // інші поля, які є в документі
 }
 
-interface TestResults {
-  pointsForTasks: { [key: string]: string };
-  result: string;
-  userAnswer: { [key: string]: string | { [key: string]: string } };
-}
+// interface TestResults {
+//   pointsForTasks: { [key: string]: string };
+//   result: string;
+//   userAnswer: { [key: string]: string | { [key: string]: string } };
+// }
 
 const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [testLinks, updateTestLinks] = useImmer<TestLink[]>([]);
-  const [testUserResult, updeteTestUserResult] = useImmer<TestResults>({
-    pointsForTasks: {},
-    result: "",
-    userAnswer: {},
-  });
+  // const [testUserResult, updeteTestUserResult] = useImmer<TestResults>({
+  //   pointsForTasks: {},
+  //   result: "",
+  //   userAnswer: {},
+  // });
   const fetchTestLinks = async () => {
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
     const dataLinks = query(
@@ -96,22 +96,22 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
     });
   };
 
-  const getResults = async () => {
-    const testResultsRef = collection(
-      db,
-      "Subjects",
-      "Math",
-      "TestLinks",
-      "J88s5dtZFB5lKGwFDJgB",
-      "testResults"
-    );
-    const snapshot = await getDocs(testResultsRef);
-    if (!snapshot.empty) {
-      const results = snapshot.docs[0];
-    } else {
-      console.log("No documents found");
-    }
-  };
+  // const getResults = async () => {
+  //   const testResultsRef = collection(
+  //     db,
+  //     "Subjects",
+  //     "Math",
+  //     "TestLinks",
+  //     "J88s5dtZFB5lKGwFDJgB",
+  //     "testResults"
+  //   );
+  //   const snapshot = await getDocs(testResultsRef);
+  //   if (!snapshot.empty) {
+  //     const results = snapshot.docs[0];
+  //   } else {
+  //     console.log("No documents found");
+  //   }
+  // };
 
   return (
     <div className="one-time-links">
