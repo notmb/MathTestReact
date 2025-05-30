@@ -17,9 +17,12 @@
   width: auto;
 }
 .picture_for_answer {
-  height: 150px;
-  width: auto;
+  height: auto;
+  width: 100%;
   margin: 0 auto; /* Вирівнювання зображення по горизонталі (для блочних елементів) */
+}
+.container_for_selected_test {
+  min-height: 550px;
 }
 .selected_test {
   padding: 8px 0;

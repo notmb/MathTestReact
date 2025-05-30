@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
 import { db } from "../../../../firebaseConfig";
-import { getDoc, doc, addDoc, collection, updateDoc } from "firebase/firestore";
+import {
+  getDoc,
+  doc,
+  addDoc,
+  collection,
+  updateDoc,
+  setDoc,
+} from "firebase/firestore";
 
 import ContainerForMathTest from "../containerForMathTests";
+import { useImmer } from "use-immer";
 type TestLink = {
   variantId: string;
-  isUsed: boolean;
+  used: boolean;
+  nameStudent: string;
+  testResult: string;
 };
 const OneTimeTest = (props: { selectedLink: string }) => {
-  const [testLink, setTestLink] = useState<TestLink | null>(null);
+  const [testLink, updateTestLink] = useImmer<TestLink | null>(null);
   const [start, setStart] = useState<boolean>(false);
 
   const [userId, setUserId] = useState<string>("");
@@ -28,7 +38,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
 
       if (docSnap.exists()) {
         const data = docSnap.data() as TestLink;
-        setTestLink(data);
+        updateTestLink(data);
       } else {
         console.warn("Документ не знайдено");
       }
@@ -36,6 +46,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
 
     fetchData();
   }, []);
+
   testLink && console.log(testLink.variantId);
 
   const newUser = async (nameUser: string) => {
@@ -62,8 +73,35 @@ const OneTimeTest = (props: { selectedLink: string }) => {
   ) => {
     try {
       const resultsRef = doc(db, "Subjects", "Math", "ResultsTest", userId);
+      const resultsRef2 = doc(
+        db,
+        "Subjects",
+        "Math",
+        "TestLinks",
+        props.selectedLink,
+        "testResults",
+        testLink?.nameStudent || "noName"
+      );
+      const updateDataLink = doc(
+        db,
+        "Subjects",
+        "Math",
+        "TestLinks",
+        props.selectedLink
+      );
 
       await updateDoc(resultsRef, {
+        userAnswer: userAnswers, // додається нове поле
+        pointsForTasks: pointsForTasks,
+        result: result,
+        variantId: variantId,
+        variantName: variantName,
+      });
+      await updateDoc(updateDataLink, {
+        used: true,
+        testResult: result,
+      });
+      await setDoc(resultsRef2, {
         userAnswer: userAnswers, // додається нове поле
         pointsForTasks: pointsForTasks,
         result: result,
@@ -101,7 +139,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         </form>
       )}
 
-      {testLink && !testLink.isUsed && start && (
+      {testLink && !testLink.used && start && (
         <ContainerForMathTest
           selectedVariant={testLink.variantId}
           endTest={endTest}

@@ -15,26 +15,37 @@ interface TestLink {
   id: string; // id лінку
   variantId: string; // id варіанту
   used: boolean;
+  nameStudent: string;
+  testResult: string;
   // інші поля, які є в документі
 }
+
+interface TestResults {
+  pointsForTasks: { [key: string]: string };
+  result: string;
+  userAnswer: { [key: string]: string | { [key: string]: string } };
+}
+
 const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [testLinks, updateTestLinks] = useImmer<TestLink[]>([]);
-
+  const [testUserResult, updeteTestUserResult] = useImmer<TestResults>({
+    pointsForTasks: {},
+    result: "",
+    userAnswer: {},
+  });
   const fetchTestLinks = async () => {
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
-    const q = query(
+    const dataLinks = query(
       testLinksRef,
       where("variantId", "==", props.selectedVariant)
     );
-
     try {
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await getDocs(dataLinks);
 
       const links: TestLink[] = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as TestLink[];
-
       updateTestLinks(links);
     } catch (error) {
       console.error("Помилка при отриманні документів:", error);
@@ -48,24 +59,29 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   const addLink = async () => {
     const newLink = collection(db, "Subjects", "Math", "TestLinks");
     try {
+      const userName = prompt("Введіть ім'я учня:")?.trim() || "Не Вказано";
       const docRef = await addDoc(newLink, {
         variantId: props.selectedVariant,
         createdAt: new Date(),
         used: false,
+        nameStudent: userName,
+        testResult: "не пройдено",
       });
-      updateTestLinks([
-        ...testLinks,
-        {
+      updateTestLinks((draft) => {
+        draft.push({
           id: docRef.id,
           variantId: props.selectedVariant,
           used: false,
-        },
-      ]);
+          nameStudent: userName,
+          testResult: "не пройдено",
+        });
+      });
       console.log("Користувача додано");
     } catch (error) {
       console.error("Помилка створення:", error);
     }
   };
+
   const host = window.location.host;
   const getLink = (idLink: string) => {
     alert(
@@ -80,6 +96,23 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
     });
   };
 
+  const getResults = async () => {
+    const testResultsRef = collection(
+      db,
+      "Subjects",
+      "Math",
+      "TestLinks",
+      "J88s5dtZFB5lKGwFDJgB",
+      "testResults"
+    );
+    const snapshot = await getDocs(testResultsRef);
+    if (!snapshot.empty) {
+      const results = snapshot.docs[0];
+    } else {
+      console.log("No documents found");
+    }
+  };
+
   return (
     <div className="one-time-links">
       <button onClick={addLink}>Cтворити Link</button>
@@ -89,14 +122,23 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
           return (
             <div className="border border-black" key={item.id}>
               <span onClick={() => getLink(item.id)}>
-                <p>{item.id}</p> <p>{item.used.toString()}</p>
+                <p>{item.id}</p>
+                <p>Учень: {item.nameStudent}</p>
+                <p>
+                  {item.used === false
+                    ? "не пройдено"
+                    : `пройдено, результат: ${item.testResult}`}
+                </p>
               </span>
               <button
                 onClick={() => removeLink(item.id, index)}
                 className="m-2"
               >
-                Видалити Link{" "}
+                Видалити Link
               </button>
+              {item.used === true && (
+                <button className="m-2">Переглянутити результати</button>
+              )}
             </div>
           );
         })}
