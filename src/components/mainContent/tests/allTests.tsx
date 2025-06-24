@@ -2,11 +2,9 @@ import "./style.css";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useState, useEffect } from "react";
-import ContainerForMathTest from "./containerForMathTests";
 
 const AllTest = (props: { navigate: (path: string) => void }) => {
   const [variants, setVariants] = useState<{ id: string; name: string }[]>([]);
-  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
 
   const getAllVariants = async () => {
     const tasksRef = collection(
@@ -40,15 +38,12 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
   }, []);
 
   const selectTest = (IdTest: string) => {
-    setSelectedVariant(IdTest);
     props.navigate(`/MathTestReact/allTest/${IdTest}`);
   };
 
   return (
     <div className="box_for_list_of_tests">
-      <div
-        className={!selectedVariant ? "conteiner_for_variant_list" : "hidden"}
-      >
+      <div>
         <ol className="list_of_variant">
           {variants.map((variant) => (
             <li className="variant_item" key={variant.id}>
@@ -64,11 +59,6 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
           ))}
         </ol>
       </div>
-      {selectedVariant && (
-        <ContainerForMathTest
-          selectedVariant={selectedVariant}
-        ></ContainerForMathTest>
-      )}
     </div>
   );
 };

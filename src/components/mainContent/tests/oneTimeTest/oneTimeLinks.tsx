@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import TestResults from "../testResults";
+import { useEffect, useState } from "react";
 import { useImmer } from "use-immer";
 import {
   collection,
@@ -19,20 +20,16 @@ interface TestLink {
   testResult: string;
   // інші поля, які є в документі
 }
-
-// interface TestResults {
-//   pointsForTasks: { [key: string]: string };
-//   result: string;
-//   userAnswer: { [key: string]: string | { [key: string]: string } };
-// }
+interface SelectedLink {
+  selectedLink: string;
+  nameStudent: string;
+}
 
 const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [testLinks, updateTestLinks] = useImmer<TestLink[]>([]);
-  // const [testUserResult, updeteTestUserResult] = useImmer<TestResults>({
-  //   pointsForTasks: {},
-  //   result: "",
-  //   userAnswer: {},
-  // });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAnswersData, updateSelectedAnswersData] =
+    useImmer<SelectedLink | null>(null);
   const fetchTestLinks = async () => {
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
     const dataLinks = query(
@@ -96,22 +93,13 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
     });
   };
 
-  // const getResults = async () => {
-  //   const testResultsRef = collection(
-  //     db,
-  //     "Subjects",
-  //     "Math",
-  //     "TestLinks",
-  //     "J88s5dtZFB5lKGwFDJgB",
-  //     "testResults"
-  //   );
-  //   const snapshot = await getDocs(testResultsRef);
-  //   if (!snapshot.empty) {
-  //     const results = snapshot.docs[0];
-  //   } else {
-  //     console.log("No documents found");
-  //   }
-  // };
+  const ViewTheResults = (selectedLink: string, nameStudent: string) => {
+    setIsModalOpen(true);
+    updateSelectedAnswersData(() => ({
+      selectedLink: selectedLink,
+      nameStudent: nameStudent,
+    }));
+  };
 
   return (
     <div className="one-time-links">
@@ -137,11 +125,24 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
                 Видалити Link
               </button>
               {item.used === true && (
-                <button className="m-2">Переглянутити результати</button>
+                <button
+                  className="m-2"
+                  onClick={() => ViewTheResults(item.id, item.nameStudent)}
+                >
+                  Переглянутити результати
+                </button>
               )}
             </div>
           );
         })}
+      {isModalOpen && selectedAnswersData && (
+        <TestResults
+          onClose={() => setIsModalOpen(false)}
+          variantId={props.selectedVariant}
+          nameStudent={selectedAnswersData.nameStudent}
+          selectedLink={selectedAnswersData.selectedLink}
+        />
+      )}
     </div>
   );
 };

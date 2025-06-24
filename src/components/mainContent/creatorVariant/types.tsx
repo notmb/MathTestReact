@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 export interface Task1 {
   //тип даних для завдання з з вибором 1 відповіді
   task: Question;
@@ -57,4 +58,11 @@ export interface Comparison {
     texts?: string[];
     picture?: string[];
   };
+}
+
+export interface VaiantData {
+  id?: string;
+  name: string;
+  createdAt: Timestamp;
+  numberOfTasks: string;
 }

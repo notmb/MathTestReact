@@ -4,6 +4,7 @@ import { app } from "../../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
 import type { Question } from "../creatorVariant/types";
+import Picture from "./imageComponent";
 
 const TaskOpenAnswer = (props: {
   selectedVariant: string;
@@ -55,36 +56,6 @@ const Task = (props: {
   );
 };
 //КОМПОНЕНТ ЗАВДАННЯ
-
-const fetchImage = async (url: string) => {
-  const storage = getStorage(app); // Отримуємо екземпляр Storage
-  const storageRef = ref(storage, url); // Шлях до файлу в Storage
-
-  return getDownloadURL(storageRef);
-};
-
-//КОМПОНЕНТ ЗОБРАЖЕННЯ ДЛЯ ЗАВДАННЯ
-const Picture = (props: { url: string; classForPicture: string }) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl)); // Викликаємо завантаження зображення при завантаженні компонента
-  }, [props.url]);
-  return (
-    <div>
-      {imageUrl ? (
-        <img
-          className={props.classForPicture}
-          src={imageUrl}
-          alt="Loaded from Firebase"
-        />
-      ) : (
-        <p>Завантаження зображення...</p>
-      )}
-    </div>
-  );
-};
-//КОМПОНЕНТ ЗОБРАЖЕННЯ ДЛЯ ЗАВДАННЯ
 
 //КОМПОНЕНТ ВІДПОВІДІ ДО ЗАВДАННЯ З ВІДКРИТОЮ ВІДПОВІДДЮ
 const OpenAnswer = (props: {
