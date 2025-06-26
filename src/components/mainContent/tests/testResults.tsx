@@ -1,14 +1,7 @@
-import { Task1, Task2, Task3 } from "../creatorVariant/types";
 import { useImmer } from "use-immer";
 import { db } from "../../../firebaseConfig";
-import {
-  getDocs,
-  collection,
-  doc,
-  getDoc,
-  Timestamp,
-  deleteDoc,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { useEffect } from "react";
 import TestReview from "./elementsForReviewTest/testReview";
 
 const TestResults = (props: {
@@ -24,10 +17,12 @@ const TestResults = (props: {
       db,
       "Subjects",
       "Math",
+      "TestLinks",
       props.selectedLink,
       "testResults",
       props.nameStudent
     );
+
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -37,28 +32,40 @@ const TestResults = (props: {
       console.warn("Документ не знайдено");
     }
   };
+  useEffect(() => {
+    fetchUserAnswersData();
+  }, []);
 
+  console.log(userAnswers);
   return (
-    <div className="containerForChekResults">
+    <div className="container_for_chekResults">
       <div className="user_answer">
-        {Object.entries(userAnswers).map(([questionKey, answer], index) => (
-          <div key={index} className="answer-block">
-            <strong>{questionKey}:</strong>{" "}
-            {typeof answer === "string" ? (
-              <span>{answer}</span>
-            ) : (
-              <div className="nested-answers">
-                {Object.entries(answer).map(([subKey, subValue], subIndex) => (
-                  <div key={subIndex}>
-                    <em>{subKey}:</em> {String(subValue)}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+        <h2>Відповіді учня:</h2>
+        <div className="inline_answers">
+          {Object.entries(userAnswers).map(([questionKey, answer], index) => (
+            <div key={index} className="answer_block">
+              <strong>{questionKey})</strong> &nbsp;
+              {typeof answer === "string" ? (
+                <span>{answer}</span>
+              ) : (
+                <div className="box_nested_answers">
+                  {Object.entries(answer).map(
+                    ([subKey, subValue], subIndex) => (
+                      <div key={subIndex} className="nested_answers">
+                        <em>{subKey}:</em> {String(subValue)}{" "}
+                        <p className="m-0">; </p>&nbsp;
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
+      {/* <div className="box_for_test_review"> */}
       <TestReview selectedVariant={props.variantId}></TestReview>
+      {/* </div> */}
     </div>
   );
 };

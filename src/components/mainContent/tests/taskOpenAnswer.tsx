@@ -1,8 +1,6 @@
 import "../tests.css";
 import { MathJax } from "better-react-mathjax";
-import { app } from "../../../firebaseConfig";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { useState, useEffect } from "react";
+
 import type { Question } from "../creatorVariant/types";
 import Picture from "./imageComponent";
 

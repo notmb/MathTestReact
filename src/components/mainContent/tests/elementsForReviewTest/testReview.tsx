@@ -1,15 +1,12 @@
-import { Tasks, Task1, Task2, Task3 } from "../../creatorVariant/types";
-import { useImmer } from "use-immer";
-import { useEffect } from "react";
-import { db } from "../../../../firebaseConfig";
-import { getDocs, collection } from "firebase/firestore";
+import { Task1, Task2, Task3 } from "../../creatorVariant/types";
+
 import { useVariantContext } from "../variantContext";
 import Task from "./conditionOfTask";
 import Answers from "./answersForTaskChoise";
 import ComparisonData from "./comparison";
 
 const TestReview = (props: { selectedVariant: string }) => {
-  const { tasks, dataVariant } = useVariantContext();
+  const { tasks } = useVariantContext();
   // const [tasks, updateTasks] = useImmer<Tasks>({});
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>

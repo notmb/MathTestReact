@@ -38,7 +38,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
   }, []);
 
   const selectTest = (IdTest: string) => {
-    props.navigate(`/MathTestReact/allTest/${IdTest}`);
+    props.navigate(`/MathTestReact/allTest/selectedVariant/${IdTest}`);
   };
 
   return (

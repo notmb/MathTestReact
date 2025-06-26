@@ -10,7 +10,7 @@ import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import OneTimeLinks from "./components/mainContent/tests/oneTimeTest/oneTimeLinks";
 import OneTimeTest from "./components/mainContent/tests/oneTimeTest/oneTimeTest";
-
+import VariantContextWrapper from "./components/mainContent/tests/variantContextWrapper";
 const routes = [
   {
     path: "/MathTestReact/main",
@@ -24,16 +24,17 @@ const routes = [
     path: "/MathTestReact/allTest",
     component: AllTest,
   },
+
   {
-    path: "/MathTestReact/allTest/:variant",
+    path: "/MathTestReact/allTest/selectedVariant/:variant",
     component: SelectedVariant,
   },
   {
-    path: "/MathTestReact/allTest/:variant/test",
+    path: "/MathTestReact/allTest/selectedVariant/:variant/test",
     component: ContainerForMathTest,
   },
   {
-    path: "/MathTestReact/allTest/:variant/one-time-links",
+    path: "/MathTestReact/allTest/selectedVariant/:variant/one-time-links",
     component: OneTimeLinks,
   },
   {
@@ -106,17 +107,23 @@ const Router = (props: {
 
   const Component = matchedRoute.component;
   const selectedVariant =
-    routeParams.variant ?? routeParams.variantName ?? "dsds";
+    routeParams.variant ?? routeParams.variantName ?? "none";
   const withoutLayout = matchedRoute.withoutLayout;
-  console.log(selectedVariant);
-  return (
-    <>
-      {!withoutLayout && <Header navigate={props.navigate} />}
+
+  const content = (
+    <VariantContextWrapper variant={selectedVariant}>
       <Component
         navigate={props.navigate}
         selectedVariant={selectedVariant}
         selectedLink={selectedVariant}
-      ></Component>
+      />
+    </VariantContextWrapper>
+  );
+
+  return (
+    <>
+      {!withoutLayout && <Header navigate={props.navigate} />}
+      {content}
       {!withoutLayout && <Footer />}
     </>
   );

@@ -107,11 +107,13 @@ const SelectedVariant = (props: {
   //
 
   const handlePassTheTest = (nameTest: string) => {
-    props.navigate(`/MathTestReact/allTest/${nameTest}/test`);
+    props.navigate(`/MathTestReact/allTest/selectedVariant/${nameTest}/test`);
   };
 
   const handleOneTimePassTheTest = (nameTest: string) => {
-    props.navigate(`/MathTestReact/allTest/${nameTest}/one-time-links`);
+    props.navigate(
+      `/MathTestReact/allTest/selectedVariant/${nameTest}/one-time-links`
+    );
   };
 
   const removeTest = async (link: string) => {
