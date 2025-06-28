@@ -78,7 +78,7 @@ const Task = (props: {
 }) => {
   return (
     <div className="task_box">
-      <div>
+      <div className="text-2xl">
         <MathJax>{props.text}</MathJax>
       </div>
       {props.picture && (
@@ -104,8 +104,8 @@ const ComparisonTable = (props: {
         <ul className="list1">
           {props.comparisonTable.list1.texts &&
             props.comparisonTable.list1.texts.map((item, index) => (
-              <li key={index} className="item_of_comparison">
-                {index + 1}) <MathJax>{item}</MathJax>
+              <li key={index} className="item_of_comparison text-xl">
+                {index + 1}) &nbsp;<MathJax>{item}</MathJax>
               </li>
             ))}
         </ul>
@@ -115,8 +115,8 @@ const ComparisonTable = (props: {
         <ul className="list2">
           {props.comparisonTable.list2.texts &&
             props.comparisonTable.list2.texts.map((item, index) => (
-              <li key={index} className="item_of_comparison">
-                {mark[index]}) <MathJax>{item}</MathJax>
+              <li key={index} className="item_of_comparison text-xl">
+                {mark[index]}) &nbsp;<MathJax>{item}</MathJax>
               </li>
             ))}
         </ul>
@@ -165,7 +165,7 @@ const AnswerToComparisonTask = (props: {
         {props.comparisonTable.list1.texts &&
           props.comparisonTable.list1.texts.map((_, index) => (
             <li key={index} className="item_user_answer_comparison">
-              {index + 1})
+              {index + 1}) &nbsp;
               <input
                 className="user_answer_comparison"
                 id={props.number}

@@ -48,7 +48,7 @@ const Task = (props: {
 }) => {
   return (
     <div className="task_box">
-      <div>
+      <div className="text-2xl">
         <MathJax>{props.text}</MathJax>
       </div>
       {props.list && <ListToQestion list={props.list}></ListToQestion>}
@@ -137,7 +137,7 @@ const AnswerChoice = (props: {
                 onChange={handleChoiceChange}
               />
               <label className="label" htmlFor={item}>
-                <span className="answer">{item}</span>
+                <span className="answer">&nbsp; {item}</span>
               </label>
             </div>
           );

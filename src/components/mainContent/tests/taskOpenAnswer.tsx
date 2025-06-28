@@ -41,7 +41,7 @@ const Task = (props: {
 }) => {
   return (
     <div className="task_box">
-      <div>
+      <div className="text-2xl">
         <MathJax>{props.text}</MathJax>
       </div>
       {props.picture && (

@@ -16,8 +16,10 @@ const TableForAnswersToTaskChoice = (props: {
             key={index}
             className={`columns_in_answers_table columns_in_answers_table_${index}`}
           >
-            <div className="mark_in_answers_table font-bold">{mark[index]}</div>
-            <div className="option_in_answers_table">
+            <div className="mark_in_answers_table font-bold text-xl">
+              {mark[index]}
+            </div>
+            <div className="option_in_answers_table text-xl ">
               {props.answers.pictures && props.answers.pictures[index] && (
                 <Picture
                   url={`${props.selectedVariant}/${props.answers.pictures[index]}`}

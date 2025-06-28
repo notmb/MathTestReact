@@ -100,11 +100,7 @@
   padding: 0;
   list-style: none;
 }
-.item_of_comparison {
-  display: flex;
-  font-size: 18px;
-  padding: 8px 0;
-}
+
 .box_for_answers_comparison {
   padding-top: 8px;
 }
