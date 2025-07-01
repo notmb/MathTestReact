@@ -1,3 +1,6 @@
+import { auth } from "./firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+import { useState, useEffect } from "react";
 import MainPage from "./components/mainPage";
 import AllTest from "./components/mainContent/tests/allTests";
 import SingIn from "./components/account/singIn";
@@ -93,6 +96,22 @@ const Router = (props: {
   currentPath: string;
   navigate: (path: string) => void;
 }) => {
+  const [user, setUser] = useState(auth.currentUser);
+  const [authChecked, setAuthChecked] = useState(false);
+  console.log(auth.currentUser);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setAuthChecked(true);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (!authChecked) {
+    // Показати спінер чи порожній div, поки не з'ясували auth стан
+    return <div>Loading...</div>;
+  }
+
   let matchedRoute = routes[0]; // fallback
   let routeParams: { [key: string]: string } = {};
 
@@ -119,13 +138,36 @@ const Router = (props: {
       />
     </VariantContextWrapper>
   );
-
-  return (
-    <>
-      {!withoutLayout && <Header navigate={props.navigate} />}
-      {content}
-      {!withoutLayout && <Footer />}
-    </>
-  );
+  if (
+    !user &&
+    ![
+      "/MathTestReact/account/login",
+      "/MathTestReact/:variant/one-time-test",
+    ].includes(matchedRoute.path)
+  ) {
+    // Якщо не залогінений, і це не сторінка логіну
+    return (
+      <>
+        {!withoutLayout && <Header navigate={props.navigate} />}
+        <div style={{ padding: "2rem", textAlign: "center" }}>
+          <h2>Access denied</h2>
+          <p>Please log in to view this page.</p>
+          <button
+            onClick={() => props.navigate("/MathTestReact/account/login")}
+          >
+            Go to Login
+          </button>
+        </div>
+        {!withoutLayout && <Footer />}
+      </>
+    );
+  } else
+    return (
+      <>
+        {!withoutLayout && <Header navigate={props.navigate} />}
+        {content}
+        {!withoutLayout && <Footer />}
+      </>
+    );
 };
 export default Router;

@@ -1,15 +1,15 @@
 import "./personalAccount";
 import { useState } from "react";
+
 import PersonalAccount from "./personalAccount";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 
-const SingUp = () => {
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignUp = async () => {
-    console.log("sing");
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       alert("User registered successfully!");
@@ -66,4 +66,4 @@ const SingUp = () => {
   );
 };
 
-export default SingUp;
+export default SignUp;

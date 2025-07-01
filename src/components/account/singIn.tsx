@@ -1,24 +1,48 @@
 import "./personalAccount";
-import { useState } from "react";
-// import { auth } from "../../firebaseConfig";
-// import { signInWithEmailAndPassword } from "firebase/auth";
+import { useImmer } from "use-immer";
+import { auth } from "../../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import PersonalAccount from "./personalAccount";
 
 const SingIn = (prop: { navigate: (path: string) => void }) => {
-  const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [formData, updateFormData] = useImmer({
+    email: "",
+    password: "",
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    updateFormData((draft) => {
+      if (name === "email" || name === "password") {
+        draft[name] = value;
+      }
+    });
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Запобігає оновленню сторінки
     console.log("Form submitted!");
   };
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // якщо кнопка в формі — блокуємо сабміт форми
+
     try {
-      // await signInWithEmailAndPassword(auth, email, password);
-      alert("Signed in successfully!");
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      const user = userCredential.user;
+      console.log("User signed in:", user);
+      alert("Sign in successful!");
+
+      // тут можеш викликати navigate або завантажити роль користувача
+      // props.navigate("/MathTestReact/main");
     } catch (error) {
-      console.error(error);
+      console.error("Sign in error:", error);
+      alert("Sign in failed: " + (error as any).message);
     }
   };
 
@@ -31,11 +55,11 @@ const SingIn = (prop: { navigate: (path: string) => void }) => {
             <input
               className="user_name"
               id="username"
-              name="username"
+              name="email"
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleInputChange}
             />
           </label>
 
@@ -44,11 +68,11 @@ const SingIn = (prop: { navigate: (path: string) => void }) => {
             <input
               id="userpassword"
               className="user_password"
-              name="username"
-              type="email"
+              type="password"
+              name="password"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.password}
+              onChange={handleInputChange}
             ></input>
           </label>
           <button className="button_for_sing_in" onClick={handleSignIn}>
