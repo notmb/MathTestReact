@@ -9,7 +9,7 @@ import {
   updateDoc,
   setDoc,
 } from "firebase/firestore";
-import Timer from "./Timer";
+
 import ContainerForMathTest from "../containerForMathTests";
 
 type TestLink = {
@@ -21,7 +21,7 @@ type TestLink = {
 
 const OneTimeTest = (props: { selectedLink: string }) => {
   const [testLink, updateTestLink] = useImmer<TestLink | null>(null);
-  const [start, setStart] = useState<boolean>(false);
+
   const [status, setStatus] = useState<"started" | "and" | null>(null);
 
   const [userId, setUserId] = useState<string>("");

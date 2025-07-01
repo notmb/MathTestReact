@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const Timer = (props: {
-  endTest?: (
+  endTest: (
     userAnswers: { [key: string]: any },
     mark: string,
-    pointsForTasks: { [key: string]: number },
-    variantId: string,
-    variantName: string
+    pointsForTasks: { [key: string]: number }
   ) => void;
+  setTimeOut: (timeOut: boolean) => void;
 }) => {
-  const [secondsLeft, setSecondsLeft] = useState<number>(60); // 1 година
+  const [secondsLeft, setSecondsLeft] = useState<number>(3600); // 1 година
 
   useEffect(() => {
     let timerId: NodeJS.Timeout | null = null;
@@ -21,6 +20,7 @@ const Timer = (props: {
     }
 
     if (secondsLeft === 0) {
+      props.setTimeOut(true);
       End();
     }
 
@@ -47,7 +47,9 @@ const Timer = (props: {
 
   return (
     <div className="timer">
-      <p>Час залишився: {formatTime(secondsLeft)}</p>
+      <p className="text-xl text-red-500">
+        Залишилося: {formatTime(secondsLeft)}
+      </p>
     </div>
   );
 };

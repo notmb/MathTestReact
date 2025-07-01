@@ -32,7 +32,7 @@ const ContainerForMathTest = (props: {
   ) => void;
 }) => {
   const [tasks, updateTasks] = useImmer<Tasks>({});
-  console.log(props.endTest);
+
   const [dataVariant, updateDataVariant] = useImmer<VaiantData>({
     name: "",
     createdAt: new Timestamp(0, 0), // або новий Timestamp
@@ -101,6 +101,7 @@ const ContainerForMathTest = (props: {
     mark: string,
     pointsForTasks: { [key: string]: number }
   ) => {
+    console.log(props.endTest);
     if (props.endTest) {
       props.endTest(
         userAnswers,
@@ -122,11 +123,19 @@ const ContainerForMathTest = (props: {
 
   return (
     <>
-      <MathTest
-        tasks={tasks}
-        selectedVariant={props.selectedVariant}
-        endTest={endTest}
-      ></MathTest>
+      {props.endTest && (
+        <MathTest
+          tasks={tasks}
+          selectedVariant={props.selectedVariant}
+          endTest={endTest}
+        ></MathTest>
+      )}
+      {!props.endTest && (
+        <MathTest
+          tasks={tasks}
+          selectedVariant={props.selectedVariant}
+        ></MathTest>
+      )}
     </>
   );
 };

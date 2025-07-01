@@ -1,8 +1,8 @@
 import { Tasks, Task1, Task2, Task3 } from "../creatorVariant/types";
 import { useImmer } from "use-immer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import Timer from "./oneTimeTest/Timer";
+import Timer from "./oneTimeTest/timer";
 import TaskChoice from "./taskChoice";
 import TaskComparison from "./taskComparison";
 import TaskOpenAnswer from "./taskOpenAnswer";
@@ -16,9 +16,7 @@ const MathTest = (props: {
   endTest?: (
     userAnswers: { [key: string]: any },
     mark: string,
-    pointsForTasks: { [key: string]: number },
-    variantId: string,
-    variantName: string
+    pointsForTasks: { [key: string]: number }
   ) => void;
 }) => {
   const [userAnswers, updateUserAnswers] = useImmer<{ [key: string]: any }>({});
@@ -26,7 +24,9 @@ const MathTest = (props: {
   const [pointsForTasks, updatePointForTask] = useImmer<{ [key: string]: any }>(
     {}
   );
-  // console.log(mark, pointsForTasks);
+  const [timeOut, setTimeOut] = useState<boolean>(false);
+
+  console.log(mark, pointsForTasks);
   console.log(props.endTest);
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
@@ -106,19 +106,26 @@ const MathTest = (props: {
 
   const checkAndEnd = () => {
     const result = testCheck();
+    console.log(props.endTest);
     props.endTest &&
       props.endTest(
         userAnswers,
         `${result.sum}/${result.nmtMark}`,
-        result.comparison,
-        "",
-        ""
+        result.comparison
       );
   };
+  useEffect(() => {
+    console.log(timeOut);
+    if (timeOut) {
+      checkAndEnd();
+    }
+  }, [timeOut]);
 
   return (
     <div>
-      {props.endTest && <Timer endTest={props.endTest}></Timer>}
+      {props.endTest && (
+        <Timer endTest={props.endTest} setTimeOut={setTimeOut}></Timer>
+      )}
       <div className="conteiner_for_test">
         <div className="tests">
           {props.tasks &&
