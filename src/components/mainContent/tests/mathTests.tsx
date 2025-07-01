@@ -2,6 +2,7 @@ import { Tasks, Task1, Task2, Task3 } from "../creatorVariant/types";
 import { useImmer } from "use-immer";
 import { useState } from "react";
 
+import Timer from "./oneTimeTest/Timer";
 import TaskChoice from "./taskChoice";
 import TaskComparison from "./taskComparison";
 import TaskOpenAnswer from "./taskOpenAnswer";
@@ -25,7 +26,8 @@ const MathTest = (props: {
   const [pointsForTasks, updatePointForTask] = useImmer<{ [key: string]: any }>(
     {}
   );
-  console.log(mark, pointsForTasks);
+  // console.log(mark, pointsForTasks);
+  console.log(props.endTest);
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
     task.typeOfTask === "comparison";
@@ -116,6 +118,7 @@ const MathTest = (props: {
 
   return (
     <div>
+      {props.endTest && <Timer endTest={props.endTest}></Timer>}
       <div className="conteiner_for_test">
         <div className="tests">
           {props.tasks &&

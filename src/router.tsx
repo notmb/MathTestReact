@@ -98,7 +98,7 @@ const Router = (props: {
 }) => {
   const [user, setUser] = useState(auth.currentUser);
   const [authChecked, setAuthChecked] = useState(false);
-  console.log(auth.currentUser);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);

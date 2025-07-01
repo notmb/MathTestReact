@@ -1,3 +1,4 @@
+import { useImmer } from "use-immer";
 import { useState, useEffect } from "react";
 import { db } from "../../../../firebaseConfig";
 import {
@@ -8,18 +9,20 @@ import {
   updateDoc,
   setDoc,
 } from "firebase/firestore";
-
+import Timer from "./Timer";
 import ContainerForMathTest from "../containerForMathTests";
-import { useImmer } from "use-immer";
+
 type TestLink = {
   variantId: string;
   used: boolean;
   nameStudent: string;
   testResult: string;
 };
+
 const OneTimeTest = (props: { selectedLink: string }) => {
   const [testLink, updateTestLink] = useImmer<TestLink | null>(null);
   const [start, setStart] = useState<boolean>(false);
+  const [status, setStatus] = useState<"started" | "and" | null>(null);
 
   const [userId, setUserId] = useState<string>("");
 
@@ -61,7 +64,8 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     } catch (error) {
       console.error("Помилка створення:", error);
     }
-    setStart(true);
+    // setStart(true);
+    setStatus("started");
   };
 
   const endTest = async (
@@ -108,17 +112,17 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         variantId: variantId,
         variantName: variantName,
       });
-
-      console.log("Користувача додано");
+      setStatus("and");
+      console.log("Тест закінчено");
     } catch (error) {
-      console.error("Помилка створення:", error);
+      console.error("Помилка:", error);
     }
   };
   // const endTest ()
 
   return (
     <div>
-      {!start && (
+      {status === null && (
         <form id="form_for_user_name" className="form_for_user_name">
           <label htmlFor="user_name">Введіть своє ім'я</label>
           <input
@@ -138,13 +142,15 @@ const OneTimeTest = (props: { selectedLink: string }) => {
           </button>
         </form>
       )}
-
-      {testLink && !testLink.used && start && (
-        <ContainerForMathTest
-          selectedVariant={testLink.variantId}
-          endTest={endTest}
-        ></ContainerForMathTest>
+      {testLink && !testLink.used && status === "started" && (
+        <div>
+          <ContainerForMathTest
+            selectedVariant={testLink.variantId}
+            endTest={endTest}
+          ></ContainerForMathTest>
+        </div>
       )}
+      {status === "and" && <h1>Тест закінчено</h1>}
     </div>
   );
 };

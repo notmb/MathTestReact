@@ -32,7 +32,7 @@ const ContainerForMathTest = (props: {
   ) => void;
 }) => {
   const [tasks, updateTasks] = useImmer<Tasks>({});
-
+  console.log(props.endTest);
   const [dataVariant, updateDataVariant] = useImmer<VaiantData>({
     name: "",
     createdAt: new Timestamp(0, 0), // або новий Timestamp
