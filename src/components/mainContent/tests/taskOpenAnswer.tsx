@@ -71,7 +71,7 @@ const OpenAnswer = (props: {
         className="user_answer_open"
         id={props.number}
         type="number"
-        placeholder="your answer..."
+        placeholder="відповідь.."
         onChange={handleChoiceChange}
       />
     </div>

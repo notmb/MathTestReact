@@ -174,9 +174,7 @@ const AnswerToComparisonTask = (props: {
                 value={inputValues[(index + 1).toString()] || ""}
                 onChange={(e) => handleChoiceChange(e, index)}
               >
-                <option value="" disabled>
-                  оберіть відповідь...
-                </option>
+                <option value="">оберіть відповідь..</option>
                 {["А", "Б", "В", "Г", "Д"]
                   .filter(
                     (opt) =>
