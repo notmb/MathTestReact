@@ -175,3 +175,19 @@
   border-radius: 4px; /* необов’язково, для краси */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* тінь, необов’язково */
 }
+.condition {
+  border-bottom: 10px solid;
+  border-image: linear-gradient(to right, aliceblue, transparent) 1;
+  border-image-slice: 1;
+}
+input.user_answer_open {
+  appearance: textfield; /* Стандарт */
+  -moz-appearance: textfield; /* Firefox */
+  -webkit-appearance: none; /* Safari, Chrome */
+}
+
+input.user_answer_open::-webkit-outer-spin-button,
+input.user_answer_open::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

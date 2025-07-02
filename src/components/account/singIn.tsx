@@ -4,7 +4,8 @@ import { auth } from "../../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import PersonalAccount from "./personalAccount";
 
-const SingIn = (prop: { navigate: (path: string) => void }) => {
+const SingIn = () => {
+  //prop: { navigate: (path: string) => void }
   const [formData, updateFormData] = useImmer({
     email: "",
     password: "",
@@ -79,7 +80,7 @@ const SingIn = (prop: { navigate: (path: string) => void }) => {
             Sing In
           </button>
         </form>
-        <div className="conteiner_for_text">
+        {/* <div className="conteiner_for_text">
           <p>У Вас немає акаута, тоді потрібно</p>
           <div
             onClick={() => prop.navigate("/MathTestReact/account/singup")}
@@ -87,7 +88,7 @@ const SingIn = (prop: { navigate: (path: string) => void }) => {
           >
             <p className="text_sing_up">Зареєструватись</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </PersonalAccount>
   );

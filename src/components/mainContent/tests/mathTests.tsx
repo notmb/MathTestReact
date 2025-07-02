@@ -27,7 +27,7 @@ const MathTest = (props: {
   const [timeOut, setTimeOut] = useState<boolean>(false);
 
   console.log(mark, pointsForTasks);
-  console.log(props.endTest);
+  console.log(userAnswers);
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
     task.typeOfTask === "comparison";
@@ -131,6 +131,24 @@ const MathTest = (props: {
           {props.tasks &&
             Object.entries(props.tasks).map(([key, task]) => (
               <div key={key}>
+                {+key === 16 && (
+                  <div className="condition">
+                    <h2 className=" text-2xl">
+                      У завданнях 16-18 до кожного з трьох рядків інформації,
+                      позначених цифрами доберіть один правильний на Вашу думĸу
+                      варіант позначений буквою.
+                    </h2>
+                  </div>
+                )}
+                {+key === 19 && (
+                  <div className="condition">
+                    <h2 className="">
+                      Розв'яжіть завдання 19-22. Одержані числові відповіді
+                      запишіть у спеціально відведеному місці. Відповідь
+                      записуйте лише десятĸовим дробом.
+                    </h2>
+                  </div>
+                )}
                 {isTask1(task) && (
                   <TaskChoice
                     selectedVariant={props.selectedVariant}

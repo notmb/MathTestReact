@@ -144,13 +144,15 @@ const AnswerToComparisonTask = (props: {
   );
   // Оновлюємо батьківський стан
   const updateUserAnswerRef = useRef(props.updateUserAnswer);
+
   updateUserAnswerRef.current = props.updateUserAnswer;
   useEffect(() => {
     updateUserAnswerRef.current(inputValues);
   }, [inputValues]);
+
   // Обробник зміни відповіді
   const handleChoiceChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLSelectElement>,
     index: number
   ) => {
     const userAnswer = event.target.value; // Отримуємо вибрану відповідь
@@ -166,18 +168,27 @@ const AnswerToComparisonTask = (props: {
           props.comparisonTable.list1.texts.map((_, index) => (
             <li key={index} className="item_user_answer_comparison">
               {index + 1}) &nbsp;
-              <input
+              <select
                 className="user_answer_comparison"
                 id={props.number}
-                list={`answer-${index}`}
-                placeholder="your answer..."
-                onChange={(event) => handleChoiceChange(event, index)}
-              />
-              <datalist id={`answer-${index}`}>
-                {["А", "Б", "В", "Г", "Д"].map((option, index) => (
-                  <option key={index} value={option} />
-                ))}
-              </datalist>
+                value={inputValues[(index + 1).toString()] || ""}
+                onChange={(e) => handleChoiceChange(e, index)}
+              >
+                <option value="" disabled>
+                  оберіть відповідь...
+                </option>
+                {["А", "Б", "В", "Г", "Д"]
+                  .filter(
+                    (opt) =>
+                      !Object.values(inputValues).includes(opt) ||
+                      inputValues[(index + 1).toString()] === opt
+                  )
+                  .map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+              </select>
             </li>
           ))}
       </ul>
