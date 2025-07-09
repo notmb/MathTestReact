@@ -8,30 +8,32 @@ const Timer = (props: {
   ) => void;
   setTimeOut: (timeOut: boolean) => void;
 }) => {
-  const [secondsLeft, setSecondsLeft] = useState<number>(3600); // 1 година
+  const [secondsLeft, setSecondsLeft] = useState<number>(3600);
 
   useEffect(() => {
-    let timerId: NodeJS.Timeout | null = null;
+    const timerId = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerId);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-    if (secondsLeft > 0) {
-      timerId = setInterval(() => {
-        setSecondsLeft((prev) => prev - 1);
-      }, 1000);
-    }
+    return () => clearInterval(timerId);
+  }, []);
 
+  useEffect(() => {
     if (secondsLeft === 0) {
       props.setTimeOut(true);
       End();
     }
-
-    return () => {
-      if (timerId) clearInterval(timerId);
-    };
   }, [secondsLeft]);
 
   const End = () => {
     console.log("Час закінчився!");
-    // Тут твоя логіка
+    // props.endTest(...) тут, якщо потрібно
   };
 
   const formatTime = (seconds: number) => {

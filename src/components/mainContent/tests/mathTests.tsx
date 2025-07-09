@@ -90,6 +90,43 @@ const MathTest = (props: {
     Object.values(comparison).map((value) => {
       sum = sum + value; // Додаємо значення
     });
+
+    // Бал у НМТ
+    function getNmtMark(sum: number): number | string {
+      const map: { [key: number]: number } = {
+        5: 100,
+        6: 108,
+        7: 115,
+        8: 123,
+        9: 131,
+        10: 134,
+        11: 137,
+        12: 140,
+        13: 143,
+        14: 145,
+        15: 147,
+        16: 148,
+        17: 149,
+        18: 150,
+        19: 151,
+        20: 152,
+        21: 155,
+        22: 159,
+        23: 163,
+        24: 167,
+        25: 170,
+        26: 173,
+        27: 176,
+        28: 180,
+        29: 184,
+        30: 189,
+        31: 194,
+        32: 200,
+      };
+
+      return map[sum] ?? "Тест не пройдено";
+    }
+
     const nmtMark = Math.round((sum * 200) / maxMark);
     setMark(
       sum.toString() + "/" + Math.round((sum * 200) / maxMark).toString()
@@ -98,7 +135,7 @@ const MathTest = (props: {
       "Твій бал за тест: " +
         sum +
         "\nТвій бал у форматі НМТ: " +
-        Math.round((sum * 200) / maxMark)
+        getNmtMark(sum)
     );
     return { sum, nmtMark, comparison };
   };
