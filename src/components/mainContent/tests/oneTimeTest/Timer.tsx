@@ -1,40 +1,24 @@
 import { useState, useEffect } from "react";
 
-const Timer = (props: {
-  endTest: (
-    userAnswers: { [key: string]: any },
-    mark: string,
-    pointsForTasks: { [key: string]: number }
-  ) => void;
-  setTimeOut: (timeOut: boolean) => void;
-}) => {
-  const [secondsLeft, setSecondsLeft] = useState<number>(3600);
+const Timer = (props: { setTimeOut: (timeOut: boolean) => void }) => {
+  const duration = 3600; // 1 година
+  const [timeLeft, setTimeLeft] = useState(duration);
+  const [startTime] = useState(Date.now());
 
   useEffect(() => {
-    const timerId = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerId);
-          return 0;
-        }
-        return prev - 1;
-      });
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const delta = Math.floor((now - startTime) / 1000);
+      const remaining = Math.max(duration - delta, 0);
+      setTimeLeft(remaining);
+      if (remaining <= 0) {
+        clearInterval(interval);
+        props.setTimeOut(true);
+      }
     }, 1000);
 
-    return () => clearInterval(timerId);
+    return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    if (secondsLeft === 0) {
-      props.setTimeOut(true);
-      End();
-    }
-  }, [secondsLeft]);
-
-  const End = () => {
-    console.log("Час закінчився!");
-    // props.endTest(...) тут, якщо потрібно
-  };
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600)
@@ -49,9 +33,7 @@ const Timer = (props: {
 
   return (
     <div className="timer">
-      <p className="text-xl text-red-500">
-        Залишилося: {formatTime(secondsLeft)}
-      </p>
+      <p className="text-xl text-red-500">Залишилося: {formatTime(timeLeft)}</p>
     </div>
   );
 };

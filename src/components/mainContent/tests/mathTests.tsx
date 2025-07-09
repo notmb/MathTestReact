@@ -159,9 +159,7 @@ const MathTest = (props: {
 
   return (
     <div>
-      {props.endTest && (
-        <Timer endTest={props.endTest} setTimeOut={setTimeOut}></Timer>
-      )}
+      {props.endTest && <Timer setTimeOut={setTimeOut}></Timer>}
       <div className="conteiner_for_test">
         <div className="tests">
           {props.tasks &&

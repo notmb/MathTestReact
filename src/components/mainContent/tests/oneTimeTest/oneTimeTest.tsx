@@ -37,13 +37,17 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         "TestLinks",
         props.selectedLink
       );
-      const docSnap = await getDoc(docRef);
+      try {
+        const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const data = docSnap.data() as TestLink;
-        updateTestLink(data);
-      } else {
-        console.warn("Документ не знайдено");
+        if (docSnap.exists()) {
+          const data = docSnap.data() as TestLink;
+          updateTestLink(data);
+        } else {
+          console.warn("Документ не знайдено");
+        }
+      } catch (error) {
+        console.error("Помилка створення:", error);
       }
     };
 
