@@ -127,29 +127,28 @@ const MathTest = (props: {
       return map[sum] ?? "Тест не пройдено";
     }
 
-    const nmtMark = Math.round((sum * 200) / maxMark);
-    setMark(
-      sum.toString() + "/" + Math.round((sum * 200) / maxMark).toString()
-    );
-    alert(
-      "Твій бал за тест: " +
-        sum +
-        "\nТвій бал у форматі НМТ: " +
-        getNmtMark(sum)
-    );
+    const nmtMark = getNmtMark(sum);
+    setMark(sum.toString() + "/" + nmtMark.toString());
+
     return { sum, nmtMark, comparison };
   };
   //ПЕРЕВІРКА
 
   const checkAndEnd = () => {
     const result = testCheck();
-    console.log(props.endTest);
+
     props.endTest &&
       props.endTest(
         userAnswers,
         `${result.sum}/${result.nmtMark}`,
         result.comparison
       );
+    alert(
+      "Твій бал за тест: " +
+        result.sum +
+        "\nТвій бал у форматі НМТ: " +
+        result.nmtMark
+    );
   };
   useEffect(() => {
     console.log(timeOut);
