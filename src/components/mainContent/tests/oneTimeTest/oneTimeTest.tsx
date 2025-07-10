@@ -25,7 +25,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
   const [status, setStatus] = useState<"started" | "and" | null>(null);
 
   const [userId, setUserId] = useState<string>("");
-
+  console.log(userId);
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     variantName: string
   ) => {
     try {
-      const resultsRef = doc(db, "Subjects", "Math", "ResultsTest", userId);
+      // const resultsRef = doc(db, "Subjects", "Math", "ResultsTest", userId);
       const resultsRef2 = doc(
         db,
         "Subjects",
@@ -98,13 +98,13 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         props.selectedLink
       );
 
-      await updateDoc(resultsRef, {
-        userAnswer: userAnswers, // додається нове поле
-        pointsForTasks: pointsForTasks,
-        result: result,
-        variantId: variantId,
-        variantName: variantName,
-      });
+      // await updateDoc(resultsRef, {
+      //   userAnswer: userAnswers, // додається нове поле
+      //   pointsForTasks: pointsForTasks,
+      //   result: result,
+      //   variantId: variantId,
+      //   variantName: variantName,
+      // });
       await updateDoc(updateDataLink, {
         used: true,
         testResult: result,
