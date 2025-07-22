@@ -11,6 +11,7 @@
   font-size: 20px;
   margin: 8px 0;
 }
+
 .item_of_comparison {
   display: flex;
 
@@ -114,7 +115,7 @@
   width: 90%;
   position: fixed;
   top: 0;
-  left: 0;
+  left: 5%;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -122,14 +123,15 @@
   background-color: rgb(162, 208, 208);
 }
 .user_answer {
-  width: 100%;
   background-color: aliceblue;
+  margin: 0 40px;
 }
 
 .inline_answers {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  padding-bottom: 16px;
 }
 .answer_block {
   background: #f1f1f1;
@@ -190,4 +192,44 @@ input.user_answer_open::-webkit-outer-spin-button,
 input.user_answer_open::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.close_button {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+}
+
+.close_button::before,
+.close_button::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  background-color: black;
+  transform-origin: center;
+}
+
+.close_button::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close_button::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.close_button:hover::before,
+.close_button:hover::after {
+  background-color: red;
+}
+
+.container_for_close_button {
+  display: flex;
+  justify-content: flex-end; /* вирівняти вміст праворуч */
+  width: 100%;
+  /* border: 1px solid #ddd; */
 }

@@ -4,8 +4,10 @@ import { db } from "../../../../firebaseConfig";
 import {
   getDoc,
   doc,
-  addDoc,
   collection,
+  query,
+  where,
+  getDocs,
   updateDoc,
   setDoc,
 } from "firebase/firestore";
@@ -20,14 +22,13 @@ type TestLink = {
 };
 
 const OneTimeTest = (props: { selectedLink: string }) => {
-  const [testLink, updateTestLink] = useImmer<TestLink | null>(null);
+  const [testLinkData, updateTestLinkData] = useImmer<TestLink | null>(null); //дані лінка
 
-  const [status, setStatus] = useState<"started" | "and" | null>(null);
+  const [status, setStatus] = useState<"started" | "end" | null>(null);
 
-  const [userId, setUserId] = useState<string>("");
-  console.log(userId);
-  const [inputValue, setInputValue] = useState("");
+  const [idStudentProfil, setIdStudentProfil] = useState<string>("noName");
 
+  //отримуємо дані лінку
   useEffect(() => {
     const fetchData = async () => {
       const docRef = doc(
@@ -42,7 +43,8 @@ const OneTimeTest = (props: { selectedLink: string }) => {
 
         if (docSnap.exists()) {
           const data = docSnap.data() as TestLink;
-          updateTestLink(data);
+          updateTestLinkData(data);
+          console.log(testLinkData?.nameStudent);
         } else {
           console.warn("Документ не знайдено");
         }
@@ -53,25 +55,33 @@ const OneTimeTest = (props: { selectedLink: string }) => {
 
     fetchData();
   }, []);
+  //отримуємо дані лінку
 
-  testLink && console.log(testLink.variantId);
+  //дістаємось до профілю учня
+  useEffect(() => {
+    const fetchStudentProfil = async () => {
+      if (!testLinkData?.nameStudent) return; // 🔒 захист від undefined
+      const testResultsRef = collection(db, "Subjects", "Math", "MyStudents");
+      const q = query(
+        testResultsRef,
+        where("name", "==", testLinkData?.nameStudent)
+      );
+      const querySnapshot = await getDocs(q);
 
-  const newUser = async (nameUser: string) => {
-    const newUser = collection(db, "Subjects", "Math", "ResultsTest");
-    try {
-      const docRef = await addDoc(newUser, {
-        name: nameUser,
-        createdAt: new Date(),
-      });
-      setUserId(docRef.id);
-      console.log("Користувача додано");
-    } catch (error) {
-      console.error("Помилка створення:", error);
-    }
-    // setStart(true);
-    setStatus("started");
-  };
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        setIdStudentProfil(doc.id);
+        console.log("Знайдено документ:", doc.id, doc.data());
+      } else {
+        console.log("Документ з name='Olha' не знайдено");
+      }
+    };
 
+    fetchStudentProfil();
+  }, [testLinkData?.nameStudent]);
+  //дістаємось до профілю учня
+
+  //записуємо результати тесту
   const endTest = async (
     userAnswers: { [key: string]: any },
     result: string,
@@ -80,15 +90,21 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     variantName: string
   ) => {
     try {
-      // const resultsRef = doc(db, "Subjects", "Math", "ResultsTest", userId);
-      const resultsRef2 = doc(
+      const resultsRef = doc(
         db,
         "Subjects",
         "Math",
         "TestLinks",
         props.selectedLink,
         "testResults",
-        testLink?.nameStudent || "noName"
+        testLinkData?.nameStudent || "noName"
+      );
+      const resultsRefInUserProfil = doc(
+        db,
+        "Subjects",
+        "Math",
+        "MyStudents",
+        idStudentProfil
       );
       const updateDataLink = doc(
         db,
@@ -98,63 +114,49 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         props.selectedLink
       );
 
-      // await updateDoc(resultsRef, {
-      //   userAnswer: userAnswers, // додається нове поле
-      //   pointsForTasks: pointsForTasks,
-      //   result: result,
-      //   variantId: variantId,
-      //   variantName: variantName,
-      // });
       await updateDoc(updateDataLink, {
         used: true,
         testResult: result,
       });
-      await setDoc(resultsRef2, {
-        userAnswer: userAnswers, // додається нове поле
+      await setDoc(resultsRef, {
+        userAnswer: userAnswers,
         pointsForTasks: pointsForTasks,
         result: result,
         variantId: variantId,
         variantName: variantName,
       });
-      setStatus("and");
+      await updateDoc(resultsRefInUserProfil, {
+        result: result,
+        "testScores.topic3": result,
+      });
+      setStatus("end");
       console.log("Тест закінчено");
     } catch (error) {
       console.error("Помилка:", error);
     }
   };
-  // const endTest ()
+  //записуємо результати тесту
 
   return (
     <div>
       {status === null && (
-        <form id="form_for_user_name" className="form_for_user_name">
-          <label htmlFor="user_name">Введіть своє ім'я</label>
-          <input
-            type="text"
-            id="user_name"
-            placeholder="Ім'я"
-            name="variantName"
-            onChange={(e) => setInputValue(e.target.value)}
-          ></input>
-          <button
-            type="button"
-            form="form_for_user_name"
-            className="custom_button"
-            onClick={() => newUser(inputValue)}
-          >
-            Почати тест
-          </button>
-        </form>
+        <button
+          type="button"
+          className="custom_button"
+          onClick={() => setStatus("started")}
+        >
+          Почати тест
+        </button>
       )}
-      {testLink && !testLink.used && status === "started" && (
+      {status === "started" && testLinkData && !testLinkData.used && (
         <div>
           <ContainerForMathTest
-            selectedVariant={testLink.variantId}
+            selectedVariant={testLinkData.variantId}
             endTest={endTest}
           ></ContainerForMathTest>
         </div>
       )}
-      {status === "and" && <h1>Тест закінчено</h1>}
+      {status === "end" && <h1>Тест закінчено</h1>}
     </div>
   );
 };

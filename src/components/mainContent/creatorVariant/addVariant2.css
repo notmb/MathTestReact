@@ -42,7 +42,8 @@
   border-color: #6389ac; /* Зміна кольору рамки */
 }
 .number_of_tasks_new_variant,
-.name_new_variant {
+.name_new_variant,
+.variant_serial_number_new_variant {
   margin-bottom: 24px;
 }
 .list_tasks {

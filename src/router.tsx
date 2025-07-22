@@ -14,14 +14,15 @@ import Footer from "./components/footer/footer";
 import OneTimeLinks from "./components/mainContent/tests/oneTimeTest/oneTimeLinks";
 import OneTimeTest from "./components/mainContent/tests/oneTimeTest/oneTimeTest";
 import VariantContextWrapper from "./components/mainContent/tests/variantContextWrapper";
+import StudentsProfil from "./components/mainContent/studentsProfiles/studentsProfil";
 const routes = [
   {
     path: "/MathTestReact/main",
     component: MainPage,
   },
   {
-    path: "/MathTestReact/tests",
-    component: MainPage,
+    path: "/MathTestReact/student",
+    component: StudentsProfil,
   },
   {
     path: "/MathTestReact/allTest",

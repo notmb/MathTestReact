@@ -9,6 +9,7 @@ import { db } from "../../../firebaseConfig"; // Імпорт Firestore
 interface MainDataAboutVariant {
   variantName: string;
   numberOfTask: string;
+  variantSerialNumber: string;
 }
 interface Task {
   numberTask: string;
@@ -20,6 +21,7 @@ type Tasks = Task[];
 const AddNewVariant = () => {
   const [mainDataAboutNewVariant, setMainDataAboutNewVariant] =
     useState<MainDataAboutVariant | null>(null);
+
   const [id, setId] = useState<string>("");
 
   const [tasks, updateTasks] = useImmer<Tasks>([]);
@@ -50,7 +52,11 @@ const AddNewVariant = () => {
     });
   };
 
-  const createVariant = async (nameVariant: string, numberOfTask: string) => {
+  const createVariant = async (
+    nameVariant: string,
+    numberOfTask: string,
+    variantSerialNumber: string
+  ) => {
     const variantsCollectionRef = collection(
       db,
       "Subjects",
@@ -62,6 +68,7 @@ const AddNewVariant = () => {
     try {
       const docRef = await addDoc(variantsCollectionRef, {
         name: nameVariant,
+        variantSerialNumber: variantSerialNumber,
         numberOfTasks: numberOfTask,
         createdAt: new Date(),
       });
@@ -76,14 +83,22 @@ const AddNewVariant = () => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const newVariantName = formData.get("variantName") as string;
-    const newNum = formData.get("numberOfTasks") as string;
+    const newNumOfTasks = formData.get("numberOfTasks") as string;
+    const newVariantSerialNumber = formData.get(
+      "variantSerialNumber"
+    ) as string;
     const dataOfTask: MainDataAboutVariant = {
       variantName: newVariantName,
-      numberOfTask: newNum,
+      numberOfTask: newNumOfTasks,
+      variantSerialNumber: newVariantSerialNumber,
     };
     setMainDataAboutNewVariant(dataOfTask);
-    initializeTasks(+newNum);
-    createVariant(dataOfTask.variantName, dataOfTask.numberOfTask);
+    initializeTasks(+newNumOfTasks);
+    createVariant(
+      dataOfTask.variantName,
+      dataOfTask.numberOfTask,
+      dataOfTask.variantSerialNumber
+    );
   };
 
   return (

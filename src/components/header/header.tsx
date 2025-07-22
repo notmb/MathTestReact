@@ -13,12 +13,6 @@ const Header = (props: { navigate: (path: string) => void }) => {
         ></img>
 
         <div className="header_navigation">
-          {/* <div
-            className="header_navigation_item"
-            onClick={() => props.navigate("/MathTestReact/tests")}
-          >
-            <h5 className="header_navigation_item_h">Тести</h5>
-          </div> */}
           <div
             className="header_navigation_item"
             onClick={() => props.navigate("/MathTestReact/allTest")}
@@ -31,7 +25,14 @@ const Header = (props: { navigate: (path: string) => void }) => {
           >
             <h5 className="header_navigation_item_h">Додати тест</h5>
           </div>
+          <div
+            className="header_navigation_item"
+            onClick={() => props.navigate("/MathTestReact/student")}
+          >
+            <h5 className="header_navigation_item_h">Учні</h5>
+          </div>
         </div>
+
         <div
           className="header_log_in"
           onClick={() => props.navigate("/MathTestReact/account/login")}

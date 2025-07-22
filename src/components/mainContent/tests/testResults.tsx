@@ -39,6 +39,9 @@ const TestResults = (props: {
   console.log(userAnswers);
   return (
     <div className="container_for_chekResults">
+      <div className="container_for_close_button">
+        <div className="close_button" onClick={props.onClose}></div>
+      </div>
       <div className="user_answer">
         <h2>Відповіді учня:</h2>
         <div className="inline_answers">

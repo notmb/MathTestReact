@@ -23,9 +23,21 @@ const InfoAboutNewVariant = (props: {
           }`}
         >
           <div className="name_new_variant">
-            <label htmlFor="variantname">Ідентифікація (назва) варіанту:</label>
+            <label htmlFor="variantname">Назва теми (варіанту):</label>
             <input type="text" id="variantname" name="variantName" />
           </div>
+
+          <div className="variant_serial_number_new_variant">
+            <label htmlFor="variant_serial_number">
+              Номер теми (варіанту):
+            </label>
+            <input
+              type="text"
+              id="variant_serial_number"
+              name="variantSerialNumber"
+            />
+          </div>
+
           <div className="number_of_tasks_new_variant">
             <label htmlFor="number_of_tasks">Кількість завдань:</label>
             <input type="text" id="number_of_tasks" name="numberOfTasks" />
