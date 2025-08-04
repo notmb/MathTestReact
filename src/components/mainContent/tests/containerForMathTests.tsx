@@ -15,7 +15,7 @@ interface VaiantData {
   name: string;
   createdAt: Timestamp;
   numberOfTasks: string;
-  topic: number;
+  variantSerialNumber: string;
 }
 
 const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
@@ -29,7 +29,7 @@ const ContainerForMathTest = (props: {
     mark: string,
     pointsForTasks: { [key: string]: number },
     variantId: string,
-    variantName: string
+    variantSerialNumber: string
   ) => void;
 }) => {
   const [tasks, updateTasks] = useImmer<Tasks>({});
@@ -38,7 +38,7 @@ const ContainerForMathTest = (props: {
     name: "",
     createdAt: new Timestamp(0, 0), // або новий Timestamp
     numberOfTasks: "",
-    topic: 0,
+    variantSerialNumber: "",
   });
 
   const fetchVariantData = async () => {
@@ -110,7 +110,7 @@ const ContainerForMathTest = (props: {
         mark,
         pointsForTasks,
         props.selectedVariant,
-        dataVariant.name
+        dataVariant.variantSerialNumber
       );
     }
   };

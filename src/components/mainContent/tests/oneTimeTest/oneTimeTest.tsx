@@ -86,7 +86,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     result: string,
     pointsForTasks: { [key: string]: any },
     variantId: string,
-    variantName: string
+    variantSerialNumber: string
   ) => {
     try {
       // //заптис у TestLiks/TestResults
@@ -131,7 +131,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         idStudentProfil
       );
       await updateDoc(resultsRefInUserProfil, {
-        [variantName]: result,
+        [variantSerialNumber]: result,
       });
       //запис у MyStudents
 
