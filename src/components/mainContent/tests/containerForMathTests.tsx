@@ -15,6 +15,7 @@ interface VaiantData {
   name: string;
   createdAt: Timestamp;
   numberOfTasks: string;
+  topic: number;
 }
 
 const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
@@ -37,6 +38,7 @@ const ContainerForMathTest = (props: {
     name: "",
     createdAt: new Timestamp(0, 0), // або новий Timestamp
     numberOfTasks: "",
+    topic: 0,
   });
 
   const fetchVariantData = async () => {

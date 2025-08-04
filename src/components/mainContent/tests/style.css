@@ -155,6 +155,11 @@
   border: 1px solid #ccc; /* опціонально, для візуального відділення */
   background-color: #fff; /* якщо потрібно */
 }
+.conteiner_for_button_start_test {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
 .container_for_timer {
   display: flex;
   justify-content: center;
@@ -232,4 +237,24 @@ input.user_answer_open::-webkit-inner-spin-button {
   justify-content: flex-end; /* вирівняти вміст праворуч */
   width: 100%;
   /* border: 1px solid #ddd; */
+}
+
+.my_students {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.btn_add_student {
+  margin: 0 8px;
+}
+.containet_for_input {
+  display: flex;
+  flex-direction: column;
+}
+.box_for_form_for_add_student {
+}
+.form_for_add_student {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }

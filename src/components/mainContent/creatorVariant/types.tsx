@@ -65,4 +65,5 @@ export interface VaiantData {
   name: string;
   createdAt: Timestamp;
   numberOfTasks: string;
+  variantSerialNumber: string;
 }

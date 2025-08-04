@@ -1,8 +1,11 @@
 import TestResults from "../testResults";
 import { useEffect, useState } from "react";
+import { useVariantContext } from "../variantContext";
 import { useImmer } from "use-immer";
 import {
   collection,
+  setDoc,
+  updateDoc,
   query,
   where,
   getDocs,
@@ -11,6 +14,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
+import { findDocIdByField } from "../../firebaseUtils";
 
 interface TestLink {
   id: string; // id лінку
@@ -30,6 +34,9 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAnswersData, updateSelectedAnswersData] =
     useImmer<SelectedLink | null>(null);
+
+  const { dataVariant } = useVariantContext();
+
   const fetchTestLinks = async () => {
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
     const dataLinks = query(
@@ -55,8 +62,54 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
 
   const addLink = async () => {
     const newLink = collection(db, "Subjects", "Math", "TestLinks");
+
+    //вказуємо ім'я студента для якого створюємо лінку
+    const userName = prompt("Введіть ім'я учня:")?.trim() || "Не Вказано";
+    if (!userName) {
+      console.warn("Ім'я учня не введено");
+      return;
+    }
+
     try {
-      const userName = prompt("Введіть ім'я учня:")?.trim() || "Не Вказано";
+      // Знаходимо id учня
+      const studentId = await findDocIdByField(
+        "/Subjects/Math/MyStudents",
+        "name",
+        userName
+      );
+      if (!studentId) {
+        console.warn("Учня не знайдено в базі MyStudents");
+        return;
+      }
+
+      console.log(studentId);
+      //в профілі учня оновлюємо поле testScores.topicN: "не почато"
+      const docRefStudent = doc(
+        db,
+        "Subjects",
+        "Math",
+        "MyStudents",
+        studentId
+      );
+      await updateDoc(docRefStudent, {
+        [`testScores.${dataVariant.variantSerialNumber}`]: "не почато", // динамічний ключ
+      });
+      console.log("Поле оновлено");
+
+      //в профілі учня створюємо або редагуємо колекцію ResultsTest - детальні результати тесту
+      const resultTestDocRef = doc(
+        collection(docRefStudent, "ResultsTest"),
+        props.selectedVariant // ID документа буде співпадати з ID варіанта тесту
+      );
+      await setDoc(resultTestDocRef, {
+        userAnswers: {}, // Поки що порожній об'єкт
+        result: "не пройдено", // Початковий статус
+        pointsForTasks: {}, // Порожній об'єкт, бо ще не пройдено
+        variantId: props.selectedVariant,
+        variantName: dataVariant.variantSerialNumber, // Або будь-яка інша назва
+      });
+      console.log("Документ ResultsTest створено/оновлено");
+
       const docRef = await addDoc(newLink, {
         variantId: props.selectedVariant,
         createdAt: new Date(),
@@ -64,6 +117,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
         nameStudent: userName,
         testResult: "не пройдено",
       });
+
       updateTestLinks((draft) => {
         draft.push({
           id: docRef.id,

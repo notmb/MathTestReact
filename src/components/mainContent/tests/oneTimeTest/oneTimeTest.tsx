@@ -9,7 +9,6 @@ import {
   where,
   getDocs,
   updateDoc,
-  setDoc,
 } from "firebase/firestore";
 
 import ContainerForMathTest from "../containerForMathTests";
@@ -86,26 +85,30 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     userAnswers: { [key: string]: any },
     result: string,
     pointsForTasks: { [key: string]: any },
-    variantId: string,
-    variantName: string
+    variantId: string
+    // variantName: string
   ) => {
     try {
-      const resultsRef = doc(
-        db,
-        "Subjects",
-        "Math",
-        "TestLinks",
-        props.selectedLink,
-        "testResults",
-        testLinkData?.nameStudent || "noName"
-      );
-      const resultsRefInUserProfil = doc(
-        db,
-        "Subjects",
-        "Math",
-        "MyStudents",
-        idStudentProfil
-      );
+      // //заптис у TestLiks/TestResults
+      // const resultsRef = doc(
+      //   db,
+      //   "Subjects",
+      //   "Math",
+      //   "TestLinks",
+      //   props.selectedLink,
+      //   "testResults",
+      //   testLinkData?.nameStudent || "noName"
+      // );
+      // await setDoc(resultsRef, {
+      //   userAnswer: userAnswers,
+      //   pointsForTasks: pointsForTasks,
+      //   result: result,
+      //   variantId: variantId,
+      //   variantName: variantName,
+      // });
+      // //заптис у TestLiks/TestResults
+
+      //допис кількох полів у TestLinks
       const updateDataLink = doc(
         db,
         "Subjects",
@@ -113,22 +116,43 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         "TestLinks",
         props.selectedLink
       );
-
       await updateDoc(updateDataLink, {
         used: true,
         testResult: result,
       });
-      await setDoc(resultsRef, {
-        userAnswer: userAnswers,
-        pointsForTasks: pointsForTasks,
-        result: result,
-        variantId: variantId,
-        variantName: variantName,
-      });
+      //допис кількох полів у TestLinks
+
+      //запис у MyStudents
+      const resultsRefInUserProfil = doc(
+        db,
+        "Subjects",
+        "Math",
+        "MyStudents",
+        idStudentProfil
+      );
       await updateDoc(resultsRefInUserProfil, {
         result: result,
         "testScores.topic3": result,
       });
+      //запис у MyStudents
+
+      //запис детальних результатів у MyStudents
+      const detailedResultsRefInUserProfil = doc(
+        db,
+        "Subjects",
+        "Math",
+        "MyStudents",
+        idStudentProfil,
+        "ResultsTest",
+        variantId
+      );
+      await updateDoc(detailedResultsRefInUserProfil, {
+        userAnswer: userAnswers,
+        pointsForTasks: pointsForTasks,
+        result: result,
+      });
+      //запис детальних результатів у MyStudents
+
       setStatus("end");
       console.log("Тест закінчено");
     } catch (error) {
@@ -140,13 +164,15 @@ const OneTimeTest = (props: { selectedLink: string }) => {
   return (
     <div>
       {status === null && (
-        <button
-          type="button"
-          className="custom_button"
-          onClick={() => setStatus("started")}
-        >
-          Почати тест
-        </button>
+        <div className="conteiner_for_button_start_test">
+          <button
+            type="button"
+            className="custom_button"
+            onClick={() => setStatus("started")}
+          >
+            Почати тест
+          </button>
+        </div>
       )}
       {status === "started" && testLinkData && !testLinkData.used && (
         <div>

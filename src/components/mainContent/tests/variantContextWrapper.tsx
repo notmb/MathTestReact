@@ -30,6 +30,7 @@ const VariantContextWrapper = (props: {
     name: "",
     createdAt: new Timestamp(0, 0),
     numberOfTasks: "",
+    variantSerialNumber: "",
   });
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import { db } from "../../../firebaseConfig"; // Імпорт Firestore
 interface MainDataAboutVariant {
   variantName: string;
   numberOfTask: string;
-  variantSerialNumber: string;
+  topic: string;
 }
 interface Task {
   numberTask: string;
@@ -90,14 +90,14 @@ const AddNewVariant = () => {
     const dataOfTask: MainDataAboutVariant = {
       variantName: newVariantName,
       numberOfTask: newNumOfTasks,
-      variantSerialNumber: newVariantSerialNumber,
+      topic: newVariantSerialNumber,
     };
     setMainDataAboutNewVariant(dataOfTask);
     initializeTasks(+newNumOfTasks);
     createVariant(
       dataOfTask.variantName,
       dataOfTask.numberOfTask,
-      dataOfTask.variantSerialNumber
+      dataOfTask.topic
     );
   };
 
