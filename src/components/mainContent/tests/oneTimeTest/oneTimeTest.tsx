@@ -131,7 +131,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         idStudentProfil
       );
       await updateDoc(resultsRefInUserProfil, {
-        [variantSerialNumber]: result,
+        [`testScores.${variantSerialNumber}`]: result,
       });
       //запис у MyStudents
 
