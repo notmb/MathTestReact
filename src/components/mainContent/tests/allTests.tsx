@@ -19,7 +19,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
       const snapshot = await getDocs(tasksRef);
       const variants = snapshot.docs.map((doc) => {
         const data = doc.data();
-        return { id: doc.id, name: data.name || doc.id };
+        return { id: doc.id, name: data.variantName || doc.id };
       });
       console.log(variants);
       return variants;

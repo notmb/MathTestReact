@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { db } from "../../../../firebaseConfig";
 import {
   getDoc,
+  setDoc,
   doc,
   collection,
   query,
@@ -86,26 +87,27 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     result: string,
     pointsForTasks: { [key: string]: any },
     variantId: string,
+    variantName: string,
     variantSerialNumber: string
   ) => {
     try {
       // //заптис у TestLiks/TestResults
-      // const resultsRef = doc(
-      //   db,
-      //   "Subjects",
-      //   "Math",
-      //   "TestLinks",
-      //   props.selectedLink,
-      //   "testResults",
-      //   testLinkData?.nameStudent || "noName"
-      // );
-      // await setDoc(resultsRef, {
-      //   userAnswer: userAnswers,
-      //   pointsForTasks: pointsForTasks,
-      //   result: result,
-      //   variantId: variantId,
-      //   variantName: variantName,
-      // });
+      const resultsRef = doc(
+        db,
+        "Subjects",
+        "Math",
+        "TestLinks",
+        props.selectedLink,
+        "testResults",
+        testLinkData?.nameStudent || "noName"
+      );
+      await setDoc(resultsRef, {
+        userAnswer: userAnswers,
+        pointsForTasks: pointsForTasks,
+        result: result,
+        variantId: variantId,
+        variantName: variantName,
+      });
       // //заптис у TestLiks/TestResults
 
       //допис кількох полів у TestLinks

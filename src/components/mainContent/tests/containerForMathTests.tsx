@@ -12,9 +12,9 @@ import {
 import MathTest from "./mathTests";
 
 interface VaiantData {
-  name: string;
   createdAt: Timestamp;
   numberOfTasks: string;
+  variantName: string;
   variantSerialNumber: string;
 }
 
@@ -29,15 +29,16 @@ const ContainerForMathTest = (props: {
     mark: string,
     pointsForTasks: { [key: string]: number },
     variantId: string,
+    variantName: string,
     variantSerialNumber: string
   ) => void;
 }) => {
   const [tasks, updateTasks] = useImmer<Tasks>({});
 
   const [dataVariant, updateDataVariant] = useImmer<VaiantData>({
-    name: "",
     createdAt: new Timestamp(0, 0), // або новий Timestamp
     numberOfTasks: "",
+    variantName: "",
     variantSerialNumber: "",
   });
 
@@ -110,6 +111,7 @@ const ContainerForMathTest = (props: {
         mark,
         pointsForTasks,
         props.selectedVariant,
+        dataVariant.variantName,
         dataVariant.variantSerialNumber
       );
     }
