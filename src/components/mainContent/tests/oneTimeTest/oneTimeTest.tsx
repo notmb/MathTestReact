@@ -109,7 +109,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         variantName: variantName,
       });
       // //заптис у TestLiks/TestResults
-
+      console.log("debug");
       //допис кількох полів у TestLinks
       const updateDataLink = doc(
         db,
@@ -123,7 +123,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         testResult: result,
       });
       //допис кількох полів у TestLinks
-
+      console.log("debug");
       //запис у MyStudents
       const resultsRefInUserProfil = doc(
         db,
@@ -136,7 +136,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         [`testScores.${variantSerialNumber}`]: result,
       });
       //запис у MyStudents
-
+      console.log("debug");
       //запис детальних результатів у MyStudents
       const detailedResultsRefInUserProfil = doc(
         db,
@@ -153,7 +153,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         result: result,
       });
       //запис детальних результатів у MyStudents
-
+      console.log("debug");
       setStatus("end");
       console.log("Тест закінчено");
     } catch (error) {
