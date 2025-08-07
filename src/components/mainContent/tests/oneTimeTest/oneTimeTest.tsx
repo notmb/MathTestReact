@@ -44,7 +44,6 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         if (docSnap.exists()) {
           const data = docSnap.data() as TestLink;
           updateTestLinkData(data);
-          console.log(testLinkData?.nameStudent);
         } else {
           console.warn("Документ не знайдено");
         }
@@ -71,7 +70,6 @@ const OneTimeTest = (props: { selectedLink: string }) => {
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         setIdStudentProfil(doc.id);
-        console.log("Знайдено документ:", doc.id, doc.data());
       } else {
         console.log("Документ з name='Olha' не знайдено");
       }

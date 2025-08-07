@@ -20,10 +20,7 @@ const MathTest = (props: {
   ) => void;
 }) => {
   const [userAnswers, updateUserAnswers] = useImmer<{ [key: string]: any }>({});
-  // const [mark, setMark] = useState<string>("0");
-  // const [pointsForTasks, updatePointForTask] = useImmer<{ [key: string]: any }>(
-  //   {}
-  // );
+
   const [timeOut, setTimeOut] = useState<boolean>(false);
 
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
@@ -56,7 +53,6 @@ const MathTest = (props: {
           maxMark = maxMark + 1;
           if (item.correctAnswer === userAnswers[key]) {
             comparison[key] = 1;
-            console.log(comparison);
           } else {
             comparison[key] = 0;
           }
@@ -79,11 +75,7 @@ const MathTest = (props: {
           }
         }
       });
-    // updatePointForTask(() => {
-    //   return comparison;
-    // });
-    console.log(comparison);
-    console.log(maxMark);
+
     let sum = 0;
     Object.values(comparison).map((value) => {
       sum = sum + value; // Додаємо значення
@@ -126,7 +118,6 @@ const MathTest = (props: {
     }
 
     const nmtMark = getNmtMark(sum);
-    // setMark(sum.toString() + "/" + nmtMark.toString());
 
     return { sum, nmtMark, comparison };
   };

@@ -132,11 +132,13 @@ const Router = (props: {
 
   const content = (
     <VariantContextWrapper variant={selectedVariant}>
-      <Component
-        navigate={props.navigate}
-        selectedVariant={selectedVariant}
-        selectedLink={selectedVariant}
-      />
+      <main className="main_content">
+        <Component
+          navigate={props.navigate}
+          selectedVariant={selectedVariant}
+          selectedLink={selectedVariant}
+        />
+      </main>
     </VariantContextWrapper>
   );
   if (

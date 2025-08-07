@@ -38,16 +38,11 @@
   width: 100%;
   margin: 0 auto; /* Вирівнювання зображення по горизонталі (для блочних елементів) */
 }
-.container_for_selected_test {
-  min-height: 550px;
-}
-.selected_test {
-  padding: 8px 0;
-}
+
 .buttons {
   display: flex;
   justify-content: space-between;
-  padding: 8px 40px;
+  padding: 8px 0;
 }
 .left_side {
   display: flex;
@@ -59,10 +54,13 @@
   justify-content: right;
   gap: 16px;
 }
+.selected_test {
+  padding: 0 40px;
+}
 
 .test_review {
   width: 100%;
-  border: 2px solid black;
+
   padding: 8px 32px;
 }
 .boxs_for_review_task {
@@ -147,12 +145,9 @@
 }
 .box_for_test_review {
   padding: 16px 40px;
-  min-height: 550px;
-  max-height: 400px; /* або інша висота на твій вибір */
-  margin: 0 40px;
-  overflow-y: auto;
-  padding-right: 8px; /* щоб скрол не перекривав контент */
-  border: 1px solid #ccc; /* опціонально, для візуального відділення */
+  max-height: calc(100vh - 160px);
+  overflow-y: auto; /* вертикальна прокрутка при переповненні */
+  border: 2px solid black;
   background-color: #fff; /* якщо потрібно */
 }
 .conteiner_for_button_start_test {
@@ -251,8 +246,7 @@ input.user_answer_open::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
 }
-.box_for_form_for_add_student {
-}
+
 .form_for_add_student {
   display: flex;
   flex-direction: column;

@@ -1,6 +1,9 @@
 body {
   margin: 0;
 }
+.main_content {
+  min-height: 100vh;
+}
 .section1 {
   padding: 40 20px;
   display: flex;
