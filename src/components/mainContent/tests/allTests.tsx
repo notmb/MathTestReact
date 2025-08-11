@@ -44,7 +44,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
   return (
     <div className="box_for_list_of_tests">
       <div>
-        <ol className="list_of_variant">
+        <ul className="list_of_variant">
           {variants.map((variant) => (
             <li className="variant_item" key={variant.id}>
               <p
@@ -57,7 +57,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
               </p>
             </li>
           ))}
-        </ol>
+        </ul>
       </div>
     </div>
   );
