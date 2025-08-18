@@ -2,7 +2,7 @@ import { useImmer } from "use-immer";
 import { db, storage } from "../../../firebaseConfig"; // Імпорт Firestore
 import { ref, uploadBytes } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-import { Task2 } from "./types";
+import { Task2 } from "../types";
 import ConditionOfTask from "./conditionOfTask";
 import ComparisonToMatchingTask from "./comparisonToMatchingTask";
 import CorrectAnswerToTaskMatching from "./correctAnswerToTaskMatching";

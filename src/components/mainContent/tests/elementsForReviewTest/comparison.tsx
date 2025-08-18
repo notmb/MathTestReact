@@ -1,5 +1,5 @@
 import { MathJax } from "better-react-mathjax";
-import { Comparison } from "../../creatorVariant/types";
+import { Comparison } from "../../types";
 //КОМПОНЕНТ СПИСКИ ДЛЯ СПІВСТАВЛЕННЯ
 const ComparisonData = (props: {
   comparisonTable: Comparison;

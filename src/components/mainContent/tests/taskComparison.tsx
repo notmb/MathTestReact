@@ -4,7 +4,7 @@ import { app } from "../../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect, useRef } from "react";
 import { useImmer } from "use-immer";
-import type { Question, Comparison } from "../creatorVariant/types";
+import type { Question, Comparison } from "../types";
 
 const TaskComparison = (props: {
   selectedVariant: string;

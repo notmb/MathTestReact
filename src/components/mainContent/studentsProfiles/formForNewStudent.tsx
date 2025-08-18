@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { db } from "../../../firebaseConfig"; // твоя ініціалізація firebase
 import { collection, addDoc } from "firebase/firestore";
-const AddNewStudent = (props: { onSuccess: () => void }) => {
+const AddNewStudent = (props: {
+  onSuccess: () => void;
+  updeteListStudents: (draft: {
+    name: string;
+    testScores: {
+      [key: string]: string; // індексований тип
+    };
+    id: string;
+  }) => void;
+}) => {
   const [name, setName] = useState("");
   const [testResults, setTestResults] = useState("");
 
@@ -23,20 +32,30 @@ const AddNewStudent = (props: { onSuccess: () => void }) => {
     } else {
       // testScores залишиться пустим об'єктом {}
     }
+
     // Тут можна відправити дані кудись або передати наверх
     try {
-      await addDoc(collection(db, "Subjects", "Math", "MyStudents"), {
+      const docRef = await addDoc(
+        collection(db, "Subjects", "Math", "MyStudents"),
+        {
+          name: name,
+          testScores: testScores,
+          createdAt: new Date(),
+        }
+      );
+      props.updeteListStudents({
         name: name,
         testScores: testScores,
-        createdAt: new Date(),
+        id: docRef.id,
       });
-
-      props.onSuccess(); // закрити модалку
     } catch (error) {
       console.error("Помилка при збереженні учня:", error);
       alert("Не вдалося зберегти.");
     }
+
+    props.onSuccess(); // закрити модалку
   };
+
   return (
     <div className="box_for_form_for_add_student  mt-4">
       <form className="form_for_add_student" onSubmit={handleSubmit}>

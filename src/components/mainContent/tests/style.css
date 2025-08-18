@@ -63,6 +63,9 @@
 
   padding: 8px 32px;
 }
+.container_for_num_task {
+  display: flex;
+}
 .boxs_for_review_task {
   display: flex;
 }

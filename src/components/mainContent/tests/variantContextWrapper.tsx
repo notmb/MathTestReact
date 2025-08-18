@@ -1,11 +1,5 @@
 import { VariantContext } from "./variantContext";
-import {
-  Tasks,
-  Task1,
-  Task2,
-  Task3,
-  VaiantData,
-} from "../creatorVariant/types";
+import { Tasks, Task1, Task2, Task3, VaiantData } from "../types";
 import { useImmer } from "use-immer";
 import { db } from "../../../firebaseConfig";
 import {
@@ -27,7 +21,7 @@ const VariantContextWrapper = (props: {
 }) => {
   const [tasks, updateTasks] = useImmer<Tasks>({});
   const [dataVariant, updateDataVariant] = useImmer<VaiantData>({
-    name: "",
+    variantName: "",
     createdAt: new Timestamp(0, 0),
     numberOfTasks: "",
     variantSerialNumber: "",
@@ -76,8 +70,15 @@ const VariantContextWrapper = (props: {
     fetchTasks();
   }, [props.variant]);
 
+  // Додаємо метод для оновлення конкретного завдання
+  const updateTask = (numTask: string, updatedTask: Task1 | Task2 | Task3) => {
+    updateTasks((draft) => {
+      draft[numTask] = updatedTask;
+    });
+  };
+
   return (
-    <VariantContext.Provider value={{ tasks, dataVariant }}>
+    <VariantContext.Provider value={{ tasks, dataVariant, updateTask }}>
       {props.children}
     </VariantContext.Provider>
   );

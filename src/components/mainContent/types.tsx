@@ -62,7 +62,7 @@ export interface Comparison {
 
 export interface VaiantData {
   id?: string;
-  name: string;
+  variantName: string;
   createdAt: Timestamp;
   numberOfTasks: string;
   variantSerialNumber: string;

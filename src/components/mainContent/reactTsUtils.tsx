@@ -1,6 +1,6 @@
 import "./utils.css";
 import { useEffect } from "react";
-//компонент обгортка для модального вікна
+//компонент ОБГОРТКА ДЛЯ МОДАЛЬНОГО ВІКНА
 export const WrapperForModalWindow = (props: {
   children: React.ReactNode;
   onClose: () => void;

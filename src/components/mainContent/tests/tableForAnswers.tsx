@@ -1,6 +1,6 @@
 import "../tests.css";
 import { MathJax } from "better-react-mathjax";
-import type { Answers } from "../creatorVariant/types";
+import type { Answers } from "../types";
 import Picture from "./imageComponent";
 
 const TableForAnswersToTaskChoice = (props: {

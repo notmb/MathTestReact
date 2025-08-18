@@ -85,6 +85,11 @@ const StudentsProfil = () => {
         <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
           <AddNewStudent
             onSuccess={() => setIsModalOpen(false)}
+            updeteListStudents={(data) => {
+              updeteStudents((draft) => {
+                draft.push(data);
+              });
+            }}
           ></AddNewStudent>
         </WrapperForModalWindow>
       )}

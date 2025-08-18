@@ -1,10 +1,9 @@
 import { MathJax } from "better-react-mathjax";
-import type { Answers } from "../../creatorVariant/types";
+import type { Answers } from "../../types";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
 import { app } from "../../../../firebaseConfig";
 const Answers = (props: { answers: Answers; selectedVariant: string }) => {
-  console.log(!!props.answers.values);
   props.answers.pictures &&
     console.log(`${props.selectedVariant}/${props.answers.pictures[0]}`);
   const mark = ["А", "Б", "В", "Г", "Д"];
@@ -12,7 +11,7 @@ const Answers = (props: { answers: Answers; selectedVariant: string }) => {
     <div className="box_for_view_answers">
       {mark.map((item, index) => (
         <div key={index} className="view_answer p-2">
-          <p className="m-0">{item})</p>{" "}
+          <p className="m-0">{item}</p>
           <div>
             {props.answers.pictures && props.answers.pictures[index] && (
               <Picture

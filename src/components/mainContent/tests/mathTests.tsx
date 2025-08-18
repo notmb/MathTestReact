@@ -1,4 +1,4 @@
-import { Tasks, Task1, Task2, Task3 } from "../creatorVariant/types";
+import { Tasks, Task1, Task2, Task3 } from "../types";
 import { useImmer } from "use-immer";
 import { useEffect, useState } from "react";
 

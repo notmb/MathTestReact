@@ -1,26 +1,46 @@
-import { Task1, Task2, Task3 } from "../../creatorVariant/types";
-
+import { Task1, Task2, Task3 } from "../../types";
+import TaskEditor from "../taskEditor";
 import { useVariantContext } from "../variantContext";
 import Task from "./conditionOfTask";
 import Answers from "./answersForTaskChoise";
 import ComparisonData from "./comparison";
+import { WrapperForModalWindow } from "../../reactTsUtils";
+import { useState } from "react";
 
 const TestReview = (props: { selectedVariant: string }) => {
   const { tasks } = useVariantContext();
-  // const [tasks, updateTasks] = useImmer<Tasks>({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [numTaskForEditing, setNumTaskForEditing] = useState<string>("");
+
+  const isEditingEnabled = true;
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
     task.typeOfTask === "comparison";
   const isTask3 = (task: any): task is Task3 =>
     task.typeOfTask === "openAnswer";
-
+  const taskForEditingSelected = (num: string) => {
+    setNumTaskForEditing(num);
+    setIsModalOpen(true);
+  };
   return (
     <div className="box_for_test_review">
       <div className="test_review">
         {tasks &&
           Object.entries(tasks).map(([key, task]) => (
             <div key={key}>
-              <p className="text-lg font-bold m-0">Завдання {key}</p>
+              <div className="container_for_num_task">
+                <p className="text-lg font-bold m-0">Завдання {key}</p>
+                {isEditingEnabled && (
+                  <button
+                    onClick={() => {
+                      taskForEditingSelected(key);
+                    }}
+                  >
+                    edit
+                  </button>
+                )}
+              </div>
+
               <Task
                 selectedVariant={props.selectedVariant}
                 text={task.task.text}
@@ -56,6 +76,15 @@ const TestReview = (props: { selectedVariant: string }) => {
 
         {!tasks && <p>Loading...</p>}
       </div>
+
+      {isModalOpen && (
+        <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
+          <TaskEditor
+            numTask={numTaskForEditing}
+            selectedVariant={props.selectedVariant}
+          ></TaskEditor>
+        </WrapperForModalWindow>
+      )}
     </div>
   );
 };

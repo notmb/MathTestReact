@@ -2,26 +2,43 @@ import { db, storage } from "../../../firebaseConfig"; // Імпорт Firestore
 import { ref, uploadBytes } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { useImmer } from "use-immer";
-import { Task1 } from "./types";
+import { useEffect } from "react";
+import { Task1 } from "../types";
 import ConditionOfTask from "./conditionOfTask";
 import AnswersToSinglChoiceTask from "./answersToSingleChoiceTask";
 import CorrectAnswerToSinglChoiceTask from "./correctAnswerToSinglChoiceTask";
+import { useVariantContext } from "../tests/variantContext";
 
 const CreatorTaskChoice = (props: {
   numSelectedTask: string;
   nameOfVariant: string;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
 }) => {
+  const { tasks, updateTask } = useVariantContext();
+
+  // Дістаємо потрібне завдання (може бути undefined)
+  const task = tasks?.[props.numSelectedTask] as Task1 | undefined;
+
+  // Локальний стейт з дефолтними пустими значеннями
   const [taskData, updateTaskData] = useImmer<Task1>({
-    task: {
-      text: "",
-    },
-    answers: {
-      values: Array(5).fill(""),
-    },
+    task: { text: "" },
+    answers: { values: Array(5).fill("") },
     correctAnswer: "",
     typeOfTask: "choice",
   });
+
+  // Синхронізація з глобальним стейтом
+  useEffect(() => {
+    if (task) {
+      updateTaskData(() => ({
+        task: { text: task.task.text || "" },
+        answers: { values: task.answers.values || Array(5).fill("") },
+        correctAnswer: task.correctAnswer || "",
+        typeOfTask: "choice",
+      }));
+    }
+  }, [task, updateTaskData]);
+
   const [files, updateFiels] = useImmer<File[]>([]);
 
   const uploadFile = async (file: File) => {
@@ -64,6 +81,9 @@ const CreatorTaskChoice = (props: {
     }
     if (files.length > 0) await Promise.all(files.map(uploadFile));
     props.updateTaskIsAdded(+props.numSelectedTask - 1, true);
+    if (task && updateTask) {
+      updateTask(props.numSelectedTask, taskData); // оновлюємо контекст
+    }
   };
 
   return (

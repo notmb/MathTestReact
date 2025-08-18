@@ -1,9 +1,10 @@
 import { createContext, useContext } from "react";
-import type { Tasks, VaiantData } from "../creatorVariant/types";
+import type { Tasks, VaiantData, Task1, Task2, Task3 } from "../types";
 
 export type VariantContextType = {
   tasks: Tasks;
   dataVariant: VaiantData;
+  updateTask: (numTask: string, updatedTask: Task1 | Task2 | Task3) => void;
 };
 
 export const VariantContext = createContext<VariantContextType | undefined>(

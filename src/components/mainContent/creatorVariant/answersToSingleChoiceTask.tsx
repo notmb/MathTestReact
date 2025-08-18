@@ -1,10 +1,16 @@
 import { useImmer } from "use-immer";
+import { useVariantContext } from "../tests/variantContext";
+import { Task1 } from "../types";
 
 const AnswersToSinglChoiceTask = (props: {
   numTask: string;
   updateAnswerText: (index: number, text: string) => void;
   updateAnswerPictures: (index: number, picture: File) => void;
 }) => {
+  const { tasks } = useVariantContext();
+  const task = tasks[props.numTask] as Task1; // витягаємо потрібне завдання
+  const [answers, updateAnswers] = useImmer(task?.answers.values || []);
+
   const [nameFileAnswers, updateNameFileAnswers] = useImmer<string[]>([]);
   const letterToIndex: Record<string, number> = {
     А: 0,
@@ -13,6 +19,7 @@ const AnswersToSinglChoiceTask = (props: {
     Г: 3,
     Д: 4,
   };
+
   const handleTextOfAnswersChange = (
     letter: string,
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -20,7 +27,12 @@ const AnswersToSinglChoiceTask = (props: {
     const index = letterToIndex[letter];
 
     if (index !== undefined) {
-      props.updateAnswerText(index, e.currentTarget.value);
+      const value = e.currentTarget.value;
+
+      props.updateAnswerText(index, value);
+      updateAnswers((draft) => {
+        draft[index] = value;
+      });
     }
   };
 
@@ -57,6 +69,7 @@ const AnswersToSinglChoiceTask = (props: {
               Вкажіть відповідь {item}
             </label>
             <textarea
+              value={answers[index] || ""}
               id={`task-${props.numTask}-answer-${item}`}
               name={`task-${props.numTask}-answer-${item}`}
               onChange={(e) => handleTextOfAnswersChange(item, e)}

@@ -1,7 +1,7 @@
 import "../tests.css";
 import { MathJax } from "better-react-mathjax";
 
-import type { Question } from "../creatorVariant/types";
+import type { Question } from "../types";
 import Picture from "./imageComponent";
 
 const TaskOpenAnswer = (props: {

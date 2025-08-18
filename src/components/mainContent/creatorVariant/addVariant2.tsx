@@ -67,7 +67,7 @@ const AddNewVariant = () => {
     );
     try {
       const docRef = await addDoc(variantsCollectionRef, {
-        name: nameVariant,
+        variantName: nameVariant,
         variantSerialNumber: variantSerialNumber,
         numberOfTasks: numberOfTask,
         createdAt: new Date(),

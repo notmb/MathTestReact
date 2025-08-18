@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useVariantContext } from "../tests/variantContext";
 
 const ConditionOfTask = (props: {
   numTask: string;
@@ -6,11 +7,14 @@ const ConditionOfTask = (props: {
   updateTaskPicture: (picture: File) => void;
 }) => {
   const [nameFileTask, setNameFileTask] = useState<string | null>(null);
-
+  const { tasks } = useVariantContext();
+  const task = tasks[props.numTask]; // витягаємо потрібне завдання
+  const [condition, setCondition] = useState(task?.task.text || "");
   const handleTextOfTaskChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     props.updateTaskText(e.currentTarget.value);
+    setCondition(e.currentTarget.value);
   };
 
   const handleTaskFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +36,7 @@ const ConditionOfTask = (props: {
         </label>
         <textarea
           data-key="task"
+          value={condition || ""}
           id={`task-${props.numTask}`}
           name={`task-${props.numTask}`}
           onChange={handleTextOfTaskChange}

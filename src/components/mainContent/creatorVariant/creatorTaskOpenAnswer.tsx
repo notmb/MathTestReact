@@ -1,7 +1,7 @@
 import { db, storage } from "../../../firebaseConfig"; // Імпорт Firestore
 import { ref, uploadBytes } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-import { Task3 } from "./types";
+import { Task3 } from "../types";
 import { useImmer } from "use-immer";
 import ConditionOfTask from "./conditionOfTask";
 import CorrectAnswerToTaskOpenAnswer from "./correctAnswerToTaskOpenAnswer";
