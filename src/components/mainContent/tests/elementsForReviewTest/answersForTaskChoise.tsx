@@ -11,7 +11,7 @@ const Answers = (props: { answers: Answers; selectedVariant: string }) => {
     <div className="box_for_view_answers">
       {mark.map((item, index) => (
         <div key={index} className="view_answer p-2">
-          <p className="m-0">{item})&nbsp </p>
+          <p className="m-0">{item})&nbsp; </p>
           <div>
             {props.answers.pictures && props.answers.pictures[index] && (
               <Picture
