@@ -1,4 +1,6 @@
 import { useImmer } from "use-immer";
+import { useVariantContext } from "../tests/variantContext";
+import type { Task2 } from "../types";
 const ComparisonToMatchingTask = (props: {
   numTask: string;
   updateList1Text: (index: number, text: string) => void;
@@ -6,6 +8,16 @@ const ComparisonToMatchingTask = (props: {
   updateList1Pictures: (index: number, picture: File) => void;
   updateList2Pictures: (index: number, picture: File) => void;
 }) => {
+  const { tasks } = useVariantContext();
+
+  const task = tasks[props.numTask] as Task2; // витягаємо потрібне завдання
+  const [list1Text, updateList1Text] = useImmer(
+    task?.comparisonTable.list1.texts || []
+  );
+  const [list2Text, updateList2Text] = useImmer(
+    task?.comparisonTable.list2.texts || []
+  );
+
   const [listFileName, updataListFileName] = useImmer<{
     [key: string]: string;
   }>({});
@@ -47,15 +59,26 @@ const ComparisonToMatchingTask = (props: {
     e: React.ChangeEvent<HTMLTextAreaElement>,
     index: number
   ) => {
-    console.log(index);
-    props.updateList1Text(index, e.currentTarget.value);
+    if (index !== undefined) {
+      const value = e.currentTarget.value;
+      props.updateList1Text(index, value);
+      updateList1Text((draft) => {
+        draft[index] = value;
+      });
+    }
   };
+
   const handleList2Change = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     index: number
   ) => {
-    console.log(index);
-    props.updateList2Text(index, e.currentTarget.value);
+    if (index !== undefined) {
+      const value = e.currentTarget.value;
+      props.updateList2Text(index, value);
+      updateList2Text((draft) => {
+        draft[index] = value;
+      });
+    }
   };
   return (
     <fieldset className="data_for_comparison">
@@ -69,6 +92,7 @@ const ComparisonToMatchingTask = (props: {
             <textarea
               id={`task-${props.numTask}-list1-${item}`}
               name={`task-${props.numTask}-list1-${item}`}
+              value={list1Text[index]}
               onChange={(e) => {
                 handleList1Change(e, index);
               }}
@@ -104,6 +128,7 @@ const ComparisonToMatchingTask = (props: {
               Вкажіть відповідь {item}
             </label>
             <textarea
+              value={list2Text[index]}
               id={`task-${props.numTask}-list2-${item}`}
               name={`task-${props.numTask}-list2-${item}`}
               onChange={(e) => {

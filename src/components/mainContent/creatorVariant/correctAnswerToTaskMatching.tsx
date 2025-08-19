@@ -1,13 +1,25 @@
+import { useImmer } from "use-immer";
+import { useVariantContext } from "../tests/variantContext";
+import { Task2 } from "../types";
 const CorrectAnswerToTaskMatching = (props: {
   numTask: string;
   updateCorrectAwswerText: (index: string, text: string) => void;
 }) => {
+  const { tasks } = useVariantContext();
+  const task = tasks[props.numTask] as Task2; // витягаємо потрібне завдання
+  const [correctComparison, updateCorrectComparison] = useImmer(
+    task?.correctComparison || {}
+  );
+
   const handleCorrectAnswerChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     item: string
   ) => {
-    console.log(item);
+    const value = e.currentTarget.value;
     props.updateCorrectAwswerText(item, e.currentTarget.value);
+    updateCorrectComparison((draft) => {
+      draft[item] = value;
+    });
   };
   return (
     <fieldset className="data_correct_answer">
@@ -24,6 +36,7 @@ const CorrectAnswerToTaskMatching = (props: {
             <textarea
               id={`task-${props.numTask}-answer-${item}`}
               name={`task-${props.numTask}-answer-${item}`}
+              value={correctComparison[item] || ""}
               onChange={(e) => handleCorrectAnswerChange(e, item)}
             ></textarea>
           </div>

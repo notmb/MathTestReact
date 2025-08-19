@@ -82,6 +82,7 @@ const TestReview = (props: { selectedVariant: string }) => {
           <TaskEditor
             numTask={numTaskForEditing}
             selectedVariant={props.selectedVariant}
+            onSuccess={() => setIsModalOpen(false)}
           ></TaskEditor>
         </WrapperForModalWindow>
       )}

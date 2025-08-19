@@ -1,11 +1,20 @@
+import { useVariantContext } from "../tests/variantContext";
+import { Task3 } from "../types";
+import { useState } from "react";
 const CorrectAnswerToTaskOpenAnswer = (props: {
   numTask: string;
   updateCorrectAnswerText: (text: string) => void;
 }) => {
+  const { tasks } = useVariantContext();
+  const task = tasks[props.numTask] as Task3; // витягаємо потрібне завдання
+  const [correctAnswer, setCorrectAnswer] = useState(task?.correctAnswer || "");
+
   const handleCorrectAnswerOfTaskChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    props.updateCorrectAnswerText(e.currentTarget.value);
+    const value = e.currentTarget.value;
+    setCorrectAnswer(value);
+    props.updateCorrectAnswerText(value);
   };
   return (
     <fieldset className="data_correct_answer">
@@ -16,6 +25,7 @@ const CorrectAnswerToTaskOpenAnswer = (props: {
       <textarea
         id={`correct_answer-${props.numTask}`}
         name={`correct_answer-${props.numTask}`}
+        value={correctAnswer || ""}
         onChange={handleCorrectAnswerOfTaskChange}
       ></textarea>
     </fieldset>

@@ -13,7 +13,7 @@ const ComparisonData = (props: {
           {props.comparisonTable.list1.texts &&
             props.comparisonTable.list1.texts.map((item, index) => (
               <li key={index} className="item_of_comparison">
-                {index + 1}) <MathJax>{item}</MathJax>
+                {index + 1}) <MathJax dynamic>{item}</MathJax>
               </li>
             ))}
         </ul>
@@ -23,7 +23,7 @@ const ComparisonData = (props: {
           {props.comparisonTable.list2.texts &&
             props.comparisonTable.list2.texts.map((item, index) => (
               <li key={index} className="item_of_comparison">
-                {mark[index]}) <MathJax>{item}</MathJax>
+                {mark[index]}) <MathJax dynamic>{item}</MathJax>
               </li>
             ))}
         </ul>

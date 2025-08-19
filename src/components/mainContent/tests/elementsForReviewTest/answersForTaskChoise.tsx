@@ -20,7 +20,7 @@ const Answers = (props: { answers: Answers; selectedVariant: string }) => {
               ></Picture>
             )}
             {props.answers.values && props.answers.values[index] && (
-              <MathJax>{props.answers.values[index]}</MathJax>
+              <MathJax dynamic>{props.answers.values[index]}</MathJax>
             )}
           </div>
         </div>

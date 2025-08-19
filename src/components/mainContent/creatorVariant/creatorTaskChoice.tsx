@@ -13,6 +13,7 @@ const CreatorTaskChoice = (props: {
   numSelectedTask: string;
   nameOfVariant: string;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
+  onSuccess?: () => void;
 }) => {
   const { tasks, updateTask } = useVariantContext();
 
@@ -38,6 +39,7 @@ const CreatorTaskChoice = (props: {
       }));
     }
   }, [task, updateTaskData]);
+  // Синхронізація з глобальним стейтом
 
   const [files, updateFiels] = useImmer<File[]>([]);
 
@@ -81,9 +83,18 @@ const CreatorTaskChoice = (props: {
     }
     if (files.length > 0) await Promise.all(files.map(uploadFile));
     props.updateTaskIsAdded(+props.numSelectedTask - 1, true);
+
+    //ОНОВЛЮЄМО КОНТЕКСТ ЯКЩО ВІН ВЖЕ СТВОРЕНИЙ
     if (task && updateTask) {
       updateTask(props.numSelectedTask, taskData); // оновлюємо контекст
     }
+    //ОНОВЛЮЄМО КОНТЕКСТ ЯКЩО ВІН ВЖЕ СТВОРЕНИЙ
+
+    //Закриття модалки при редагуванні
+    if (props.onSuccess) {
+      props.onSuccess();
+    }
+    //Закриття модалки при редагуванні
   };
 
   return (

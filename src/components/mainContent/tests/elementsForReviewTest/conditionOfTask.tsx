@@ -16,7 +16,7 @@ const Task = (props: {
   return (
     <div className="task_box">
       <div>
-        <MathJax>{props.text}</MathJax>
+        <MathJax dynamic>{props.text}</MathJax>
       </div>
       {props.list && <ListToQestion list={props.list}></ListToQestion>}
       {props.table && (
@@ -72,7 +72,7 @@ const ListToQestion = (props: { list: string[] }) => {
     <div className="box_for_list_in_task">
       {props.list.map((item, index) => (
         <span key={index} className="list_in_task">
-          {index + 1}. <MathJax>{item}</MathJax>
+          {index + 1}. <MathJax dynamic>{item}</MathJax>
         </span>
       ))}
     </div>
@@ -89,14 +89,14 @@ const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
           <tr>
             {props.list1.map((item, index) => (
               <td key={index} className="table_to_qestion_list1">
-                <MathJax>{item}</MathJax>
+                <MathJax dynamic>{item}</MathJax>
               </td>
             ))}
           </tr>
           <tr>
             {props.list2.map((item, index) => (
               <td key={index} className="table_to_qestion_list2">
-                <MathJax>{item}</MathJax>
+                <MathJax dynamic>{item}</MathJax>
               </td>
             ))}
           </tr>

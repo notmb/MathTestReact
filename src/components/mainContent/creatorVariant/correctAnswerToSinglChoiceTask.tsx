@@ -12,8 +12,9 @@ const CorrectAnswerToSinglChoiceTask = (props: {
   const handleCorrectAnswerOfTaskChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setCorrectAnswer(e.currentTarget.value);
-    props.updateCorrectAnswerText(e.currentTarget.value);
+    const value = e.currentTarget.value;
+    setCorrectAnswer(value);
+    props.updateCorrectAnswerText(value);
   };
 
   return (

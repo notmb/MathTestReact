@@ -1,4 +1,5 @@
 import { useImmer } from "use-immer";
+import { useEffect } from "react";
 import { db, storage } from "../../../firebaseConfig"; // Імпорт Firestore
 import { ref, uploadBytes } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
@@ -6,13 +7,20 @@ import { Task2 } from "../types";
 import ConditionOfTask from "./conditionOfTask";
 import ComparisonToMatchingTask from "./comparisonToMatchingTask";
 import CorrectAnswerToTaskMatching from "./correctAnswerToTaskMatching";
-//ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
+import { useVariantContext } from "../tests/variantContext";
 
+//ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
 const CreatorTaskMatching = (props: {
   numSelectedTask: string;
   nameOfVariant: string;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
+  onSuccess?: () => void;
 }) => {
+  const { tasks, updateTask } = useVariantContext();
+
+  // Дістаємо потрібне завдання (може бути undefined)
+  const task = tasks?.[props.numSelectedTask] as Task2 | undefined;
+
   const [taskData, updateTaskData] = useImmer<Task2>({
     task: {
       text: "",
@@ -24,6 +32,24 @@ const CreatorTaskMatching = (props: {
     correctComparison: {},
     typeOfTask: "comparison",
   });
+
+  // Синхронізація з глобальним стейтом
+  useEffect(() => {
+    if (task) {
+      updateTaskData(() => ({
+        task: { text: task.task.text || "" },
+        comparisonTable: {
+          list1: task.comparisonTable.list1 || {},
+          list2: task.comparisonTable.list2 || {},
+        },
+        correctComparison: task.correctComparison || {},
+
+        typeOfTask: "comparison",
+      }));
+    }
+  }, [task, updateTaskData]);
+  // Синхронізація з глобальним стейтом
+
   const [files, updateFiels] = useImmer<File[]>([]);
 
   const uploadFile = async (file: File) => {
@@ -42,7 +68,6 @@ const CreatorTaskMatching = (props: {
   };
 
   const handleClick = async () => {
-    console.log(taskData);
     try {
       // Створюємо посилання на документ
       const variantRef = doc(
@@ -66,6 +91,15 @@ const CreatorTaskMatching = (props: {
     }
     if (files.length > 0) await Promise.all(files.map(uploadFile));
     props.updateTaskIsAdded(+props.numSelectedTask - 1, true);
+
+    //ОНОВЛЮЄМО КОНТЕКСТ ЯКЩО ВІН ВЖЕ СТВОРЕНИЙ
+    if (task && updateTask) {
+      updateTask(props.numSelectedTask, taskData); // оновлюємо контекст
+    }
+    //ОНОВЛЮЄМО КОНТЕКСТ ЯКЩО ВІН ВЖЕ СТВОРЕНИЙ
+    if (props.onSuccess) {
+      props.onSuccess();
+    }
   };
 
   return (
