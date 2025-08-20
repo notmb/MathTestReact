@@ -25,8 +25,7 @@ export const WrapperForModalWindow = (props: {
         <div className="container_for_close_button">
           <button className="close_button" onClick={props.onClose}></button>
         </div>
-
-        {props.children}
+        <div className="container_for_children"> {props.children}</div>
       </div>
     </div>
   );
