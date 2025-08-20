@@ -12,19 +12,25 @@
 .modal_content {
   position: relative;
   background: white;
-  padding: 32px 20px 20px 20px;
-  border-radius: 8px;
-  width: 60%;
+  margin: 32px 0;
+  /* padding: 0 20px 20px 20px; */
+  /* border-radius: 8px; */
+  /* width: 60%; */
+  height: max-content;
   max-width: 90vw;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
-
+.container_for_close_button {
+  background-color: aliceblue;
+  display: flex;
+  justify-content: flex-end; /* кнопка праворуч */
+}
 .close_button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  /* position: absolute; */
+  /* top: 10px;
+  right: 10px; */
   background: transparent;
   border: none;
   font-size: 24px;

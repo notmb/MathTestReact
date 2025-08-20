@@ -32,6 +32,7 @@ const TestReview = (props: { selectedVariant: string }) => {
                 <p className="text-lg font-bold m-0">Завдання {key}</p>
                 {isEditingEnabled && (
                   <button
+                    className="custom_edit_button"
                     onClick={() => {
                       taskForEditingSelected(key);
                     }}

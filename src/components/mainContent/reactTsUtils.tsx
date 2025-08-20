@@ -22,9 +22,10 @@ export const WrapperForModalWindow = (props: {
   return (
     <div className="wrapper_for_modal_window">
       <div className="modal_content">
-        <button className="close_button" onClick={props.onClose}>
-          X
-        </button>
+        <div className="container_for_close_button">
+          <button className="close_button" onClick={props.onClose}></button>
+        </div>
+
         {props.children}
       </div>
     </div>

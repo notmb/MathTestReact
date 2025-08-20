@@ -26,21 +26,7 @@
   display: flex;
   justify-content: space-between;
 }
-.custom_button {
-  background-color: #90bde8; /* Зелений фон */
-  color: white; /* Білий текст */
-  border: 2px solid #90bde8; /* Зелені рамки */
-  padding: 4px 8px; /* Відступи всередині кнопки */
-  font-size: 16px; /* Розмір шрифту */
-  cursor: pointer; /* Курсор у вигляді руки при наведенні */
-  transition: background-color 0.3s, border-color 0.3s; /* Анімація для змін кольору */
-  margin: 4px 0 16px 0;
-}
 
-.custom_button:hover {
-  background-color: #90bde8; /* Темніший зелений при наведенні */
-  border-color: #6389ac; /* Зміна кольору рамки */
-}
 .number_of_tasks_new_variant,
 .name_new_variant {
   margin-bottom: 24px;
