@@ -146,7 +146,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         variantId
       );
       await updateDoc(detailedResultsRefInUserProfil, {
-        userAnswer: userAnswers,
+        userAnswers: userAnswers,
         pointsForTasks: pointsForTasks,
         result: result,
       });
