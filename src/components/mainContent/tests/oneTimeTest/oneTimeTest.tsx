@@ -100,7 +100,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         testLinkData?.nameStudent || "noName"
       );
       await setDoc(resultsRef, {
-        userAnswer: userAnswers,
+        userAnswers: userAnswers,
         pointsForTasks: pointsForTasks,
         result: result,
         variantId: variantId,
