@@ -89,7 +89,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     variantSerialNumber: string
   ) => {
     try {
-      // //заптис у TestLiks/TestResults
+      //заптис у TestLiks/TestResults
       const resultsRef = doc(
         db,
         "Subjects",
@@ -106,13 +106,14 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         variantId: variantId,
         variantName: variantName,
       });
-      // //заптис у TestLiks/TestResults
       console.log("debug");
     } catch (error) {
       console.error("Помилка:", error);
     }
+    //заптис у TestLiks/TestResults
+
+    //допис кількох полів у TestLinks
     try {
-      //допис кількох полів у TestLinks
       const updateDataLink = doc(
         db,
         "Subjects",
@@ -124,13 +125,14 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         used: true,
         testResult: result,
       });
-      //допис кількох полів у TestLinks
       console.log("debug");
     } catch (error) {
       console.error("Помилка:", error);
     }
+    //допис кількох полів у TestLinks
+
+    //запис у MyStudents
     try {
-      //запис у MyStudents
       const resultsRefInUserProfil = doc(
         db,
         "Subjects",
@@ -141,13 +143,14 @@ const OneTimeTest = (props: { selectedLink: string }) => {
       await updateDoc(resultsRefInUserProfil, {
         [`testScores.${variantSerialNumber}`]: result,
       });
-      //запис у MyStudents
       console.log("debug");
     } catch (error) {
       console.error("Помилка:", error);
     }
+    //запис у MyStudents
+
+    //запис детальних результатів у MyStudents
     try {
-      //запис детальних результатів у MyStudents
       const detailedResultsRefInUserProfil = doc(
         db,
         "Subjects",
@@ -162,13 +165,13 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         pointsForTasks: pointsForTasks,
         result: result,
       });
-      //запис детальних результатів у MyStudents
       console.log("debug");
-      setStatus("end");
-      console.log("Тест закінчено");
     } catch (error) {
       console.error("Помилка:", error);
     }
+    //запис детальних результатів у MyStudents
+    setStatus("end");
+    console.log("Тест закінчено");
   };
   //записуємо результати тесту
 
