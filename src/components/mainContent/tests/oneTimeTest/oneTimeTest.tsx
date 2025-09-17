@@ -108,6 +108,10 @@ const OneTimeTest = (props: { selectedLink: string }) => {
       });
       // //заптис у TestLiks/TestResults
       console.log("debug");
+    } catch (error) {
+      console.error("Помилка:", error);
+    }
+    try {
       //допис кількох полів у TestLinks
       const updateDataLink = doc(
         db,
@@ -122,6 +126,10 @@ const OneTimeTest = (props: { selectedLink: string }) => {
       });
       //допис кількох полів у TestLinks
       console.log("debug");
+    } catch (error) {
+      console.error("Помилка:", error);
+    }
+    try {
       //запис у MyStudents
       const resultsRefInUserProfil = doc(
         db,
@@ -135,6 +143,10 @@ const OneTimeTest = (props: { selectedLink: string }) => {
       });
       //запис у MyStudents
       console.log("debug");
+    } catch (error) {
+      console.error("Помилка:", error);
+    }
+    try {
       //запис детальних результатів у MyStudents
       const detailedResultsRefInUserProfil = doc(
         db,
