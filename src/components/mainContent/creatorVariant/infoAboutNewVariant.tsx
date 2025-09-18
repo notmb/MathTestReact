@@ -5,6 +5,7 @@ const InfoAboutNewVariant = (props: {
 }) => {
   const [isActive, setIsActive] = useState(true);
   const [selectedTypeTest, setSelectedTypeTest] = useState<string>("main");
+  console.log(selectedTypeTest);
   const deactivateWindow = () => {
     setIsActive(false); // Змінюємо висоту компонента
   };
