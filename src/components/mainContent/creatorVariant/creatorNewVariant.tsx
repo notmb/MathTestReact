@@ -11,6 +11,7 @@ type Tasks = Task[];
 const CreatorNewVariant = (props: {
   nameVariant: string;
   tasks: Tasks;
+  typeTest: string;
   updateTypeOfTask: (
     numTask: number,
     event: React.FormEvent<HTMLFormElement>
@@ -50,6 +51,7 @@ const CreatorNewVariant = (props: {
       </div>
       {selectedTask && !props.tasks[selectedTask - 1].taskIsAdded && (
         <CreatorTask
+          typeTest={props.typeTest}
           nameOfVarint={props.nameVariant}
           numSelectedTask={selectedTask?.toString()} // number-№завдання від 1,2,3..
           typeOfTasks={props.tasks[selectedTask - 1].typeTask}

@@ -4,7 +4,7 @@ const InfoAboutNewVariant = (props: {
   handleClickSet: (event: React.FormEvent<HTMLFormElement>) => void;
 }) => {
   const [isActive, setIsActive] = useState(true);
-
+  const [selectedTypeTest, setSelectedTypeTest] = useState<string>("main");
   const deactivateWindow = () => {
     setIsActive(false); // Змінюємо висоту компонента
   };
@@ -19,7 +19,7 @@ const InfoAboutNewVariant = (props: {
       >
         <div
           className={`conteiner_for_description transition-height ${
-            isActive ? "max-h-40" : "max-h-8"
+            isActive ? "max-h-100" : "max-h-8"
           }`}
         >
           <div className="name_new_variant">
@@ -41,6 +41,29 @@ const InfoAboutNewVariant = (props: {
           <div className="number_of_tasks_new_variant">
             <label htmlFor="number_of_tasks">Кількість завдань:</label>
             <input type="text" id="number_of_tasks" name="numberOfTasks" />
+          </div>
+
+          <div>
+            <p>Перездача чи основний:</p>
+            <label>
+              <input
+                type="radio"
+                name="typeTest"
+                value="retaking"
+                onChange={(e) => setSelectedTypeTest(e.target.value)}
+              />
+              Перездача
+            </label>
+
+            <label>
+              <input
+                type="radio"
+                name="type-test"
+                value="main"
+                onChange={(e) => setSelectedTypeTest(e.target.value)}
+              />
+              Основний
+            </label>
           </div>
         </div>
         <div>

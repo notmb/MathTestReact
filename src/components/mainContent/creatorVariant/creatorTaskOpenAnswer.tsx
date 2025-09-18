@@ -10,6 +10,7 @@ import { useVariantContext } from "../tests/variantContext";
 
 //ФОРМА ДЛЯ ЗАВДАННЯ OPEN ANSWER
 const CreatorTaskOpenAnswer = (props: {
+  typeTest: string;
   numSelectedTask: string;
   nameOfVariant: string;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
@@ -65,7 +66,7 @@ const CreatorTaskOpenAnswer = (props: {
         "Math",
         "Algebra",
         "Topics",
-        "Mix",
+        "props.typeTest",
         props.nameOfVariant,
         "tasks",
         props.numSelectedTask

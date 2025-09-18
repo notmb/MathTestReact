@@ -10,6 +10,7 @@ interface MainDataAboutVariant {
   variantName: string;
   numberOfTask: string;
   topic: string;
+  typeTest: string;
 }
 interface Task {
   numberTask: string;
@@ -55,15 +56,18 @@ const AddNewVariant = () => {
   const createVariant = async (
     nameVariant: string,
     numberOfTask: string,
-    variantSerialNumber: string
+    variantSerialNumber: string,
+    typeTest: string
   ) => {
+    const partOfTheWay =
+      typeTest === "main" ? "Mix" : typeTest === "retaking" ? "Retaking" : "";
     const variantsCollectionRef = collection(
       db,
       "Subjects",
       "Math",
       "Algebra",
       "Topics",
-      "Mix"
+      partOfTheWay
     );
     try {
       const docRef = await addDoc(variantsCollectionRef, {
@@ -87,17 +91,20 @@ const AddNewVariant = () => {
     const newVariantSerialNumber = formData.get(
       "variantSerialNumber"
     ) as string;
+    const typeTest = formData.get("typeTest") as string; //++
     const dataOfTask: MainDataAboutVariant = {
       variantName: newVariantName,
       numberOfTask: newNumOfTasks,
       topic: newVariantSerialNumber,
+      typeTest: typeTest,
     };
     setMainDataAboutNewVariant(dataOfTask);
     initializeTasks(+newNumOfTasks);
     createVariant(
       dataOfTask.variantName,
       dataOfTask.numberOfTask,
-      dataOfTask.topic
+      dataOfTask.topic,
+      dataOfTask.typeTest
     );
   };
 
@@ -110,6 +117,7 @@ const AddNewVariant = () => {
       {mainDataAboutNewVariant && (
         <CreatorNewVariant
           tasks={tasks}
+          typeTest={mainDataAboutNewVariant.typeTest}
           updateTypeOfTask={updateTypeOfTask}
           updateTaskIsAdded={updateTaskIsAdded}
           nameVariant={id}

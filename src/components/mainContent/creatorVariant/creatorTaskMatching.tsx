@@ -11,6 +11,7 @@ import { useVariantContext } from "../tests/variantContext";
 
 //ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
 const CreatorTaskMatching = (props: {
+  typeTest: string;
   numSelectedTask: string;
   nameOfVariant: string;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
@@ -76,7 +77,7 @@ const CreatorTaskMatching = (props: {
         "Math",
         "Algebra",
         "Topics",
-        "Mix",
+        props.typeTest,
         props.nameOfVariant,
         "tasks",
         props.numSelectedTask

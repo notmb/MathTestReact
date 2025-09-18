@@ -10,6 +10,7 @@ import CorrectAnswerToSinglChoiceTask from "./correctAnswerToSinglChoiceTask";
 import { useVariantContext } from "../tests/variantContext";
 
 const CreatorTaskChoice = (props: {
+  typeTest: string;
   numSelectedTask: string;
   nameOfVariant: string;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
@@ -60,6 +61,8 @@ const CreatorTaskChoice = (props: {
 
   const handleClick = async () => {
     console.log(taskData);
+    console.log(props.typeTest);
+
     try {
       // Створюємо посилання на документ
       const variantRef = doc(
@@ -68,7 +71,7 @@ const CreatorTaskChoice = (props: {
         "Math",
         "Algebra",
         "Topics",
-        "Mix",
+        props.typeTest,
         props.nameOfVariant,
         "tasks",
         props.numSelectedTask
