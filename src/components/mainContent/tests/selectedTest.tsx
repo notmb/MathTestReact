@@ -12,13 +12,15 @@ const SelectedVariant = (props: {
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handlePassTheTest = (nameTest: string) => {
-    props.navigate(`/MathTestReact/allTest/selectedVariant/${nameTest}/test`);
+  const handlePassTheTest = (selectedVariant: string) => {
+    props.navigate(
+      `/MathTestReact/allTest/selectedVariant/${selectedVariant}/test`
+    );
   };
 
-  const handleOneTimePassTheTest = (nameTest: string) => {
+  const handleOneTimePassTheTest = (selectedVariant: string) => {
     props.navigate(
-      `/MathTestReact/allTest/selectedVariant/${nameTest}/one-time-links`
+      `/MathTestReact/allTest/selectedVariant/${selectedVariant}/one-time-links`
     );
   };
 
@@ -28,6 +30,7 @@ const SelectedVariant = (props: {
   //   );
   //   setIsDelete(true);
   // };
+  const typeTest = props.selectedVariant.slice(-1);
   const handleDelete = async () => {
     await deleteDoc(
       doc(
@@ -36,8 +39,8 @@ const SelectedVariant = (props: {
         "Math",
         "Algebra",
         "Topics",
-        "Mix",
-        props.selectedVariant
+        typeTest === "M" ? "Mix" : "Retaking",
+        props.selectedVariant.slice(0, -1)
       )
     );
     setIsModalOpen(false);

@@ -6,7 +6,6 @@ import AllTest from "./components/mainContent/tests/allTests";
 import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
 import ContainerForMathTest from "./components/mainContent/tests/containerForMathTests";
-// import MathTest from "./components/mainContent/tests/mathTests";
 import AddNewVariant from "./components/mainContent/creatorVariant/addVariant2";
 import SelectedVariant from "./components/mainContent/tests/selectedTest";
 import Header from "./components/header/header";

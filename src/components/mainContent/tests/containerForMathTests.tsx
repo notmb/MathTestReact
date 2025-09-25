@@ -42,6 +42,8 @@ const ContainerForMathTest = (props: {
     variantSerialNumber: "",
   });
 
+  const typeTest = props.selectedVariant.slice(-1) === "M" ? "Mix" : "Retaking";
+
   const fetchVariantData = async () => {
     const docRef = doc(
       db,
@@ -49,8 +51,8 @@ const ContainerForMathTest = (props: {
       "Math",
       "Algebra",
       "Topics",
-      "Mix",
-      props.selectedVariant
+      typeTest,
+      props.selectedVariant.slice(0, -1)
     );
     const docSnap = await getDoc(docRef);
 
@@ -72,8 +74,8 @@ const ContainerForMathTest = (props: {
         "Math",
         "Algebra",
         "Topics",
-        "Mix",
-        props.selectedVariant,
+        typeTest,
+        props.selectedVariant.slice(0, -1),
         "tasks"
       );
 

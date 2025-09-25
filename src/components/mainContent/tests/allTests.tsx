@@ -5,9 +5,12 @@ import { useState, useEffect } from "react";
 
 const AllTest = (props: { navigate: (path: string) => void }) => {
   const [variants, setVariants] = useState<{ id: string; name: string }[]>([]);
+  const [variantsRetaking, setVariantsRetaking] = useState<
+    { id: string; name: string }[]
+  >([]);
 
   const getAllVariants = async () => {
-    const tasksRef = collection(
+    const variantsRef = collection(
       db,
       "Subjects",
       "Math",
@@ -16,7 +19,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
       "Mix"
     );
     try {
-      const snapshot = await getDocs(tasksRef);
+      const snapshot = await getDocs(variantsRef);
       const variants = snapshot.docs.map((doc) => {
         const data = doc.data();
         return { id: doc.id, name: data.variantName || doc.id };
@@ -28,13 +31,43 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
       return [];
     }
   };
+
+  const getAllVariantsRetaking = async () => {
+    const variantsRetakingRef = collection(
+      db,
+      "Subjects",
+      "Math",
+      "Algebra",
+      "Topics",
+      "Retaking"
+    );
+    try {
+      const snapshot = await getDocs(variantsRetakingRef);
+      const variantsRetaking = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return { id: doc.id, name: data.variantName || doc.id };
+      });
+      console.log(variantsRetaking);
+      return variantsRetaking;
+    } catch (error) {
+      console.log("Помилка при завантаженні варіантів:", error);
+      return [];
+    }
+  };
   useEffect(() => {
     const fetchVariants = async () => {
       const data = await getAllVariants();
       setVariants(data);
     };
-
     fetchVariants();
+  }, []);
+
+  useEffect(() => {
+    const fetchVariantsRetaking = async () => {
+      const data = await getAllVariantsRetaking();
+      setVariantsRetaking(data);
+    };
+    fetchVariantsRetaking();
   }, []);
 
   const selectTest = (IdTest: string) => {
@@ -45,12 +78,31 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
     <div className="box_for_list_of_tests">
       <div>
         <ul className="list_of_variant">
+          <h3>Тести:</h3>
+
           {variants.map((variant) => (
             <li className="variant_item" key={variant.id}>
               <p
                 className="cursor-pointer m-1"
                 onClick={() => {
-                  selectTest(variant.id);
+                  selectTest(variant.id + "M");
+                }}
+              >
+                {variant.name}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <ul className="list_of_variant">
+          <h3>Тести на перездачу:</h3>
+          {variantsRetaking.map((variant) => (
+            <li className="variant_item" key={variant.id}>
+              <p
+                className="cursor-pointer m-1"
+                onClick={() => {
+                  selectTest(variant.id + "R");
                 }}
               >
                 {variant.name}

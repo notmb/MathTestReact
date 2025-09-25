@@ -26,6 +26,7 @@ const VariantContextWrapper = (props: {
     numberOfTasks: "",
     variantSerialNumber: "",
   });
+  const typeTest = props.variant.slice(-1);
 
   useEffect(() => {
     const fetchVariantData = async () => {
@@ -35,8 +36,8 @@ const VariantContextWrapper = (props: {
         "Math",
         "Algebra",
         "Topics",
-        "Mix",
-        props.variant
+        typeTest === "M" ? "Mix" : "Retaking",
+        props.variant.slice(0, -1)
       );
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -51,8 +52,8 @@ const VariantContextWrapper = (props: {
         "Math",
         "Algebra",
         "Topics",
-        "Mix",
-        props.variant,
+        typeTest === "M" ? "Mix" : "Retaking",
+        props.variant.slice(0, -1),
         "tasks"
       );
       const snapshot = await getDocs(tasksRef);

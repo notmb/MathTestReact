@@ -10,7 +10,7 @@ import CorrectAnswerToSinglChoiceTask from "./correctAnswerToSinglChoiceTask";
 import { useVariantContext } from "../tests/variantContext";
 
 const CreatorTaskChoice = (props: {
-  typeTest?: string;
+  typeTest: string;
   numSelectedTask: string;
   nameOfVariant: string;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
@@ -71,7 +71,7 @@ const CreatorTaskChoice = (props: {
         "Math",
         "Algebra",
         "Topics",
-        props.typeTest || "Mix",
+        props.typeTest,
         props.nameOfVariant,
         "tasks",
         props.numSelectedTask

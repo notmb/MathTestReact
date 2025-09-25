@@ -23,6 +23,8 @@ const MathTest = (props: {
 
   const [timeOut, setTimeOut] = useState<boolean>(false);
 
+  const selectedVariant = props.selectedVariant.slice(0, -1);
+
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
     task.typeOfTask === "comparison";
@@ -174,7 +176,7 @@ const MathTest = (props: {
                 )}
                 {isTask1(task) && (
                   <TaskChoice
-                    selectedVariant={props.selectedVariant}
+                    selectedVariant={selectedVariant}
                     task={task.task}
                     answers={task.answers}
                     number={key}
@@ -187,7 +189,7 @@ const MathTest = (props: {
                 )}
                 {isTask2(task) && (
                   <TaskComparison
-                    selectedVariant={props.selectedVariant}
+                    selectedVariant={selectedVariant}
                     task={task.task}
                     comparisonTable={task.comparisonTable}
                     number={key}
@@ -200,7 +202,7 @@ const MathTest = (props: {
                 )}
                 {isTask3(task) && (
                   <TaskOpenAnswer
-                    selectedVariant={props.selectedVariant}
+                    selectedVariant={selectedVariant}
                     task={task.task}
                     number={key}
                     updateUserAnswer={(idTask: string, userAnswers: any) =>
