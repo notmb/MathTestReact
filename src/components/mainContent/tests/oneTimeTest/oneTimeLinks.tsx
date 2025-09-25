@@ -40,12 +40,12 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
     useImmer<SelectedLink | null>(null);
 
   // const { dataVariant } = useVariantContext();
-
+  const selectedVariant = props.selectedVariant.slice(0, -1);
   const fetchTestLinks = async () => {
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
     const dataLinks = query(
       testLinksRef,
-      where("variantId", "==", props.selectedVariant)
+      where("variantId", "==", selectedVariant)
     );
     try {
       const querySnapshot = await getDocs(dataLinks);
@@ -63,80 +63,6 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   useEffect(() => {
     fetchTestLinks();
   }, []);
-
-  // const addLink = async () => {
-  //   const newLink = collection(db, "Subjects", "Math", "TestLinks");
-
-  //   //вказуємо ім'я студента для якого створюємо лінку
-  //   const userName = prompt("Введіть ім'я учня:")?.trim() || "Не Вказано";
-  //   if (!userName) {
-  //     console.warn("Ім'я учня не введено");
-  //     return;
-  //   }
-
-  //   try {
-  //     // Знаходимо id учня
-  //     const studentId = await findDocIdByField(
-  //       "/Subjects/Math/MyStudents",
-  //       "name",
-  //       userName
-  //     );
-  //     if (!studentId) {
-  //       console.warn("Учня не знайдено в базі MyStudents");
-  //       return;
-  //     }
-
-  //     console.log(studentId);
-  //     //в профілі учня оновлюємо поле testScores.topicN: "не почато"
-  //     const docRefStudent = doc(
-  //       db,
-  //       "Subjects",
-  //       "Math",
-  //       "MyStudents",
-  //       studentId
-  //     );
-  //     await updateDoc(docRefStudent, {
-  //       [`testScores.${dataVariant.variantSerialNumber}`]: "не почато", // динамічний ключ
-  //     });
-  //     console.log("Поле оновлено");
-
-  //     //в профілі учня створюємо або редагуємо колекцію ResultsTest - детальні результати тесту
-  //     const resultTestDocRef = doc(
-  //       collection(docRefStudent, "ResultsTest"),
-  //       props.selectedVariant // ID документа буде співпадати з ID варіанта тесту
-  //     );
-  //     await setDoc(resultTestDocRef, {
-  //       userAnswers: {}, // Поки що порожній об'єкт
-  //       result: "не пройдено", // Початковий статус
-  //       pointsForTasks: {}, // Порожній об'єкт, бо ще не пройдено
-  //       variantId: props.selectedVariant,
-  //       variantName: dataVariant.variantSerialNumber, // Або будь-яка інша назва
-  //     });
-  //     console.log("Документ ResultsTest створено/оновлено");
-
-  //     //додаємо новий лінк в TestLinks
-  //     const docRef = await addDoc(newLink, {
-  //       variantId: props.selectedVariant,
-  //       createdAt: new Date(),
-  //       used: false,
-  //       nameStudent: userName,
-  //       testResult: "не пройдено",
-  //     });
-
-  //     updateTestLinks((draft) => {
-  //       draft.push({
-  //         id: docRef.id,
-  //         variantId: props.selectedVariant,
-  //         used: false,
-  //         nameStudent: userName,
-  //         testResult: "не пройдено",
-  //       });
-  //     });
-  //     console.log("Користувача додано");
-  //   } catch (error) {
-  //     console.error("Помилка створення:", error);
-  //   }
-  // };
 
   const host = window.location.host;
   const getLink = (idLink: string) => {
