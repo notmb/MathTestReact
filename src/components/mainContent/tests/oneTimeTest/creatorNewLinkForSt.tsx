@@ -81,7 +81,6 @@ const CreatorNewLinkForStudent = (props: {
       alert("Оберіть учня перед додаванням");
       return;
     }
-    console.log(selectedStudentId);
 
     const linkDocId = `${selectedStudentId}_${props.selectedVariant.slice(
       0,

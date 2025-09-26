@@ -59,6 +59,7 @@ const AddNewVariant = () => {
     variantSerialNumber: string,
     typeTest: string
   ) => {
+    console.log(typeTest);
     const partOfTheWay =
       typeTest === "main" ? "Mix" : typeTest === "retaking" ? "Retaking" : "";
     const variantsCollectionRef = collection(
@@ -92,6 +93,7 @@ const AddNewVariant = () => {
       "variantSerialNumber"
     ) as string;
     const typeTest = formData.get("typeTest") as string; //++
+    console.log(typeTest);
     const dataOfTask: MainDataAboutVariant = {
       variantName: newVariantName,
       numberOfTask: newNumOfTasks,
@@ -100,6 +102,7 @@ const AddNewVariant = () => {
     };
     setMainDataAboutNewVariant(dataOfTask);
     initializeTasks(+newNumOfTasks);
+    // console.log(dataOfTask);
     createVariant(
       dataOfTask.variantName,
       dataOfTask.numberOfTask,

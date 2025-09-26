@@ -59,7 +59,7 @@ const InfoAboutNewVariant = (props: {
             <label>
               <input
                 type="radio"
-                name="type-test"
+                name="typeTest"
                 value="main"
                 onChange={(e) => setSelectedTypeTest(e.target.value)}
               />
