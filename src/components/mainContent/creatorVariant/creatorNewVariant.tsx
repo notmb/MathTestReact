@@ -9,7 +9,7 @@ interface Task {
 type Tasks = Task[];
 //ФОРМА ДЛЯ СТВОРЕННЯ ВАРІАНТУ
 const CreatorNewVariant = (props: {
-  nameVariant: string;
+  nameVariant: string; // Id
   tasks: Tasks;
   typeTest: string;
   updateTypeOfTask: (

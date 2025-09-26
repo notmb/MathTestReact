@@ -21,6 +21,7 @@ import { db } from "../../../../firebaseConfig";
 interface TestLink {
   id: string; // id лінку
   variantId: string; // id варіанту
+  typeTest: string;
   used: boolean;
   nameStudent: string;
   testResult: string;
@@ -39,10 +40,11 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [selectedAnswersData, updateSelectedAnswersData] =
     useImmer<SelectedLink | null>(null);
 
-  // const { dataVariant } = useVariantContext();
   const selectedVariant = props.selectedVariant.slice(0, -1);
+
   const fetchTestLinks = async () => {
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
+
     const dataLinks = query(
       testLinksRef,
       where("variantId", "==", selectedVariant)

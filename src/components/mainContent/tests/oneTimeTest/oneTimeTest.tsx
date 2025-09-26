@@ -16,6 +16,7 @@ import ContainerForMathTest from "../containerForMathTests";
 
 type TestLink = {
   variantId: string;
+  typeTest: string;
   used: boolean;
   nameStudent: string;
   testResult: string;
@@ -89,7 +90,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     variantSerialNumber: string
   ) => {
     try {
-      //заптис у TestLiks/TestResults
+      //запис у TestLiks/TestResults
       const resultsRef = doc(
         db,
         "Subjects",
@@ -191,7 +192,11 @@ const OneTimeTest = (props: { selectedLink: string }) => {
       {status === "started" && testLinkData && !testLinkData.used && (
         <div>
           <ContainerForMathTest
-            selectedVariant={testLinkData.variantId}
+            selectedVariant={
+              testLinkData.typeTest === "main"
+                ? testLinkData.variantId + "M"
+                : testLinkData.variantId + "R"
+            }
             endTest={endTest}
           ></ContainerForMathTest>
         </div>

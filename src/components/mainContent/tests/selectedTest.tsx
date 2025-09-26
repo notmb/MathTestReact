@@ -24,12 +24,6 @@ const SelectedVariant = (props: {
     );
   };
 
-  // const removeTest = async (link: string) => {
-  //   await deleteDoc(
-  //     doc(db, "Subjects", "Math", "Algebra", "Topics", "Mix", link)
-  //   );
-  //   setIsDelete(true);
-  // };
   const typeTest = props.selectedVariant.slice(-1);
   const handleDelete = async () => {
     await deleteDoc(

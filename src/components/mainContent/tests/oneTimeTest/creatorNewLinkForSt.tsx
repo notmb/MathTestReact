@@ -17,6 +17,7 @@ type StudentOption = {
 interface TestLink {
   id: string; // id лінку
   variantId: string; // id варіанту
+  typeTest: string;
   used: boolean;
   nameStudent: string;
   testResult: string;
@@ -82,7 +83,10 @@ const CreatorNewLinkForStudent = (props: {
     }
     console.log(selectedStudentId);
 
-    const linkDocId = `${selectedStudentId}_${props.selectedVariant}`;
+    const linkDocId = `${selectedStudentId}_${props.selectedVariant.slice(
+      0,
+      -1
+    )}`;
     const docRef = doc(db, "Subjects", "Math", "TestLinks", linkDocId);
     const docSnap = await getDoc(docRef);
 
@@ -108,13 +112,13 @@ const CreatorNewLinkForStudent = (props: {
       //в профілі учня створюємо або редагуємо колекцію ResultsTest - детальні результати тесту
       const resultTestDocRef = doc(
         collection(docRefStudent, "ResultsTest"),
-        props.selectedVariant
+        props.selectedVariant.slice(0, -1)
       );
       await setDoc(resultTestDocRef, {
         userAnswers: {},
         result: "не пройдено",
         pointsForTasks: {},
-        variantId: props.selectedVariant,
+        variantId: props.selectedVariant.slice(0, -1),
         variantName: dataVariant.variantSerialNumber || dataVariant.variantName,
       });
       console.log("Документ ResultsTest створено/оновлено");
@@ -122,28 +126,30 @@ const CreatorNewLinkForStudent = (props: {
       // Додаємо документ (дані лінки) у TestLinks
       await setDoc(docRef, {
         studentId: selectedStudentId,
+        typeTest: props.selectedVariant.slice(-1) === "M" ? "main" : "retaking",
         nameStudent:
           students.find((s) => s.id === selectedStudentId)?.name || "",
-        variantId: props.selectedVariant,
+        variantId: props.selectedVariant.slice(0, -1),
         testResult: "не пройдено",
         used: false,
         createdAt: new Date(),
       });
       console.log("Лінка додана");
 
-      interface TestLink {
-        id: string; // id лінку
-        variantId: string; // id варіанту
-        used: boolean;
-        nameStudent: string;
-        testResult: string;
-        // інші поля, які є в документі
-      }
+      // interface TestLink {
+      //   id: string; // id лінку
+      //   variantId: string; // id варіанту
+      //   used: boolean;
+      //   nameStudent: string;
+      //   testResult: string;
+      //   // інші поля, які є в документі
+      // }
 
       //оновлюємо локальний список лінків
       props.updateTestLinks({
         id: linkDocId,
-        variantId: props.selectedVariant,
+        variantId: props.selectedVariant.slice(0, -1),
+        typeTest: props.selectedVariant.slice(-1) === "M" ? "main" : "retaking",
         used: false,
         nameStudent:
           students.find((s) => s.id === selectedStudentId)?.name || "",
