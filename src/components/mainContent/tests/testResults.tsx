@@ -27,7 +27,9 @@ const TestResults = (props: {
 
     if (docSnap.exists()) {
       const userAnswersData = docSnap.data();
-      updateUserAnswers(() => userAnswersData.userAnswer);
+      updateUserAnswers(
+        () => userAnswersData.userAnswers || userAnswersData.userAnswer
+      );
     } else {
       console.warn("Документ не знайдено");
     }

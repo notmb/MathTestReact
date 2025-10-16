@@ -100,7 +100,7 @@ const ContainerForMathTest = (props: {
       console.error("Помилка при завантаженні завдань:", error);
     }
   };
-
+  console.log(props.selectedVariant);
   const endTest = (
     userAnswers: { [key: string]: any },
     mark: string,
@@ -112,7 +112,7 @@ const ContainerForMathTest = (props: {
         userAnswers,
         mark,
         pointsForTasks,
-        props.selectedVariant,
+        props.selectedVariant.slice(0, -1),
         dataVariant.variantName,
         dataVariant.variantSerialNumber
       );

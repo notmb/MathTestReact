@@ -163,7 +163,42 @@ const OneTimeTest = (props: { selectedLink: string }) => {
       );
       await updateDoc(detailedResultsRefInUserProfil, {
         userAnswers: userAnswers,
+      });
+      console.log("debug");
+    } catch (error) {
+      console.error("Помилка:", error);
+    }
+
+    try {
+      const detailedResultsRefInUserProfil = doc(
+        db,
+        "Subjects",
+        "Math",
+        "MyStudents",
+        idStudentProfil,
+        "ResultsTest",
+        variantId
+      );
+
+      await updateDoc(detailedResultsRefInUserProfil, {
         pointsForTasks: pointsForTasks,
+      });
+      console.log("debug");
+    } catch (error) {
+      console.error("Помилка:", error);
+    }
+    try {
+      const detailedResultsRefInUserProfil = doc(
+        db,
+        "Subjects",
+        "Math",
+        "MyStudents",
+        idStudentProfil,
+        "ResultsTest",
+        variantId
+      );
+
+      await updateDoc(detailedResultsRefInUserProfil, {
         result: result,
       });
       console.log("debug");
