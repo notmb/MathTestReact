@@ -70,8 +70,12 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
     fetchVariantsRetaking();
   }, []);
 
-  const selectTest = (IdTest: string) => {
-    props.navigate(`/MathTestReact/allTest/selectedVariant/${IdTest}`);
+  // const selectTest = (IdTest: string) => {
+  //   props.navigate(`/MathTestReact/allTest/selectedVariant/${IdTest}`);
+  // };
+
+  const selectTest = (id: string, type: "main" | "retaking") => {
+    props.navigate(`/MathTestReact/allTest/selectedVariant/${type}/${id}`);
   };
 
   return (
@@ -84,9 +88,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
             <li className="variant_item" key={variant.id}>
               <p
                 className="cursor-pointer m-1"
-                onClick={() => {
-                  selectTest(variant.id + "M");
-                }}
+                onClick={() => selectTest(variant.id, "main")}
               >
                 {variant.name}
               </p>
@@ -101,9 +103,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
             <li className="variant_item" key={variant.id}>
               <p
                 className="cursor-pointer m-1"
-                onClick={() => {
-                  selectTest(variant.id + "R");
-                }}
+                onClick={() => selectTest(variant.id, "retaking")}
               >
                 {variant.name}
               </p>

@@ -1,5 +1,6 @@
 import TestReview from "./elementsForReviewTest/testReview";
 import { useState } from "react";
+import { useVariantContext } from "./variantContext";
 
 import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -11,20 +12,22 @@ const SelectedVariant = (props: {
 }) => {
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { dataVariant } = useVariantContext();
 
   const handlePassTheTest = (selectedVariant: string) => {
     props.navigate(
-      `/MathTestReact/allTest/selectedVariant/${selectedVariant}/test`
+      `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/test`
     );
   };
 
   const handleOneTimePassTheTest = (selectedVariant: string) => {
     props.navigate(
-      `/MathTestReact/allTest/selectedVariant/${selectedVariant}/one-time-links`
+      `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/one-time-links`
     );
   };
 
   const typeTest = props.selectedVariant.slice(-1);
+
   const handleDelete = async () => {
     await deleteDoc(
       doc(
@@ -47,8 +50,6 @@ const SelectedVariant = (props: {
         <div className="selected_test">
           <div className="buttons">
             <div className="left_side">
-              {/* <button className="custom_button">Редагувати</button> */}
-              {/* <button className="custom_button">Переіменувати</button> */}
               <button
                 className="custom_button"
                 onClick={() => setIsModalOpen(true)}

@@ -29,15 +29,15 @@ const routes = [
   },
 
   {
-    path: "/MathTestReact/allTest/selectedVariant/:variant",
+    path: "/MathTestReact/allTest/selectedVariant/:type/:variant",
     component: SelectedVariant,
   },
   {
-    path: "/MathTestReact/allTest/selectedVariant/:variant/test",
+    path: "/MathTestReact/allTest/selectedVariant/:type/:variant/test",
     component: ContainerForMathTest,
   },
   {
-    path: "/MathTestReact/allTest/selectedVariant/:variant/one-time-links",
+    path: "/MathTestReact/allTest/selectedVariant/:type/:variant/one-time-links",
     component: OneTimeLinks,
   },
   {
@@ -127,10 +127,11 @@ const Router = (props: {
   const Component = matchedRoute.component;
   const selectedVariant =
     routeParams.variant ?? routeParams.variantName ?? "none";
+  const typeTest = routeParams.type || "main";
   const withoutLayout = matchedRoute.withoutLayout;
 
   const content = (
-    <VariantContextWrapper variant={selectedVariant}>
+    <VariantContextWrapper variant={selectedVariant} typeTest={typeTest}>
       <main className="main_content">
         <Component
           navigate={props.navigate}

@@ -17,16 +17,18 @@ const isTask3 = (task: any): task is Task3 => task.typeOfTask === "openAnswer";
 
 const VariantContextWrapper = (props: {
   variant: string;
+  typeTest: string;
   children: React.ReactNode;
 }) => {
   const [tasks, updateTasks] = useImmer<Tasks>({});
   const [dataVariant, updateDataVariant] = useImmer<VaiantData>({
+    id: props.variant,
+    typeTest: props.typeTest,
     variantName: "",
     createdAt: new Timestamp(0, 0),
     numberOfTasks: "",
     variantSerialNumber: "",
   });
-  const typeTest = props.variant.slice(-1);
 
   useEffect(() => {
     const fetchVariantData = async () => {
@@ -36,8 +38,8 @@ const VariantContextWrapper = (props: {
         "Math",
         "Algebra",
         "Topics",
-        typeTest === "M" ? "Mix" : "Retaking",
-        props.variant.slice(0, -1)
+        props.typeTest === "main" ? "Mix" : "Retaking",
+        props.variant
       );
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -52,8 +54,8 @@ const VariantContextWrapper = (props: {
         "Math",
         "Algebra",
         "Topics",
-        typeTest === "M" ? "Mix" : "Retaking",
-        props.variant.slice(0, -1),
+        props.typeTest === "main" ? "Mix" : "Retaking",
+        props.variant,
         "tasks"
       );
       const snapshot = await getDocs(tasksRef);

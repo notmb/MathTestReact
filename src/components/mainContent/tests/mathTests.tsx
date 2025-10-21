@@ -11,7 +11,7 @@ interface CorrectComparison {
 }
 
 const MathTest = (props: {
-  tasks?: Tasks;
+  tasks: Tasks;
   selectedVariant: string;
   endTest?: (
     userAnswers: { [key: string]: any },
@@ -142,7 +142,7 @@ const MathTest = (props: {
     );
   };
   useEffect(() => {
-    console.log(timeOut);
+    // console.log(timeOut);
     if (timeOut) {
       checkAndEnd();
     }

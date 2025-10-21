@@ -40,14 +40,12 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [selectedAnswersData, updateSelectedAnswersData] =
     useImmer<SelectedLink | null>(null);
 
-  const selectedVariant = props.selectedVariant.slice(0, -1);
-
   const fetchTestLinks = async () => {
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
 
     const dataLinks = query(
       testLinksRef,
-      where("variantId", "==", selectedVariant)
+      where("variantId", "==", props.selectedVariant)
     );
     try {
       const querySnapshot = await getDocs(dataLinks);
@@ -74,10 +72,25 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   };
 
   const removeLink = async (link: string, index: number) => {
-    await deleteDoc(doc(db, "Subjects", "Math", "TestLinks", link));
-    updateTestLinks((draft) => {
-      draft.splice(index, 1); // ✅ абсолютно нормально — Immer сам зробить копію
-    });
+    try {
+      const linkPath = `Subjects/Math/TestLinks/${link}`;
+      //  🔹 1. Знайти єдиний документ у підколекції testResults
+      const resultsColRef = collection(db, linkPath, "testResults");
+      const resultsSnap = await getDocs(resultsColRef);
+      if (!resultsSnap.empty) {
+        const resultDoc = resultsSnap.docs[0];
+        await deleteDoc(resultDoc.ref);
+      }
+      // 🔹 2. Видалити сам документ
+      await deleteDoc(doc(db, linkPath));
+      // 🔹 3. Оновити стан
+      updateTestLinks((draft) => {
+        draft.splice(index, 1);
+      });
+      console.log(`✅ Документ ${link} і testResults успішно видалені`);
+    } catch (error) {
+      console.error("Помилка при видаленні документа:", error);
+    }
   };
 
   const ViewTheResults = (selectedLink: string, nameStudent: string) => {

@@ -1,22 +1,11 @@
-import type { Tasks, Task1, Task2, Task3 } from "../types";
+import type { Tasks, Task1, Task2, Task3, VaiantData } from "../types";
+import { useVariantContext } from "./variantContext";
 import { useImmer } from "use-immer";
+import { useState } from "react";
 import { useEffect } from "react";
 import { db } from "../../../firebaseConfig";
-import {
-  getDocs,
-  collection,
-  doc,
-  getDoc,
-  Timestamp,
-} from "firebase/firestore";
+import { getDocs, collection, doc, getDoc } from "firebase/firestore";
 import MathTest from "./mathTests";
-
-interface VaiantData {
-  createdAt: Timestamp;
-  numberOfTasks: string;
-  variantName: string;
-  variantSerialNumber: string;
-}
 
 const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
 const isTask2 = (task: any): task is Task2 => task.typeOfTask === "comparison";
@@ -33,56 +22,52 @@ const ContainerForMathTest = (props: {
     variantSerialNumber: string
   ) => void;
 }) => {
-  const [tasks, updateTasks] = useImmer<Tasks>({});
+  const { tasks } = useVariantContext();
 
-  const [dataVariant, updateDataVariant] = useImmer<VaiantData>({
-    createdAt: new Timestamp(0, 0), // або новий Timestamp
-    numberOfTasks: "",
-    variantName: "",
-    variantSerialNumber: "",
-  });
+  const [isMainTest, setIsMainTest] = useState<Boolean>();
+  console.log(isMainTest);
+  const [localTasks, updateLocalTasks] = useImmer<Tasks>({});
+  const [localDataVariant, updateLocalDataVariant] =
+    useImmer<VaiantData | null>(null);
 
-  const typeTest = props.selectedVariant.slice(-1) === "M" ? "Mix" : "Retaking";
+  const pathMain = "Subjects/Math/Algebra/Topics/Mix";
+  const pathRetaking = "Subjects/Math/Algebra/Topics/Retaking";
 
-  const fetchVariantData = async () => {
-    const docRef = doc(
-      db,
-      "Subjects",
-      "Math",
-      "Algebra",
-      "Topics",
-      typeTest,
-      props.selectedVariant.slice(0, -1)
-    );
-    const docSnap = await getDoc(docRef);
+  const checkIfDocExists = async (collectionPath: string, docId: string) => {
+    try {
+      const docRef = doc(db, collectionPath, docId);
+      const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      const data = docSnap.data() as VaiantData;
-      updateDataVariant(() => {
-        return data;
-      });
-    } else {
-      console.warn("Документ не знайдено");
+      if (docSnap.exists()) {
+        updateLocalDataVariant(() => docSnap.data() as VaiantData);
+        console.log("Документ існує:", docSnap.data());
+        setIsMainTest(true);
+        return true;
+      } else {
+        console.log("Документ не існує");
+        setIsMainTest(false);
+        return false;
+      }
+    } catch (error) {
+      console.error("Помилка перевірки існування документа:", error);
+      setIsMainTest(false);
+      return false;
     }
   };
 
-  const fetchTasks = async () => {
+  const loadTasks = async (link: string) => {
     try {
-      const tasksCollectionRef = collection(
+      const taskCollectionRef = collection(
         db,
-        "Subjects",
-        "Math",
-        "Algebra",
-        "Topics",
-        typeTest,
-        props.selectedVariant.slice(0, -1),
+        link,
+        props.selectedVariant,
         "tasks"
       );
+      const collSnap = await getDocs(taskCollectionRef);
 
-      const snapshot = await getDocs(tasksCollectionRef);
       const loadedTasks: Tasks = {};
 
-      snapshot.forEach((doc) => {
+      collSnap.forEach((doc) => {
         const data = doc.data();
         if (isTask1(data)) {
           loadedTasks[doc.id] = data as Task1;
@@ -94,13 +79,37 @@ const ContainerForMathTest = (props: {
           console.warn(`Невідомий тип завдання (ID: ${doc.id})`, data);
         }
       });
-
-      updateTasks(() => loadedTasks);
+      updateLocalTasks(() => loadedTasks);
+      console.log(localDataVariant);
     } catch (error) {
       console.error("Помилка при завантаженні завдань:", error);
     }
   };
-  console.log(props.selectedVariant);
+
+  useEffect(() => {
+    const checkAndLoad = async () => {
+      if (Object.keys(tasks).length === 0) {
+        console.log("глобальний стейт відсутній");
+
+        const exists = await checkIfDocExists(pathMain, props.selectedVariant);
+
+        if (exists) {
+          console.log("✅ Документ існує — завантаження з main");
+          await loadTasks(pathMain);
+          setIsMainTest(true);
+        } else {
+          console.log("❌ Документ відсутній — завантаження з retaking");
+          await loadTasks(pathRetaking);
+          setIsMainTest(false);
+        }
+      }
+    };
+
+    checkAndLoad();
+  }, [props.selectedVariant]);
+
+  console.log(localDataVariant);
+
   const endTest = (
     userAnswers: { [key: string]: any },
     mark: string,
@@ -113,32 +122,24 @@ const ContainerForMathTest = (props: {
         mark,
         pointsForTasks,
         props.selectedVariant.slice(0, -1),
-        dataVariant.variantName,
-        dataVariant.variantSerialNumber
+        localDataVariant?.variantName || "noName",
+        localDataVariant?.variantSerialNumber || "noNumber"
       );
     }
   };
-
-  useEffect(() => {
-    fetchVariantData();
-  }, []);
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
 
   return (
     <>
       {props.endTest && (
         <MathTest
-          tasks={tasks}
+          tasks={localTasks}
           selectedVariant={props.selectedVariant}
           endTest={endTest}
         ></MathTest>
       )}
       {!props.endTest && (
         <MathTest
-          tasks={tasks}
+          tasks={localTasks}
           selectedVariant={props.selectedVariant}
         ></MathTest>
       )}
