@@ -1,7 +1,7 @@
 import type { Tasks, Task1, Task2, Task3, VaiantData } from "../types";
 import { useVariantContext } from "./variantContext";
 import { useImmer } from "use-immer";
-import { useState } from "react";
+
 import { useEffect } from "react";
 import { db } from "../../../firebaseConfig";
 import { getDocs, collection, doc, getDoc } from "firebase/firestore";
@@ -22,10 +22,8 @@ const ContainerForMathTest = (props: {
     variantSerialNumber: string
   ) => void;
 }) => {
-  const { tasks } = useVariantContext();
+  const { tasks, dataVariant } = useVariantContext();
 
-  const [isMainTest, setIsMainTest] = useState<Boolean>();
-  console.log(isMainTest);
   const [localTasks, updateLocalTasks] = useImmer<Tasks>({});
   const [localDataVariant, updateLocalDataVariant] =
     useImmer<VaiantData | null>(null);
@@ -41,16 +39,14 @@ const ContainerForMathTest = (props: {
       if (docSnap.exists()) {
         updateLocalDataVariant(() => docSnap.data() as VaiantData);
         console.log("Документ існує:", docSnap.data());
-        setIsMainTest(true);
         return true;
       } else {
         console.log("Документ не існує");
-        setIsMainTest(false);
         return false;
       }
     } catch (error) {
       console.error("Помилка перевірки існування документа:", error);
-      setIsMainTest(false);
+
       return false;
     }
   };
@@ -88,27 +84,26 @@ const ContainerForMathTest = (props: {
 
   useEffect(() => {
     const checkAndLoad = async () => {
-      if (Object.keys(tasks).length === 0) {
+      if (Object.keys(tasks).length !== 0) {
+        console.log("глобальний стейт існує");
+        updateLocalTasks(() => tasks);
+        updateLocalDataVariant(() => dataVariant);
+      } else {
         console.log("глобальний стейт відсутній");
-
         const exists = await checkIfDocExists(pathMain, props.selectedVariant);
 
         if (exists) {
           console.log("✅ Документ існує — завантаження з main");
           await loadTasks(pathMain);
-          setIsMainTest(true);
         } else {
           console.log("❌ Документ відсутній — завантаження з retaking");
           await loadTasks(pathRetaking);
-          setIsMainTest(false);
         }
       }
     };
 
     checkAndLoad();
   }, [props.selectedVariant]);
-
-  console.log(localDataVariant);
 
   const endTest = (
     userAnswers: { [key: string]: any },
@@ -121,7 +116,7 @@ const ContainerForMathTest = (props: {
         userAnswers,
         mark,
         pointsForTasks,
-        props.selectedVariant.slice(0, -1),
+        props.selectedVariant,
         localDataVariant?.variantName || "noName",
         localDataVariant?.variantSerialNumber || "noNumber"
       );

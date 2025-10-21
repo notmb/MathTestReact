@@ -227,11 +227,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
       {status === "started" && testLinkData && !testLinkData.used && (
         <div>
           <ContainerForMathTest
-            selectedVariant={
-              testLinkData.typeTest === "retaking"
-                ? testLinkData.variantId + "R"
-                : testLinkData.variantId + "M"
-            }
+            selectedVariant={testLinkData.variantId}
             endTest={endTest}
           ></ContainerForMathTest>
         </div>

@@ -82,10 +82,7 @@ const CreatorNewLinkForStudent = (props: {
       return;
     }
 
-    const linkDocId = `${selectedStudentId}_${props.selectedVariant.slice(
-      0,
-      -1
-    )}`;
+    const linkDocId = `${selectedStudentId}_${props.selectedVariant}`;
     const docRef = doc(db, "Subjects", "Math", "TestLinks", linkDocId);
     const docSnap = await getDoc(docRef);
 
@@ -111,13 +108,13 @@ const CreatorNewLinkForStudent = (props: {
       //в профілі учня створюємо або редагуємо колекцію ResultsTest - детальні результати тесту
       const resultTestDocRef = doc(
         collection(docRefStudent, "ResultsTest"),
-        props.selectedVariant.slice(0, -1)
+        props.selectedVariant
       );
       await setDoc(resultTestDocRef, {
         userAnswers: {},
         result: "не пройдено",
         pointsForTasks: {},
-        variantId: props.selectedVariant.slice(0, -1),
+        variantId: props.selectedVariant,
         variantName: dataVariant.variantSerialNumber || dataVariant.variantName,
       });
       console.log("Документ ResultsTest створено/оновлено");
@@ -125,10 +122,10 @@ const CreatorNewLinkForStudent = (props: {
       // Додаємо документ (дані лінки) у TestLinks
       await setDoc(docRef, {
         studentId: selectedStudentId,
-        typeTest: props.selectedVariant.slice(-1) === "M" ? "main" : "retaking",
+        typeTest: dataVariant.typeTest || "main",
         nameStudent:
           students.find((s) => s.id === selectedStudentId)?.name || "",
-        variantId: props.selectedVariant.slice(0, -1),
+        variantId: props.selectedVariant,
         testResult: "не пройдено",
         used: false,
         createdAt: new Date(),
@@ -147,8 +144,8 @@ const CreatorNewLinkForStudent = (props: {
       //оновлюємо локальний список лінків
       props.updateTestLinks({
         id: linkDocId,
-        variantId: props.selectedVariant.slice(0, -1),
-        typeTest: props.selectedVariant.slice(-1) === "M" ? "main" : "retaking",
+        variantId: props.selectedVariant,
+        typeTest: dataVariant.typeTest || "main",
         used: false,
         nameStudent:
           students.find((s) => s.id === selectedStudentId)?.name || "",

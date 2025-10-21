@@ -26,8 +26,6 @@ const SelectedVariant = (props: {
     );
   };
 
-  const typeTest = props.selectedVariant.slice(-1);
-
   const handleDelete = async () => {
     await deleteDoc(
       doc(
@@ -36,8 +34,8 @@ const SelectedVariant = (props: {
         "Math",
         "Algebra",
         "Topics",
-        typeTest === "M" ? "Mix" : "Retaking",
-        props.selectedVariant.slice(0, -1)
+        dataVariant.typeTest === "main" ? "Mix" : "Retaking",
+        props.selectedVariant
       )
     );
     setIsModalOpen(false);
