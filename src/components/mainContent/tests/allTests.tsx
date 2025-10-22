@@ -4,9 +4,22 @@ import { db } from "../../../firebaseConfig";
 import { useState, useEffect } from "react";
 
 const AllTest = (props: { navigate: (path: string) => void }) => {
-  const [variants, setVariants] = useState<{ id: string; name: string }[]>([]);
-  const [variantsRetaking, setVariantsRetaking] = useState<
-    { id: string; name: string }[]
+  //оригінальні масиви тестів
+  // const [variants, setVariants] = useState<
+  //   { id: string; name: string; variantSerialNumber: string }[]
+  // >([]);
+
+  // const [variantsRetaking, setVariantsRetaking] = useState<
+  //   { id: string; name: string; variantSerialNumber: string }[]
+  // >([]);
+
+  //відсортовані масиви тестів
+  const [variantsIsSorted, setVariantsIsSorted] = useState<
+    { id: string; name: string; variantSerialNumber: string }[]
+  >([]);
+
+  const [variantsRetakingIsSorted, setVariantsRetakingIsSorted] = useState<
+    { id: string; name: string; variantSerialNumber: string }[]
   >([]);
 
   const getAllVariants = async () => {
@@ -22,7 +35,11 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
       const snapshot = await getDocs(variantsRef);
       const variants = snapshot.docs.map((doc) => {
         const data = doc.data();
-        return { id: doc.id, name: data.variantName || doc.id };
+        return {
+          id: doc.id,
+          name: data.variantName || doc.id,
+          variantSerialNumber: data.variantSerialNumber,
+        };
       });
       console.log(variants);
       return variants;
@@ -45,37 +62,51 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
       const snapshot = await getDocs(variantsRetakingRef);
       const variantsRetaking = snapshot.docs.map((doc) => {
         const data = doc.data();
-        return { id: doc.id, name: data.variantName || doc.id };
+        return {
+          id: doc.id,
+          name: data.variantName || doc.id,
+          variantSerialNumber: data.variantSerialNumber,
+        };
       });
-      console.log(variantsRetaking);
       return variantsRetaking;
     } catch (error) {
       console.log("Помилка при завантаженні варіантів:", error);
       return [];
     }
   };
+
+  function sortByVariantNumber(
+    arr: { id: string; name: string; variantSerialNumber: string }[]
+  ): { id: string; name: string; variantSerialNumber: string }[] {
+    return [...arr].sort((a, b) => {
+      const numA = parseInt(a.variantSerialNumber.match(/\d+/)?.[0] ?? "0", 10);
+      const numB = parseInt(b.variantSerialNumber.match(/\d+/)?.[0] ?? "0", 10);
+      return numA - numB;
+    });
+  }
+
+  //завантажуємо основні варіанти
   useEffect(() => {
     const fetchVariants = async () => {
       const data = await getAllVariants();
-      setVariants(data);
+      // setVariants(data);
+      setVariantsIsSorted(sortByVariantNumber(data));
     };
     fetchVariants();
   }, []);
 
+  //завантажуємо варіанти для перездачі
   useEffect(() => {
     const fetchVariantsRetaking = async () => {
       const data = await getAllVariantsRetaking();
-      setVariantsRetaking(data);
+      // setVariantsRetaking(data);
+      setVariantsRetakingIsSorted(sortByVariantNumber(data));
     };
     fetchVariantsRetaking();
   }, []);
 
-  // const selectTest = (IdTest: string) => {
-  //   props.navigate(`/MathTestReact/allTest/selectedVariant/${IdTest}`);
-  // };
-
-  const selectTest = (id: string, type: "main" | "retaking") => {
-    props.navigate(`/MathTestReact/allTest/selectedVariant/${type}/${id}`);
+  const selectTest = (idTest: string, type: "main" | "retaking") => {
+    props.navigate(`/MathTestReact/allTest/selectedVariant/${type}/${idTest}`);
   };
 
   return (
@@ -84,7 +115,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
         <ul className="list_of_variant">
           <h3>Тести:</h3>
 
-          {variants.map((variant) => (
+          {variantsIsSorted.map((variant) => (
             <li className="variant_item" key={variant.id}>
               <p
                 className="cursor-pointer m-1"
@@ -99,7 +130,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
       <div>
         <ul className="list_of_variant">
           <h3>Тести на перездачу:</h3>
-          {variantsRetaking.map((variant) => (
+          {variantsRetakingIsSorted.map((variant) => (
             <li className="variant_item" key={variant.id}>
               <p
                 className="cursor-pointer m-1"

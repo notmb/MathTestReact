@@ -132,15 +132,6 @@ const CreatorNewLinkForStudent = (props: {
       });
       console.log("Лінка додана");
 
-      // interface TestLink {
-      //   id: string; // id лінку
-      //   variantId: string; // id варіанту
-      //   used: boolean;
-      //   nameStudent: string;
-      //   testResult: string;
-      //   // інші поля, які є в документі
-      // }
-
       //оновлюємо локальний список лінків
       props.updateTestLinks({
         id: linkDocId,
