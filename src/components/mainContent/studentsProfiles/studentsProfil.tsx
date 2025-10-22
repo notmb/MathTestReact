@@ -7,7 +7,10 @@ import AddNewStudent from "./formForNewStudent";
 type Student = {
   name: string;
   testScores: {
-    [key: string]: string; // індексований тип
+    [key: string]: string;
+  };
+  testScoresRetaking: {
+    [key: string]: string;
   };
   id: string;
 };
@@ -16,6 +19,7 @@ const StudentsProfil = () => {
   const [students, updeteStudents] = useImmer<Student[]>([]); //список студентів
 
   const [isModalOpen, setIsModalOpen] = useState(false); //вікно з формою
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -29,10 +33,10 @@ const StudentsProfil = () => {
           fetchedStudents.push({
             name: data.name,
             testScores: data.testScores || {},
+            testScoresRetaking: data.testScoresRetaking || {},
             id: doc.id,
           });
         });
-        console.log(fetchedStudents);
         updeteStudents(fetchedStudents);
       } catch (error) {
         console.error("Помилка при завантаженні студентів:", error);
@@ -66,7 +70,12 @@ const StudentsProfil = () => {
                   </td>
                   {Array.from({ length: 21 }, (_, i) => (
                     <td key={i} className="border px-2 py-2 text-center">
-                      {student.testScores?.[`topic${i + 1}`] ?? "-"}
+                      <div className="border-b-1 border-gray-400">
+                        {student.testScores?.[`topic${i + 1}`] ?? "-"}
+                      </div>
+                      <div>
+                        {student.testScoresRetaking?.[`topic${i + 1}`] ?? "-"}
+                      </div>
                     </td>
                   ))}
                 </tr>
