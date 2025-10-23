@@ -133,6 +133,10 @@ const OneTimeTest = (props: { selectedLink: string }) => {
     //допис кількох полів у TestLinks
 
     //запис у MyStudents
+
+    const property =
+      testLinkData?.typeTest === "main" ? "testScores" : "testScoresRetaking";
+    console.log(property);
     try {
       const resultsRefInUserProfil = doc(
         db,
@@ -142,7 +146,7 @@ const OneTimeTest = (props: { selectedLink: string }) => {
         idStudentProfil
       );
       await updateDoc(resultsRefInUserProfil, {
-        [`testScores.${variantSerialNumber}`]: result,
+        [`${property}.${variantSerialNumber}`]: result,
       });
       console.log("debug");
     } catch (error) {

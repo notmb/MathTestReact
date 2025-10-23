@@ -15,8 +15,8 @@ const ContainerForMathTest = (props: {
   selectedVariant: string;
   endTest?: (
     userAnswers: { [key: string]: any },
-    mark: string,
-    pointsForTasks: { [key: string]: number },
+    result: string,
+    pointsForTasks: { [key: string]: any },
     variantId: string,
     variantName: string,
     variantSerialNumber: string
@@ -76,6 +76,19 @@ const ContainerForMathTest = (props: {
         }
       });
       updateLocalTasks(() => loadedTasks);
+    } catch (error) {
+      console.error("Помилка при завантаженні завдань:", error);
+    }
+  };
+
+  const loadData = async (link: string) => {
+    try {
+      const docRef = doc(db, link, props.selectedVariant);
+      const docSnap = await getDoc(docRef);
+
+      const data = { ...docSnap.data(), id: docSnap.id } as VaiantData;
+
+      updateLocalDataVariant(() => data);
       console.log(localDataVariant);
     } catch (error) {
       console.error("Помилка при завантаженні завдань:", error);
@@ -95,9 +108,11 @@ const ContainerForMathTest = (props: {
         if (exists) {
           console.log("✅ Документ існує — завантаження з main");
           await loadTasks(pathMain);
+          await loadData(pathMain);
         } else {
           console.log("❌ Документ відсутній — завантаження з retaking");
           await loadTasks(pathRetaking);
+          await loadData(pathRetaking);
         }
       }
     };

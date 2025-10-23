@@ -100,10 +100,15 @@ const CreatorNewLinkForStudent = (props: {
         "MyStudents",
         selectedStudentId
       );
+
+      const property =
+        dataVariant?.typeTest === "main" ? "testScores" : "testScoresRetaking";
+      console.log(property);
+
       await updateDoc(docRefStudent, {
-        [`testScores.${dataVariant.variantSerialNumber}`]: "не почато",
+        [`${property}.${dataVariant.variantSerialNumber}`]: "не почато",
       });
-      console.log("Поле testScores оновлено");
+      console.log(`Поле ${property} оновлено}`);
 
       //в профілі учня створюємо або редагуємо колекцію ResultsTest - детальні результати тесту
       const resultTestDocRef = doc(
