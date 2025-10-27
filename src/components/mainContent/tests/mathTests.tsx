@@ -69,7 +69,11 @@ const MathTest = (props: {
         }
         if (isTask3(item)) {
           maxMark += 2;
-          if (item.correctAnswer === userAnswers[key]) {
+
+          if (
+            Number(item.correctAnswer.replace(",", ".")) ===
+            Number(userAnswers[key].replace(",", "."))
+          ) {
             comparison[key] = 2;
             console.log(comparison);
           } else {
