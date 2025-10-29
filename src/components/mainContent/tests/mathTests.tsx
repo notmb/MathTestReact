@@ -37,6 +37,7 @@ const MathTest = (props: {
     userAnswers: CorrectComparison
   ) => {
     let mark = 0;
+    console.log(userAnswers);
     Object.entries(userAnswers).forEach(([key, item]) => {
       if (item === correctAnswer[key]) {
         mark = mark + 1;
@@ -52,7 +53,7 @@ const MathTest = (props: {
     props.tasks &&
       Object.entries(props.tasks).forEach(([key, item]) => {
         if (isTask1(item)) {
-          maxMark = maxMark + 1;
+          maxMark += 1;
           if (item.correctAnswer === userAnswers[key]) {
             comparison[key] = 1;
           } else {
@@ -60,8 +61,7 @@ const MathTest = (props: {
           }
         }
         if (isTask2(item)) {
-          maxMark = maxMark + 3;
-
+          maxMark += 3;
           comparison[key] = CheckComparison(
             item.correctComparison,
             userAnswers[key]
@@ -69,11 +69,10 @@ const MathTest = (props: {
         }
         if (isTask3(item)) {
           maxMark += 2;
+          const correct = Number(item.correctAnswer?.replace(",", "."));
+          const user = Number(userAnswers[key]?.replace(",", "."));
 
-          if (
-            Number(item.correctAnswer.replace(",", ".")) ===
-            Number(userAnswers[key].replace(",", "."))
-          ) {
+          if (!isNaN(correct) && !isNaN(user) && correct === user) {
             comparison[key] = 2;
             console.log(comparison);
           } else {
@@ -146,7 +145,6 @@ const MathTest = (props: {
     );
   };
   useEffect(() => {
-    // console.log(timeOut);
     if (timeOut) {
       checkAndEnd();
     }

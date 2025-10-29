@@ -4,16 +4,6 @@ import { db } from "../../../firebaseConfig";
 import { useState, useEffect } from "react";
 
 const AllTest = (props: { navigate: (path: string) => void }) => {
-  //оригінальні масиви тестів
-  // const [variants, setVariants] = useState<
-  //   { id: string; name: string; variantSerialNumber: string }[]
-  // >([]);
-
-  // const [variantsRetaking, setVariantsRetaking] = useState<
-  //   { id: string; name: string; variantSerialNumber: string }[]
-  // >([]);
-
-  //відсортовані масиви тестів
   const [variantsIsSorted, setVariantsIsSorted] = useState<
     { id: string; name: string; variantSerialNumber: string }[]
   >([]);
@@ -89,7 +79,6 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
   useEffect(() => {
     const fetchVariants = async () => {
       const data = await getAllVariants();
-      // setVariants(data);
       setVariantsIsSorted(sortByVariantNumber(data));
     };
     fetchVariants();
@@ -99,7 +88,6 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
   useEffect(() => {
     const fetchVariantsRetaking = async () => {
       const data = await getAllVariantsRetaking();
-      // setVariantsRetaking(data);
       setVariantsRetakingIsSorted(sortByVariantNumber(data));
     };
     fetchVariantsRetaking();
