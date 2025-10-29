@@ -75,6 +75,7 @@ const AddNewVariant = () => {
         variantName: nameVariant,
         variantSerialNumber: variantSerialNumber,
         numberOfTasks: numberOfTask,
+        typeTest: typeTest,
         createdAt: new Date(),
       });
       console.log("Тестовий варіант створено!");

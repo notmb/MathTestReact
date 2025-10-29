@@ -2,7 +2,13 @@ import TestReview from "./elementsForReviewTest/testReview";
 import { useState } from "react";
 import { useVariantContext } from "./variantContext";
 
-import { doc, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  deleteDoc,
+  addDoc,
+  collection,
+  writeBatch,
+} from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { WrapperForModalWindow } from "../reactTsUtils";
 
@@ -12,7 +18,7 @@ const SelectedVariant = (props: {
 }) => {
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { dataVariant } = useVariantContext();
+  const { dataVariant, tasks } = useVariantContext();
 
   const handlePassTheTest = (selectedVariant: string) => {
     props.navigate(
@@ -40,6 +46,44 @@ const SelectedVariant = (props: {
     );
     setIsModalOpen(false);
     setIsDelete(true);
+  };
+
+  const handleCopyToRetaking = async () => {
+    try {
+      const docRef = await addDoc(
+        collection(db, "Subjects", "Math", "Algebra", "Topics", "Retaking"),
+        {
+          variantName: dataVariant.variantName,
+          variantSerialNumber: dataVariant.variantSerialNumber,
+          numberOfTask: dataVariant.numberOfTasks,
+          typeTest: "retaking",
+          createdAt: new Date(),
+        }
+      );
+      const newId = docRef.id;
+
+      const batch = writeBatch(db);
+      const colRef = collection(
+        db,
+        "Subjects",
+        "Math",
+        "Algebra",
+        "Topics",
+        "Retaking",
+        newId,
+        "tasks"
+      );
+
+      Object.entries(tasks).forEach(([key, item]) => {
+        const docRef = doc(colRef, key);
+        batch.set(docRef, item);
+      });
+
+      await batch.commit(); // ✅ обов’язково!
+      console.log("✅ Tasks saved successfully!");
+    } catch (error) {
+      console.error("Помилка:", error);
+    }
   };
 
   return (
@@ -82,6 +126,12 @@ const SelectedVariant = (props: {
                 onClick={() => handleOneTimePassTheTest(props.selectedVariant)}
               >
                 Одноразові посилання
+              </button>
+              <button
+                className="custom_button"
+                onClick={() => handleCopyToRetaking()}
+              >
+                Скопіювати у Перездачу
               </button>
             </div>
             <div className="right_side">

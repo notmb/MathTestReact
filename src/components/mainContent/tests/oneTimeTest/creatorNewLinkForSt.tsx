@@ -100,9 +100,11 @@ const CreatorNewLinkForStudent = (props: {
         "MyStudents",
         selectedStudentId
       );
-
+      console.log(dataVariant?.typeTest);
       const property =
-        dataVariant?.typeTest === "main" ? "testScores" : "testScoresRetaking";
+        dataVariant?.typeTest === "retaking"
+          ? "testScoresRetaking"
+          : "testScores";
       console.log(property);
 
       await updateDoc(docRefStudent, {
