@@ -68,7 +68,19 @@ const CreatorTaskMatching = (props: {
     }
   };
 
+  console.log(taskData);
+  console.log(props.typeTest);
+  console.log(props.nameOfVariant);
+  console.log(props.numSelectedTask);
+  const getTypePath = (typeTest: string) => {
+    return typeTest === "main"
+      ? "Mix"
+      : typeTest === "retaking"
+      ? "Retaking"
+      : "Garbage";
+  };
   const handleClick = async () => {
+    const typePath = getTypePath(props.typeTest);
     try {
       // Створюємо посилання на документ
       const variantRef = doc(
@@ -77,7 +89,7 @@ const CreatorTaskMatching = (props: {
         "Math",
         "Algebra",
         "Topics",
-        props.typeTest,
+        typePath,
         props.nameOfVariant,
         "tasks",
         props.numSelectedTask
