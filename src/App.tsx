@@ -1,36 +1,23 @@
+import { BrowserRouter } from "react-router-dom";
 import { MathJaxContext } from "better-react-mathjax";
-import Router from "./router";
-import { useState, useEffect } from "react";
-
+import AppRouter from "./AppRouter";
+import Header from "./components/header/header";
+import Footer from "./components/footer/footer";
 import "./App.css";
 
 function App() {
-  const [currentPath, setcurrentPath] = useState<string>(
-    window.location.pathname
-  );
-
-  const navigate = (path: string) => {
-    window.history.pushState({}, "", path);
-    setcurrentPath(path);
-  };
-
-  useEffect(() => {
-    const onLocationChange = () => {
-      setcurrentPath(window.location.pathname);
-    };
-    window.addEventListener("popstate", onLocationChange);
-    return () => {
-      removeEventListener("popstate", onLocationChange);
-    };
-  }, []);
   return (
-    <>
-      <div className="app">
-        <MathJaxContext>
-          <Router currentPath={currentPath} navigate={navigate} />
-        </MathJaxContext>
-      </div>
-    </>
+    <div className="app">
+      <MathJaxContext>
+        <BrowserRouter basename="/MathTestReact">
+          <div className="app">
+            <Header />
+            <AppRouter />
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </MathJaxContext>
+    </div>
   );
 }
 

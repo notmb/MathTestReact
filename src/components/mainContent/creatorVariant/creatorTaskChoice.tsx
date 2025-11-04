@@ -7,7 +7,7 @@ import { Task1 } from "../types";
 import ConditionOfTask from "./conditionOfTask";
 import AnswersToSinglChoiceTask from "./answersToSingleChoiceTask";
 import CorrectAnswerToSinglChoiceTask from "./correctAnswerToSinglChoiceTask";
-import { useVariantContext } from "../tests/variantContext";
+import { useVariantContext } from "../../../context/variantContext";
 
 const CreatorTaskChoice = (props: {
   typeTest: string;
@@ -58,11 +58,19 @@ const CreatorTaskChoice = (props: {
       console.error("Error uploading file:", error);
     }
   };
-
+  console.log(taskData);
+  console.log(props.typeTest);
+  console.log(props.nameOfVariant);
+  console.log(props.numSelectedTask);
+  const getTypePath = (typeTest: string) => {
+    return typeTest === "main"
+      ? "Mix"
+      : typeTest === "retaking"
+      ? "Retaking"
+      : "Garbage";
+  };
   const handleClick = async () => {
-    console.log(taskData);
-    console.log(props.typeTest);
-
+    const typePath = getTypePath(props.typeTest);
     try {
       // Створюємо посилання на документ
       const variantRef = doc(
@@ -71,12 +79,11 @@ const CreatorTaskChoice = (props: {
         "Math",
         "Algebra",
         "Topics",
-        props.typeTest,
+        typePath,
         props.nameOfVariant,
         "tasks",
         props.numSelectedTask
       );
-      console.log(taskData);
       // Записуємо об'єкт у Firestore
       await setDoc(variantRef, taskData);
 

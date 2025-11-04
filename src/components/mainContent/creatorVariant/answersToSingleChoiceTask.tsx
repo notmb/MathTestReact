@@ -1,5 +1,5 @@
 import { useImmer } from "use-immer";
-import { useVariantContext } from "../tests/variantContext";
+import { useVariantContext } from "../../../context/variantContext";
 import { Task1 } from "../types";
 
 const AnswersToSinglChoiceTask = (props: {

@@ -1,4 +1,4 @@
-import { useVariantContext } from "./variantContext";
+import { useVariantContext } from "../../../context/variantContext";
 
 import CreatorTaskChoice from "../creatorVariant/creatorTaskChoice";
 import CreatorTaskMatching from "../creatorVariant/creatorTaskMatching";
@@ -8,17 +8,18 @@ const TaskEditor = (props: {
   selectedVariant: string;
   onSuccess: () => void;
 }) => {
-  const { tasks } = useVariantContext();
+  const { tasks, dataVariant } = useVariantContext();
 
-  const typeTest = props.selectedVariant.slice(-1) === "M" ? "Mix" : "Retaking";
+  const typeTest = dataVariant.typeTest || "main";
   console.log(typeTest);
+  console.log(props.selectedVariant);
   return (
     <div>
       {tasks[props.numTask].typeOfTask === "choice" && (
         <CreatorTaskChoice
           typeTest={typeTest}
           numSelectedTask={props.numTask}
-          nameOfVariant={props.selectedVariant.slice(0, -1)}
+          nameOfVariant={props.selectedVariant}
           updateTaskIsAdded={() => {}}
           onSuccess={props.onSuccess}
         ></CreatorTaskChoice>
@@ -27,7 +28,7 @@ const TaskEditor = (props: {
         <CreatorTaskMatching
           typeTest={typeTest}
           numSelectedTask={props.numTask}
-          nameOfVariant={props.selectedVariant.slice(0, -1)}
+          nameOfVariant={props.selectedVariant}
           updateTaskIsAdded={() => {}}
           onSuccess={props.onSuccess}
         ></CreatorTaskMatching>
@@ -36,7 +37,7 @@ const TaskEditor = (props: {
         <CreatorTaskOpenAnswer
           typeTest={typeTest}
           numSelectedTask={props.numTask}
-          nameOfVariant={props.selectedVariant.slice(0, -1)}
+          nameOfVariant={props.selectedVariant}
           updateTaskIsAdded={() => {}}
           onSuccess={props.onSuccess}
         ></CreatorTaskOpenAnswer>

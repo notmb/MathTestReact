@@ -12,7 +12,7 @@ import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import OneTimeLinks from "./components/mainContent/tests/oneTimeTest/oneTimeLinks";
 import OneTimeTest from "./components/mainContent/tests/oneTimeTest/oneTimeTest";
-import VariantContextWrapper from "./components/mainContent/tests/variantContextWrapper";
+import VariantContextWrapper from "./context/variantContextWrapper";
 import StudentsProfil from "./components/mainContent/studentsProfiles/studentsProfil";
 const routes = [
   {
@@ -151,7 +151,7 @@ const Router = (props: {
     // Якщо не залогінений, і це не сторінка логіну
     return (
       <>
-        {!withoutLayout && <Header navigate={props.navigate} />}
+        {/* {!withoutLayout && <Header navigate={props.navigate} />} */}
         <div style={{ padding: "2rem", textAlign: "center" }}>
           <h2>Access denied</h2>
           <p>Please log in to view this page.</p>
@@ -167,10 +167,9 @@ const Router = (props: {
   } else
     return (
       <>
-        {!withoutLayout && <Header navigate={props.navigate} />}
+        {/* {!withoutLayout && <Header navigate={props.navigate} />} */}
         {content}
         {!withoutLayout && <Footer />}
       </>
     );
 };
-export default Router;

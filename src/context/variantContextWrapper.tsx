@@ -1,7 +1,13 @@
 import { VariantContext } from "./variantContext";
-import { Tasks, Task1, Task2, Task3, VaiantData } from "../types";
+import {
+  Tasks,
+  Task1,
+  Task2,
+  Task3,
+  VaiantData,
+} from "../components/mainContent/types";
 import { useImmer } from "use-immer";
-import { db } from "../../../firebaseConfig";
+import { db } from "../firebaseConfig";
 import {
   getDocs,
   collection,
@@ -30,15 +36,26 @@ const VariantContextWrapper = (props: {
     variantSerialNumber: "",
   });
 
+  const getTypePath = (typeTest: string) => {
+    return typeTest === "main"
+      ? "Mix"
+      : typeTest === "retaking"
+      ? "Retaking"
+      : "Garbage";
+  };
+
   useEffect(() => {
+    const typePath = getTypePath(props.typeTest);
+
     const fetchVariantData = async () => {
+      console.log(props.typeTest);
       const docRef = doc(
         db,
         "Subjects",
         "Math",
         "Algebra",
         "Topics",
-        props.typeTest === "main" ? "Mix" : "Retaking",
+        typePath,
         props.variant
       );
       const docSnap = await getDoc(docRef);
@@ -54,7 +71,7 @@ const VariantContextWrapper = (props: {
         "Math",
         "Algebra",
         "Topics",
-        props.typeTest === "main" ? "Mix" : "Retaking",
+        typePath,
         props.variant,
         "tasks"
       );

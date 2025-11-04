@@ -6,7 +6,7 @@ import { useImmer } from "use-immer";
 import { useEffect } from "react";
 import ConditionOfTask from "./conditionOfTask";
 import CorrectAnswerToTaskOpenAnswer from "./correctAnswerToTaskOpenAnswer";
-import { useVariantContext } from "../tests/variantContext";
+import { useVariantContext } from "../../../context/variantContext";
 
 //ФОРМА ДЛЯ ЗАВДАННЯ OPEN ANSWER
 const CreatorTaskOpenAnswer = (props: {

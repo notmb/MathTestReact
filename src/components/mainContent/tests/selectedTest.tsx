@@ -1,6 +1,9 @@
 import TestReview from "./elementsForReviewTest/testReview";
 import { useState } from "react";
-import { useVariantContext } from "./variantContext";
+import { useVariantContext } from "../../../context/variantContext";
+import VariantContextWrapper from "../../../context/variantContextWrapper";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   doc,
@@ -12,27 +15,39 @@ import {
 import { db } from "../../../firebaseConfig";
 import { WrapperForModalWindow } from "../reactTsUtils";
 
-const SelectedVariant = (props: {
-  selectedVariant: string;
-  navigate: (path: string) => void;
-}) => {
+const SelectedVariant = () => {
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { dataVariant, tasks } = useVariantContext();
+  const navigate = useNavigate();
+
+  const { type, variant: variantId } = useParams<{
+    type: string;
+    variant: string;
+  }>();
+  console.log(type, variantId);
+
+  if (!type || !variantId) {
+    return <p>Некоректне посилання або відсутні параметри.</p>;
+  }
 
   const handlePassTheTest = (selectedVariant: string) => {
-    props.navigate(
+    navigate(
       `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/test`
     );
   };
 
   const handleOneTimePassTheTest = (selectedVariant: string) => {
-    props.navigate(
+    navigate(
       `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/one-time-links`
     );
   };
 
   const handleDelete = async () => {
+    if (!variantId) {
+      console.error("variant не визначено");
+      return;
+    }
     await deleteDoc(
       doc(
         db,
@@ -41,7 +56,7 @@ const SelectedVariant = (props: {
         "Algebra",
         "Topics",
         dataVariant.typeTest === "main" ? "Mix" : "Retaking",
-        props.selectedVariant
+        variantId
       )
     );
     setIsModalOpen(false);
@@ -87,67 +102,85 @@ const SelectedVariant = (props: {
   };
 
   return (
-    <div className="container_for_selected_test">
-      {isDelete === false && (
-        <div className="selected_test">
-          <div className="buttons">
-            <div className="left_side">
-              <button
-                className="custom_button"
-                onClick={() => setIsModalOpen(true)}
-              >
-                Видалити
-              </button>
-              {isModalOpen && (
-                <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
-                  <div style={{ padding: "20px", textAlign: "center" }}>
-                    <p className="text-xl">Ви дійсно хочете видалити тест?</p>
-                    <div style={{ marginTop: "20px" }}>
-                      <button
-                        className="text-xl"
-                        onClick={handleDelete}
-                        style={{ marginRight: "10px" }}
-                      >
-                        Так
-                      </button>
-                      <button
-                        className="text-xl"
-                        onClick={() => setIsModalOpen(false)}
-                      >
-                        Ні
-                      </button>
+    <VariantContextWrapper variant={variantId} typeTest={type}>
+      <div className="container_for_selected_test">
+        {isDelete === false && (
+          <div className="selected_test">
+            <div className="buttons">
+              <div className="left_side">
+                <button
+                  className="custom_button"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Видалити
+                </button>
+                {isModalOpen && (
+                  <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
+                    <div style={{ padding: "20px", textAlign: "center" }}>
+                      <p className="text-xl">Ви дійсно хочете видалити тест?</p>
+                      <div style={{ marginTop: "20px" }}>
+                        <button
+                          className="text-xl"
+                          onClick={handleDelete}
+                          style={{ marginRight: "10px" }}
+                        >
+                          Так
+                        </button>
+                        <button
+                          className="text-xl"
+                          onClick={() => setIsModalOpen(false)}
+                        >
+                          Ні
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </WrapperForModalWindow>
-              )}
+                  </WrapperForModalWindow>
+                )}
 
-              <button
-                className="custom_button"
-                onClick={() => handleOneTimePassTheTest(props.selectedVariant)}
-              >
-                Одноразові посилання
-              </button>
-              <button
-                className="custom_button"
-                onClick={() => handleCopyToRetaking()}
-              >
-                Скопіювати у Перездачу
-              </button>
+                <button
+                  className="custom_button"
+                  onClick={() => {
+                    if (!variantId) {
+                      console.error("variant is undefined");
+                      return;
+                    }
+                    handleOneTimePassTheTest(variantId);
+                  }}
+                >
+                  Одноразові посилання
+                </button>
+                <button
+                  className="custom_button"
+                  onClick={() => handleCopyToRetaking()}
+                >
+                  Скопіювати у Перездачу
+                </button>
+              </div>
+              <div className="right_side">
+                <button
+                  className="custom_button"
+                  onClick={() => {
+                    if (!variantId) {
+                      console.error("variant is undefined");
+                      return;
+                    }
+                    handlePassTheTest(variantId);
+                  }}
+                >
+                  Пройти тест
+                </button>
+              </div>
             </div>
-            <div className="right_side">
-              <button
-                className="custom_button"
-                onClick={() => handlePassTheTest(props.selectedVariant)}
-              >
-                Пройти тест
-              </button>
-            </div>
+            {variantId ? (
+              <TestReview selectedVariant={variantId} />
+            ) : (
+              <p>Варіант тесту не знайдено 😔</p>
+            )}
           </div>
-          <TestReview selectedVariant={props.selectedVariant}></TestReview>
-        </div>
-      )}
-      {isDelete === true && <h1>Тест Видалено</h1>}
-    </div>
+        )}
+        {isDelete === true && <h1>Тест Видалено</h1>}
+      </div>
+    </VariantContextWrapper>
   );
 };
 export default SelectedVariant;

@@ -1,5 +1,11 @@
 import { createContext, useContext } from "react";
-import type { Tasks, VaiantData, Task1, Task2, Task3 } from "../types";
+import type {
+  Tasks,
+  VaiantData,
+  Task1,
+  Task2,
+  Task3,
+} from "../components/mainContent/types";
 
 export type VariantContextType = {
   tasks: Tasks;

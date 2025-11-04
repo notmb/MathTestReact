@@ -24,7 +24,7 @@ interface TestLink {
   // інші поля, які є в документі
 }
 
-import { useVariantContext } from "../variantContext";
+import { useVariantContext } from "../../../../context/variantContext";
 
 const CreatorNewLinkForStudent = (props: {
   selectedVariant: string;

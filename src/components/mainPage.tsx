@@ -1,8 +1,13 @@
 import "./mainPage.css";
 import ikon7 from "/ikon7.svg";
 import section3RightImg from "/section3_right.svg";
+import { useNavigate } from "react-router-dom";
 
-const MainPage = (props: { navigate: (path: string) => void }) => {
+const MainPage = () => {
+  const navigate = useNavigate();
+  const goToAllTests = () => {
+    navigate("/allTest");
+  };
   return (
     <>
       <section className="section1">
@@ -19,10 +24,10 @@ const MainPage = (props: { navigate: (path: string) => void }) => {
         <div className="conteiner_for_img"></div>
       </section>
       <section className="section2">
+        {/* <Card navigate={props.navigate}></Card>
         <Card navigate={props.navigate}></Card>
         <Card navigate={props.navigate}></Card>
-        <Card navigate={props.navigate}></Card>
-        <Card navigate={props.navigate}></Card>
+        <Card navigate={props.navigate}></Card> */}
       </section>
       <section className="section3">
         <div className="section3_left_conteiner">

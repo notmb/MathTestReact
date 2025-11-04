@@ -1,9 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import "./style.css";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useState, useEffect } from "react";
 
-const AllTest = (props: { navigate: (path: string) => void }) => {
+const AllTest = () => {
+  const navigateToSelectedTest = useNavigate();
+
   const [variantsIsSorted, setVariantsIsSorted] = useState<
     { id: string; name: string; variantSerialNumber: string }[]
   >([]);
@@ -94,7 +97,7 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
   }, []);
 
   const selectTest = (idTest: string, type: "main" | "retaking") => {
-    props.navigate(`/MathTestReact/allTest/selectedVariant/${type}/${idTest}`);
+    navigateToSelectedTest(`/allTest/selectedVariant/${type}/${idTest}`);
   };
 
   return (

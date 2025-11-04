@@ -1,5 +1,5 @@
 import type { Tasks, Task1, Task2, Task3, VaiantData } from "../types";
-import { useVariantContext } from "./variantContext";
+import { useVariantContext } from "../../../context/variantContext";
 import { useImmer } from "use-immer";
 
 import { useEffect } from "react";

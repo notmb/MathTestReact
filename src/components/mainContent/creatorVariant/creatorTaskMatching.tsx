@@ -7,7 +7,7 @@ import { Task2 } from "../types";
 import ConditionOfTask from "./conditionOfTask";
 import ComparisonToMatchingTask from "./comparisonToMatchingTask";
 import CorrectAnswerToTaskMatching from "./correctAnswerToTaskMatching";
-import { useVariantContext } from "../tests/variantContext";
+import { useVariantContext } from "../../../context/variantContext";
 
 //ФОРМА ДЛЯ ЗАВДАННЯ COMPARISON
 const CreatorTaskMatching = (props: {

@@ -1,6 +1,6 @@
 import { Task1, Task2, Task3 } from "../../types";
 import TaskEditor from "../taskEditor";
-import { useVariantContext } from "../variantContext";
+import { useVariantContext } from "../../../../context/variantContext";
 import Task from "./conditionOfTask";
 import Answers from "./answersForTaskChoise";
 import ComparisonData from "./comparison";
