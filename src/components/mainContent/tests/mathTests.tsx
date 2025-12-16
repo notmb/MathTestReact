@@ -19,11 +19,12 @@ const MathTest = (props: {
     pointsForTasks: { [key: string]: number }
   ) => void;
 }) => {
+  console.log(props.selectedVariant);
   const [userAnswers, updateUserAnswers] = useImmer<{ [key: string]: any }>({});
 
   const [timeOut, setTimeOut] = useState<boolean>(false);
 
-  const selectedVariant = props.selectedVariant.slice(0, -1);
+  const selectedVariant = props.selectedVariant;
 
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>

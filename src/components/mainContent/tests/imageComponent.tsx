@@ -3,6 +3,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
 
 const fetchImage = async (url: string) => {
+  console.log(url);
   const storage = getStorage(app); // Отримуємо екземпляр Storage
   const storageRef = ref(storage, url); // Шлях до файлу в Storage
 
