@@ -24,13 +24,13 @@
   padding: 8px 0;
   font-size: 20px;
 }
-.container_for_picture {
+/* .container_for_picture {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   padding: 8px;
-}
+} */
 .box_for_list_in_task,
 .box_for_table_in_task {
   padding: 16px 0 0 24px;

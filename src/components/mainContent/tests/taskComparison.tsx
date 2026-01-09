@@ -1,10 +1,10 @@
 import "../tests.css";
 import { MathJax } from "better-react-mathjax";
-import { app } from "../../../firebaseConfig";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { useState, useEffect, useRef } from "react";
+
+import { useEffect, useRef } from "react";
 import { useImmer } from "use-immer";
 import type { Question, Comparison } from "../types";
+import Picture from "./imageComponent";
 
 const TaskComparison = (props: {
   selectedVariant: string;
@@ -17,8 +17,11 @@ const TaskComparison = (props: {
     <div className="tests_item">
       <p className="container_serial_num_task">Завдання {props.number}</p>
       <Task
-        text={props.task.text}
         selectedVariant={props.selectedVariant}
+        text={props.task.text}
+        picture={props.task.picture}
+        list={props.task.list}
+        table={props.task.table}
       ></Task>
       <ComparisonTable
         selectedVariant={props.selectedVariant}
@@ -35,43 +38,13 @@ const TaskComparison = (props: {
 
 export default TaskComparison;
 
-const fetchImage = async (url: string) => {
-  const storage = getStorage(app); // Отримуємо екземпляр Storage
-  const storageRef = ref(storage, url); // Шлях до файлу в Storage
-
-  return getDownloadURL(storageRef);
-};
-
-//КОМПОНЕНТ ЗОБРАЖЕННЯ
-const Picture = (props: { url: string; classForPicture: string }) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl)); // Викликаємо завантаження зображення при завантаженні компонента
-  }, [props.url]);
-  return (
-    <div>
-      {imageUrl ? (
-        <img
-          className={props.classForPicture}
-          src={imageUrl}
-          alt="Loaded from Firebase"
-        />
-      ) : (
-        <p>Завантаження зображення...</p>
-      )}
-    </div>
-  );
-};
-//КОМПОНЕНТ ЗОБРАЖЕННЯ
-
 //КОМПОНЕНТ ЗАВДАННЯ
 const Task = (props: {
   selectedVariant: string;
   text: string;
   table?: {
     value1: string[];
-    velue2: string[];
+    value2: string[];
   };
   picture?: string;
   list?: string[];

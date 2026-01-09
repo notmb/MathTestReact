@@ -60,7 +60,9 @@
 }
 .picture_for_question {
   /* height: auto; */
-  max-height: 300px;
+  min-height: 200px;
+  width: auto;
+  max-height: 400px;
   max-width: 40%;
   padding: 8px;
 }

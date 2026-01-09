@@ -37,7 +37,7 @@ const TestResults = (props: {
   useEffect(() => {
     fetchUserAnswersData();
   }, []);
-
+  console.log(props.selectedLink);
   console.log(userAnswers);
   return (
     <div className="container_for_chekResults">
