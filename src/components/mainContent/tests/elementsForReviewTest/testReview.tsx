@@ -65,10 +65,12 @@ const TestReview = (props: { selectedVariant: string }) => {
                     selectedVariant={props.selectedVariant}
                     comparisonTable={task.comparisonTable}
                   />
-                  <p>
-                    Відповідь: 1-{task.correctComparison[1]}; 2-
-                    {task.correctComparison[2]}; 3-{task.correctComparison[3]}
-                  </p>
+                  {task.correctComparison && (
+                    <p>
+                      Відповідь: 1-{task.correctComparison[1]}; 2-
+                      {task.correctComparison[2]}; 3-{task.correctComparison[3]}
+                    </p>
+                  )}
                 </div>
               )}
               {isTask3(task) && <p>Відповідь: {task.correctAnswer}</p>}

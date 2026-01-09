@@ -182,7 +182,7 @@
 }
 .box_for_test_review {
   padding: 16px 40px;
-  max-height: calc(100vh - 160px);
+  max-height: calc(100vh - 180px);
   overflow-y: auto; /* вертикальна прокрутка при переповненні */
   border: 2px solid black;
   background-color: #fff; /* якщо потрібно */
@@ -288,4 +288,10 @@ input.user_answer_open::-webkit-inner-spin-button {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.form_for_data_task {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
 }

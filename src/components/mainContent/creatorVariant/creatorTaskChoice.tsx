@@ -94,6 +94,7 @@ const CreatorTaskChoice = (props: {
       console.error("Помилка при додаванні завдання:", error);
     }
     if (files.length > 0) await Promise.all(files.map(uploadFile));
+
     props.updateTaskIsAdded(+props.numSelectedTask - 1, true);
 
     //ОНОВЛЮЄМО КОНТЕКСТ ЯКЩО ВІН ВЖЕ СТВОРЕНИЙ

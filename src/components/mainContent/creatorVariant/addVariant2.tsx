@@ -5,12 +5,12 @@ import { useState } from "react";
 import { useImmer } from "use-immer";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig"; // Імпорт Firestore
-
+type TestType = "main" | "retaking";
 interface MainDataAboutVariant {
   variantName: string;
   numberOfTask: string;
   topic: string;
-  typeTest: string;
+  typeTest: TestType;
 }
 interface Task {
   numberTask: string;
@@ -26,6 +26,11 @@ const AddNewVariant = () => {
   const [id, setId] = useState<string>("");
 
   const [tasks, updateTasks] = useImmer<Tasks>([]);
+
+  const testPathMap: Record<TestType, "Mix" | "Retaking"> = {
+    main: "Mix",
+    retaking: "Retaking",
+  };
 
   const initializeTasks = (count: number) => {
     updateTasks(() => {
@@ -57,19 +62,17 @@ const AddNewVariant = () => {
     nameVariant: string,
     numberOfTask: string,
     variantSerialNumber: string,
-    typeTest: string
+    typeTest: TestType
   ) => {
-    console.log(typeTest);
-    const partOfTheWay =
-      typeTest === "main" ? "Mix" : typeTest === "retaking" ? "Retaking" : "";
     const variantsCollectionRef = collection(
       db,
       "Subjects",
       "Math",
       "Algebra",
       "Topics",
-      partOfTheWay
+      testPathMap[typeTest]
     );
+
     try {
       const docRef = await addDoc(variantsCollectionRef, {
         variantName: nameVariant,
@@ -78,6 +81,7 @@ const AddNewVariant = () => {
         typeTest: typeTest,
         createdAt: new Date(),
       });
+
       console.log("Тестовий варіант створено!");
       setId(docRef.id);
     } catch (error) {
@@ -93,8 +97,10 @@ const AddNewVariant = () => {
     const newVariantSerialNumber = formData.get(
       "variantSerialNumber"
     ) as string;
-    const typeTest = formData.get("typeTest") as string; //++
+    const typeTest = formData.get("typeTest") as TestType; //++
+
     console.log(typeTest);
+
     const dataOfTask: MainDataAboutVariant = {
       variantName: newVariantName,
       numberOfTask: newNumOfTasks,

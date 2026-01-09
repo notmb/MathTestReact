@@ -1,4 +1,5 @@
 import TestReview from "./elementsForReviewTest/testReview";
+import AddTask from "../creatorVariant/addTask";
 import { useState } from "react";
 import { useVariantContext } from "./variantContext";
 
@@ -18,6 +19,8 @@ const SelectedVariant = (props: {
 }) => {
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalForAddTaskOpen, setIsModalForAddTaskOpen] =
+    useState<boolean>(false);
   const { dataVariant, tasks } = useVariantContext();
 
   const handlePassTheTest = (selectedVariant: string) => {
@@ -30,6 +33,10 @@ const SelectedVariant = (props: {
     props.navigate(
       `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/one-time-links`
     );
+  };
+
+  const handleAddTask = () => {
+    setIsModalForAddTaskOpen(true);
   };
 
   const handleDelete = async () => {
@@ -144,6 +151,29 @@ const SelectedVariant = (props: {
             </div>
           </div>
           <TestReview selectedVariant={props.selectedVariant}></TestReview>
+          <button className="custom_button" onClick={() => handleAddTask()}>
+            Додати завдання до тесту
+          </button>
+
+          {isModalForAddTaskOpen && (
+            <WrapperForModalWindow
+              onClose={() => setIsModalForAddTaskOpen(false)}
+            >
+              <AddTask
+                selectedVariant={props.selectedVariant}
+                onSuccess={() => setIsModalForAddTaskOpen(false)}
+              ></AddTask>
+              <button
+                className="text-xl"
+                onClick={() => {
+                  setIsModalForAddTaskOpen(false);
+                }}
+                style={{ marginRight: "10px" }}
+              >
+                Так
+              </button>
+            </WrapperForModalWindow>
+          )}
         </div>
       )}
       {isDelete === true && <h1>Тест Видалено</h1>}
