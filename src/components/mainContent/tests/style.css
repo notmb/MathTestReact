@@ -45,8 +45,7 @@
 
 .item_of_comparison {
   display: flex;
-
-  padding: 4px 0;
+  align-items: center;
 }
 .container_for_picture {
   width: 100%;

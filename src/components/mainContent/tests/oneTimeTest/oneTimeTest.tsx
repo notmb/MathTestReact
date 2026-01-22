@@ -20,6 +20,7 @@ type TestLink = {
   used: boolean;
   nameStudent: string;
   testResult: string;
+  // testLinkStatus?: "notStarted" | "started" | "finished";
 };
 
 const OneTimeTest = (props: { selectedLink: string }) => {
