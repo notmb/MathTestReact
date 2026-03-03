@@ -1,4 +1,4 @@
-import "../tests.css";
+import "../../../style.css";
 import { MathJax } from "better-react-mathjax";
 
 import type { Question } from "../oneTimeTest.types";

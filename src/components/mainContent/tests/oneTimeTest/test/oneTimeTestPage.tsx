@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   doc,
   runTransaction,
@@ -11,7 +11,8 @@ import {
 import { db } from "../../../../../firebaseConfig";
 import { parseOneTimeParamsFromPathname } from "../functions";
 import type { Task1, Task2, Task3, Tasks } from "../../../types";
-import MathTest from "../../mathTests";
+import TaskList from "./components/tasksList";
+import type { UserAnswersState } from "./oneTimeTest.types";
 import React from "react";
 
 type BaseParsed = { studentId: string; variantId: string; linkId: string };
@@ -61,7 +62,10 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
 
   const [variantMeta, setVariantMeta] = useState<VariantDoc | null>(null);
   const [localTasks, setLocalTasks] = useState<Tasks | null>(null);
-  const [userAnswers, setUserAnswers] = useState<Record<string, any>>({});
+  const [userAnswers, setUserAnswers] = useState<UserAnswersState>({});
+  const handleAnswersChange = useCallback((answers: Record<string, any>) => {
+    setUserAnswers((prev) => (prev === answers ? prev : answers));
+  }, []);
   // const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const EMPTY_TASKS = {};
 
@@ -102,14 +106,25 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
 
     const run = async () => {
       // переходимо у loadingLink (але зберігаємо BaseParsed)
-      setStatus({ ...status, phase: "loadingLink" });
-      console.log("2");
+      setStatus({
+        phase: "loadingLink",
+        studentId: status.studentId,
+        variantId: status.variantId,
+        linkId: status.linkId,
+      });
+
       try {
         const ref = doc(db, "Subjects", "Math", "TestLinks", status.linkId);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
-          setStatus({ ...status, phase: "blocked", reason: "linkNotFound" });
+          setStatus({
+            phase: "blocked",
+            reason: "linkNotFound",
+            studentId: status.studentId,
+            variantId: status.variantId,
+            linkId: status.linkId,
+          });
           return;
         }
 
@@ -117,16 +132,24 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
         console.log(data.testLinkStatus);
         if (data.testLinkStatus !== "started") {
           setStatus({
-            ...status,
             phase: "blocked",
             reason: `statusNotStarted:${String(data.testLinkStatus)}`,
+            studentId: status.studentId,
+            variantId: status.variantId,
+            linkId: status.linkId,
           });
           return;
         }
         console.log("2");
 
         if (!data.startedAt || typeof data.durationSec !== "number") {
-          setStatus({ ...status, phase: "blocked", reason: "badLinkData" });
+          setStatus({
+            phase: "blocked",
+            reason: "badLinkData",
+            studentId: status.studentId,
+            variantId: status.variantId,
+            linkId: status.linkId,
+          });
           return;
         }
 
@@ -140,22 +163,32 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
         // якщо час вже вийшов — одразу на finalize (далі ми напишемо finalize effect)
         if (Date.now() >= endAtMs) {
           setStatus({
-            ...status,
             phase: "finalizing",
             finishReason: "timeOut",
+            studentId: status.studentId,
+            variantId: status.variantId,
+            linkId: status.linkId,
           });
           return;
         }
         // все ок — можемо тягнути variant/tasks
 
         setStatus({
-          ...status,
           phase: "loadingVariant",
           endAtMs,
           variantCollection,
+          studentId: status.studentId,
+          variantId: status.variantId,
+          linkId: status.linkId,
         });
       } catch (e) {
-        setStatus({ ...status, phase: "blocked", reason: "linkLoadError" });
+        setStatus({
+          phase: "blocked",
+          reason: "linkLoadError",
+          studentId: status.studentId,
+          variantId: status.variantId,
+          linkId: status.linkId,
+        });
       }
     };
     run();
@@ -165,6 +198,8 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
   //завантаження variant doc -->
   useEffect(() => {
     if (status.phase !== "loadingVariant") return;
+
+    let cancelled = false;
 
     const run = async () => {
       try {
@@ -181,25 +216,44 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
         const variantSnap = await getDoc(variantRef);
 
         if (!variantSnap.exists()) {
-          setStatus({ ...status, phase: "blocked", reason: "variantNotFound" });
+          if (cancelled) return;
+          setStatus({
+            phase: "blocked",
+            reason: "variantNotFound",
+            studentId: status.studentId,
+            variantId: status.variantId,
+            linkId: status.linkId,
+          });
           return;
         }
 
+        if (cancelled) return;
         setVariantMeta(variantSnap.data() as VariantDoc);
 
         // ✅ Тут ми поки НЕ переходимо в running — tasks ще не завантажені
       } catch (e) {
-        setStatus({ ...status, phase: "blocked", reason: "variantLoadError" });
+        if (cancelled) return;
+        setStatus({
+          phase: "blocked",
+          reason: "variantLoadError",
+          studentId: status.studentId,
+          variantId: status.variantId,
+          linkId: status.linkId,
+        });
       }
     };
 
     run();
+    return () => {
+      cancelled = true;
+    };
   }, [status.phase]);
   //<--завантаження variant doc
 
   //loader задач -->
   useEffect(() => {
     if (status.phase !== "loadingVariant") return;
+    let cancelled = false;
     const run = async () => {
       try {
         const taskCollectionRef = collection(
@@ -225,15 +279,26 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
           else console.warn(`Невідомий тип завдання (ID: ${d.id})`, data);
         });
 
+        if (cancelled) return;
         setLocalTasks(loaded);
         console.log("2");
         console.log(localTasks);
       } catch (e) {
-        setStatus({ ...status, phase: "blocked", reason: "tasksLoadError" });
+        if (cancelled) return;
+        setStatus({
+          phase: "blocked",
+          reason: "tasksLoadError",
+          studentId: status.studentId,
+          variantId: status.variantId,
+          linkId: status.linkId,
+        });
       }
     };
 
     run();
+    return () => {
+      cancelled = true;
+    };
   }, [status.phase]);
   //<--loader задач
 
@@ -383,6 +448,29 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
     return `${answeredCount}/?`;
   };
 
+  const reasonMessageMap: Record<string, string> = {
+    linkNotFound: "Посилання на тест не знайдено.",
+    badLinkData: "Дані посилання пошкоджені. Зверніться до викладача.",
+    linkLoadError: "Не вдалося завантажити посилання. Спробуйте пізніше.",
+    variantNotFound: "Варіант тесту не знайдено.",
+    variantLoadError: "Не вдалося завантажити варіант тесту.",
+    tasksLoadError: "Не вдалося завантажити завдання.",
+    finalizeError: "Не вдалося зберегти результат. Спробуйте ще раз.",
+  };
+
+  const getReasonMessage = (reason: string) => {
+    if (reason.startsWith("statusNotStarted:")) {
+      const value = reason.split(":")[1];
+
+      if (value === "notStarted") return "Тест ще не розпочато.";
+      if (value === "finished") return "Це посилання вже завершене.";
+
+      return `Тест недоступний (status: ${value}).`;
+    }
+
+    return reasonMessageMap[reason] ?? `Невідома помилка: ${reason}`;
+  };
+
   //effect finalize (транзакція)-->
   useEffect(() => {
     if (status.phase !== "finalizing") return;
@@ -439,20 +527,29 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
     run();
   }, [status.phase, storageKey, userAnswers]);
   //<--effect finalize (транзакція)
-  console.log("2");
+
   //<--запис у Firestore + очистка sessionStorage + перехід у done
   return (
     <div>
       <h4>OneTimeTest</h4>
       <p>{status.phase}</p>
 
+      {status.phase === "invalid" && (
+        <div>Некоректне посилання: {status.reason}</div>
+      )}
+      {status.phase === "blocked" && (
+        <div>{getReasonMessage(status.reason)}</div>
+      )}
+
       {status.phase === "running" && (
         <div>
           <Countdown endAtMs={status.endAtMs} />
-          <MathTest
+          <TaskList
             tasks={localTasks || EMPTY_TASKS}
             selectedVariant={variantMeta?.variantName || ""}
-          ></MathTest>
+            initialAnswers={userAnswers}
+            onAnswersChange={handleAnswersChange}
+          ></TaskList>
         </div>
       )}
       {status.phase === "running" && storageKey && (

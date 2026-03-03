@@ -1,0 +1,50 @@
+1. High: таймер не завершує тест автоматично при 0
+У running стані показується лише Countdown, але він не переводить status у finalizing після завершення часу. Закоментований ефект таймера не працює, а в Countdown немає колбеку на таймаут.
+Посилання: oneTimeTestPage.tsx:343, oneTimeTestPage.tsx:539
+
+2. High: відповіді користувача фактично не збираються в цьому компоненті
+oneTimeTestPage має userAnswers і логіку автозбереження/finalize, але MathTest викликається без endTest/callback і не піднімає відповіді вгору. Отже userAnswers у сторінці лишається порожнім, і testResult майже завжди некоректний (0/? або fallback).
+Посилання: oneTimeTestPage.tsx:64, oneTimeTestPage.tsx:513, mathTests.tsx:14
+
+
+
+План реалізації (збір відповідей + sessionStorage)
+
+1.Узгодити джерело істини
+Зробити OneTimeTestPage єдиним source of truth для userAnswers (щоб фіналізація брала актуальні дані саме звідси).
+
+2.Розширити API MathTest
+У mathTests.tsx додати пропси:
+
+initialAnswers?: Record<string, any>
+onAnswersChange?: (answers: Record<string, any>) => void
+Локальний state у MathTest можна лишити, але синхронізувати його назовні через onAnswersChange.
+3.Гідрація відповідей в OneTimeTestPage
+У oneTimeTestPage.tsx:
+
+при loadingVariant прочитати sessionStorage по storageKey;
+встановити setUserAnswers(parsedAnswers || {});
+передати в MathTest як initialAnswers.
+4.Потік оновлень з MathTest у сторінку
+У OneTimeTestPage передати onAnswersChange={(a) => setUserAnswers(a)}.
+У MathTest викликати onAnswersChange при кожній зміні внутрішніх відповідей.
+
+5.Автозбереження в sessionStorage
+У OneTimeTestPage лишити/оновити useEffect:
+
+тригер: status.phase === "running" і зміна userAnswers;
+запис: sessionStorage.setItem(storageKey, JSON.stringify(userAnswers));
+пропустити перший прохід після гідрації (щоб не перезаписати щойно прочитане порожнім).
+6.Очистка після завершення
+Після успішного finalize видаляти storageKey (в тебе вже є), плюс скинути локальний userAnswers у {} при переході в done.
+
+7.Захист від зміни лінка
+При зміні linkId/storageKey скинути didHydrateAnswers.current = false, щоб новий тест не змішувався зі старим.
+
+8.Перевірка сценаріїв
+Перевірити 4 кейси:
+
+новий тест без чернетки;
+перезавантаження сторінки під час running (відновлення відповідей);
+ручне завершення (manual);
+автозавершення (timeOut) після того, як доробиш пункт 1 з попереднього рев’ю.

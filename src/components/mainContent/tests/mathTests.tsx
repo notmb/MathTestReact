@@ -14,6 +14,8 @@ interface CorrectComparison {
 const MathTest = (props: {
   tasks: Tasks;
   selectedVariant: string;
+  initialAnswers?: Record<string, any>;
+  onAnswersChange?: (answers: Record<string, any>) => void;
   startedAt?: Timestamp | null;
   endTest?: (
     userAnswers: { [key: string]: any },

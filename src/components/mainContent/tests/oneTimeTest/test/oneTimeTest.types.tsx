@@ -35,3 +35,11 @@ export interface Comparison {
     picture?: string[];
   };
 }
+
+type TaskId = string; // doc id, але логічно = номер завдання
+
+type MatchingAnswer = Record<string, Record<string, string>>;
+
+type UserAnswer = string | MatchingAnswer;
+
+export type UserAnswersState = Record<TaskId, UserAnswer>;

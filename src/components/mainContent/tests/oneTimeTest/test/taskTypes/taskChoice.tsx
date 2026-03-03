@@ -1,4 +1,4 @@
-import "../tests.css";
+import "../../../style.css";
 import { MathJax } from "better-react-mathjax";
 import type { Question, Answers } from "../oneTimeTest.types";
 import { app } from "../../../../../../firebaseConfig";
@@ -134,7 +134,7 @@ const AnswerChoice = (props: {
                 type="radio"
                 id={props.number}
                 value={item}
-                name={"task"}
+                name={`task-${props.number}`}
                 onChange={handleChoiceChange}
               />
               <label className="label" htmlFor={item}>
