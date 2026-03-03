@@ -1,77 +1,16 @@
 import { Tasks, Task1, Task2, Task3 } from "../types";
 import { useImmer } from "use-immer";
-import { useEffect, useState, useRef, useMemo } from "react";
-import TimeBox from "./oneTimeTest/timeBox";
 import TaskChoice from "./taskChoice";
 import TaskComparison from "./taskComparison";
 import TaskOpenAnswer from "./taskOpenAnswer";
-import { Timestamp } from "firebase/firestore";
 
 interface CorrectComparison {
   [key: string]: string;
 }
 
-const MathTest = (props: {
-  tasks: Tasks;
-  selectedVariant: string;
-  startedAt?: Timestamp | null;
-  endTest?: (
-    userAnswers: { [key: string]: any },
-    mark: string,
-    pointsForTasks: { [key: string]: number },
-    reason: "manual" | "timeOut",
-  ) => void;
-}) => {
-  const [timeOut, setTimeOut] = useState<boolean>(false);
-
+const LocalMathTest = (props: { tasks: Tasks; selectedVariant: string }) => {
   const selectedVariant = props.selectedVariant;
-
   const [userAnswers, updateUserAnswers] = useImmer<{ [key: string]: any }>({});
-  const STORAGE_KEY = "draft_answers_" + props.selectedVariant;
-
-  const hydratedRef = useRef(false);
-  const finishedRef = useRef(false);
-
-  const durationSec = 3600;
-
-  // const endAtMs = useMemo(() => {
-  //   if (props.startedAt) {
-  //     return props.startedAt.toMillis() + durationSec * 1000;
-  //   } else return 0;
-  // }, [props.startedAt, durationSec]);
-  // console.log(endAtMs);
-
-  // const calcLeftSec = () => {
-  //   const leftMs = endAtMs - Date.now();
-  //   return Math.max(0, Math.ceil(leftMs / 1000));
-  // };
-
-  // LOAD
-  // useEffect(() => {
-  //   const raw = sessionStorage.getItem(STORAGE_KEY);
-  //   if (!raw) {
-  //     hydratedRef.current = true;
-  //     return;
-  //   }
-
-  //   try {
-  //     const parsed = JSON.parse(raw);
-  //     updateUserAnswers(() => parsed);
-  //     console.log(parsed);
-  //     console.log(userAnswers);
-  //   } catch (e) {
-  //     console.error("Draft parse error", e);
-  //   } finally {
-  //     hydratedRef.current = true;
-  //   }
-  // }, [STORAGE_KEY]);
-
-  // SAVE (skip until loaded)
-  // useEffect(() => {
-  //   if (!hydratedRef.current) return;
-  //   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(userAnswers));
-  // }, [STORAGE_KEY, userAnswers]);
-  console.log(userAnswers);
 
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
@@ -178,14 +117,6 @@ const MathTest = (props: {
 
   const checkAndEnd = () => {
     const result = testCheck();
-    const reason = timeOut ? "timeOut" : "manual";
-    props.endTest &&
-      props.endTest(
-        userAnswers,
-        `${result.sum}/${result.nmtMark}`,
-        result.comparison,
-        reason,
-      );
     alert(
       "Твій бал за тест: " +
         result.sum +
@@ -193,21 +124,9 @@ const MathTest = (props: {
         result.nmtMark,
     );
   };
-  useEffect(() => {
-    if (timeOut) {
-      checkAndEnd();
-    }
-  }, [timeOut]);
 
   return (
     <div>
-      {props.endTest && props.startedAt && (
-        <TimeBox
-          startedAt={props.startedAt}
-          durationSec={3600}
-          setTimeOut={setTimeOut}
-        ></TimeBox>
-      )}
       <div className="conteiner_for_test">
         <div className="tests">
           {props.tasks &&
@@ -280,4 +199,4 @@ const MathTest = (props: {
     </div>
   );
 };
-export default MathTest;
+export default LocalMathTest;

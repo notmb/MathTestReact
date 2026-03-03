@@ -1,11 +1,26 @@
 import type { Tasks, Task1, Task2, Task3, VaiantData } from "../types";
 import { useVariantContext } from "./variantContext";
 import { useImmer } from "use-immer";
-
 import { useEffect } from "react";
 import { db } from "../../../firebaseConfig";
-import { getDocs, collection, doc, getDoc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  doc,
+  Timestamp,
+  getDoc,
+} from "firebase/firestore";
+
 import MathTest from "./mathTests";
+
+type AnswerSingle = string;
+type AnswerMulti = {
+  [subTaskNumber: string]: string;
+};
+
+type UserAnswers = {
+  [taskNumber: string]: AnswerSingle | AnswerMulti;
+};
 
 const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
 const isTask2 = (task: any): task is Task2 => task.typeOfTask === "comparison";
@@ -13,18 +28,20 @@ const isTask3 = (task: any): task is Task3 => task.typeOfTask === "openAnswer";
 
 const ContainerForMathTest = (props: {
   selectedVariant: string;
+  startedAt?: Timestamp | null;
   endTest?: (
-    userAnswers: { [key: string]: any },
+    userAnswers: UserAnswers,
     result: string,
-    pointsForTasks: { [key: string]: any },
+    pointsForTasks: { [key: string]: number },
     variantId: string,
-    variantName: string,
-    variantSerialNumber: string
+    variantSerialNumber: string,
+    reason: "manual" | "timeOut",
   ) => void;
 }) => {
   const { tasks, dataVariant } = useVariantContext();
 
   const [localTasks, updateLocalTasks] = useImmer<Tasks>({});
+
   const [localDataVariant, updateLocalDataVariant] =
     useImmer<VaiantData | null>(null);
 
@@ -57,7 +74,7 @@ const ContainerForMathTest = (props: {
         db,
         link,
         props.selectedVariant,
-        "tasks"
+        "tasks",
       );
       const collSnap = await getDocs(taskCollectionRef);
 
@@ -89,7 +106,6 @@ const ContainerForMathTest = (props: {
       const data = { ...docSnap.data(), id: docSnap.id } as VaiantData;
 
       updateLocalDataVariant(() => data);
-      console.log(localDataVariant);
     } catch (error) {
       console.error("Помилка при завантаженні завдань:", error);
     }
@@ -103,16 +119,29 @@ const ContainerForMathTest = (props: {
         updateLocalDataVariant(() => dataVariant);
       } else {
         console.log("глобальний стейт відсутній");
-        const exists = await checkIfDocExists(pathMain, props.selectedVariant);
+        const existsInMain = await checkIfDocExists(
+          pathMain,
+          props.selectedVariant,
+        );
 
-        if (exists) {
-          console.log("✅ Документ існує — завантаження з main");
+        if (existsInMain) {
+          console.log("✅ Документ існує — завантажуємо з main");
           await loadTasks(pathMain);
           await loadData(pathMain);
         } else {
-          console.log("❌ Документ відсутній — завантаження з retaking");
-          await loadTasks(pathRetaking);
-          await loadData(pathRetaking);
+          const existsInRetaking = await checkIfDocExists(
+            pathMain,
+            props.selectedVariant,
+          );
+          if (existsInRetaking) {
+            console.log("✅ Документ існує — завантажуємо з retaking");
+            await loadTasks(pathRetaking);
+            await loadData(pathRetaking);
+          } else {
+            console.log("❌ Документ відсутній ");
+            // await loadTasks(pathRetaking);
+            // await loadData(pathRetaking);
+          }
         }
       }
     };
@@ -123,7 +152,8 @@ const ContainerForMathTest = (props: {
   const endTest = (
     userAnswers: { [key: string]: any },
     mark: string,
-    pointsForTasks: { [key: string]: number }
+    pointsForTasks: { [key: string]: number },
+    reason: "manual" | "timeOut",
   ) => {
     console.log(props.endTest);
     if (props.endTest) {
@@ -132,8 +162,8 @@ const ContainerForMathTest = (props: {
         mark,
         pointsForTasks,
         props.selectedVariant,
-        localDataVariant?.variantName || "noName",
-        localDataVariant?.variantSerialNumber || "noNumber"
+        localDataVariant?.variantSerialNumber || "noNumber",
+        reason,
       );
     }
   };
@@ -144,6 +174,7 @@ const ContainerForMathTest = (props: {
         <MathTest
           tasks={localTasks}
           selectedVariant={props.selectedVariant}
+          startedAt={props.startedAt}
           endTest={endTest}
         ></MathTest>
       )}

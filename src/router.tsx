@@ -11,9 +11,11 @@ import SelectedVariant from "./components/mainContent/tests/selectedTest";
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import OneTimeLinks from "./components/mainContent/tests/oneTimeTest/oneTimeLinks";
-import OneTimeTest from "./components/mainContent/tests/oneTimeTest/oneTimeTest";
+import OneTimeLink from "./components/mainContent/tests/oneTimeTest/oneTimeLink/oneTimeLink";
+import OneTimeTest from "./components/mainContent/tests/oneTimeTest/test/oneTimeTestPage";
 import VariantContextWrapper from "./components/mainContent/tests/variantContextWrapper";
 import StudentsProfil from "./components/mainContent/studentsProfiles/studentsProfil";
+import ContainerForLocalMathTest from "./components/mainContent/tests/containerForLocalMathTest";
 const routes = [
   {
     path: "/MathTestReact/main",
@@ -33,15 +35,20 @@ const routes = [
     component: SelectedVariant,
   },
   {
-    path: "/MathTestReact/allTest/selectedVariant/:type/:variant/test",
-    component: ContainerForMathTest,
+    path: "/MathTestReact/allTest/selectedVariant/:type/:variant/localtest",
+    component: ContainerForLocalMathTest,
   },
   {
     path: "/MathTestReact/allTest/selectedVariant/:type/:variant/one-time-links",
     component: OneTimeLinks,
   },
   {
-    path: "/MathTestReact/:variant/one-time-test",
+    path: "/MathTestReact/:variant/one-time-link",
+    component: OneTimeLink,
+    withoutLayout: true, // TODO RENAME
+  },
+  {
+    path: "/MathTestReact/:variant/one-time-link/one-time-test",
     component: OneTimeTest,
     withoutLayout: true, // TODO RENAME
   },
@@ -67,7 +74,7 @@ const routes = [
 
 const matchPath = (
   routePath: string,
-  currentPath: string
+  currentPath: string,
 ): null | { [key: string]: string } => {
   const routeSegments = routePath.split("/");
   const currentSegments = currentPath.split("/");
@@ -136,7 +143,7 @@ const Router = (props: {
         <Component
           navigate={props.navigate}
           selectedVariant={selectedVariant}
-          selectedLink={selectedVariant}
+          // selectedLink={selectedVariant}
         />
       </main>
     </VariantContextWrapper>

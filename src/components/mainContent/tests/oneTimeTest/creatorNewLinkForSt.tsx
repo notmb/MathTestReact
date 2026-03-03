@@ -7,6 +7,7 @@ import {
   getDoc,
   updateDoc,
   setDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { useImmer } from "use-immer";
 
@@ -98,7 +99,7 @@ const CreatorNewLinkForStudent = (props: {
         "Subjects",
         "Math",
         "MyStudents",
-        selectedStudentId
+        selectedStudentId,
       );
       console.log(dataVariant?.typeTest);
       const property =
@@ -115,7 +116,7 @@ const CreatorNewLinkForStudent = (props: {
       //в профілі учня створюємо або редагуємо колекцію ResultsTest - детальні результати тесту
       const resultTestDocRef = doc(
         collection(docRefStudent, "ResultsTest"),
-        props.selectedVariant
+        props.selectedVariant,
       );
       await setDoc(resultTestDocRef, {
         userAnswers: {},
@@ -128,14 +129,16 @@ const CreatorNewLinkForStudent = (props: {
 
       // Додаємо документ (дані лінки) у TestLinks
       await setDoc(docRef, {
-        studentId: selectedStudentId,
+        createdAt: serverTimestamp(),
         typeTest: dataVariant.typeTest || "main",
+        durationSec: 3600,
+        testLinkStatus: "notStarted",
+        used: false,
+        studentId: selectedStudentId,
         nameStudent:
           students.find((s) => s.id === selectedStudentId)?.name || "",
         variantId: props.selectedVariant,
-        testResult: "не пройдено",
-        used: false,
-        createdAt: new Date(),
+        testResult: "-",
       });
       console.log("Лінка додана");
 

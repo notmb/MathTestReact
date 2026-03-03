@@ -25,13 +25,13 @@ const SelectedVariant = (props: {
 
   const handlePassTheTest = (selectedVariant: string) => {
     props.navigate(
-      `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/test`
+      `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/localtest`,
     );
   };
 
   const handleOneTimePassTheTest = (selectedVariant: string) => {
     props.navigate(
-      `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/one-time-links`
+      `/MathTestReact/allTest/selectedVariant/${dataVariant.typeTest}/${selectedVariant}/one-time-links`,
     );
   };
 
@@ -48,8 +48,8 @@ const SelectedVariant = (props: {
         "Algebra",
         "Topics",
         dataVariant.typeTest === "main" ? "Mix" : "Retaking",
-        props.selectedVariant
-      )
+        props.selectedVariant,
+      ),
     );
     setIsModalOpen(false);
     setIsDelete(true);
@@ -65,7 +65,7 @@ const SelectedVariant = (props: {
           numberOfTask: dataVariant.numberOfTasks,
           typeTest: "retaking",
           createdAt: new Date(),
-        }
+        },
       );
       const newId = docRef.id;
 
@@ -78,7 +78,7 @@ const SelectedVariant = (props: {
         "Topics",
         "Retaking",
         newId,
-        "tasks"
+        "tasks",
       );
 
       Object.entries(tasks).forEach(([key, item]) => {

@@ -67,7 +67,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   const host = window.location.host;
   const getLink = (idLink: string) => {
     alert(
-      `твій лінк на тест - http://${host}/MathTestReact/${idLink}/one-time-test`
+      `твій лінк на тест - http://${host}/MathTestReact/${idLink}/one-time-link`
     );
   };
 
