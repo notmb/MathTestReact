@@ -21,10 +21,6 @@ export interface ComparisonTable {
     pictures?: string[];
   };
 }
-interface CorrectComparison {
-  [key: string]: string;
-}
-
 export interface Comparison {
   list1: {
     texts?: string[];
