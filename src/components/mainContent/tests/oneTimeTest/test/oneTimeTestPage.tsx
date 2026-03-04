@@ -1,4 +1,3 @@
-import React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   doc,
@@ -14,6 +13,7 @@ import type { Task1, Task2, Task3, Tasks } from "./taskTypes/typeTasks";
 import { parseOneTimeParamsFromPathname } from "../shared/oneTime/parseOneTimeParamsFromPathname";
 import type { UserAnswersState } from "./oneTimeTest.types";
 import TaskList from "./components/tasksList";
+import Timer from "./components/timer";
 
 type BaseParsed = { studentId: string; variantId: string; linkId: string };
 
@@ -36,6 +36,7 @@ type Status =
 
 type TestLinkDoc = {
   testLinkStatus: "notStarted" | "started" | "finished" | string;
+  nameStudent: string;
   startedAt?: import("firebase/firestore").Timestamp;
   durationSec?: number;
   typeTest?: "main" | "retaking" | string; // <-
@@ -55,11 +56,32 @@ type VariantDoc = {
   variantSerialNumber?: number | string;
 };
 
+type PointsForTasks = Record<string, number>;
+type NormalizedTypeTest = "main" | "retaking";
+
+type FinalizePayload = {
+  finishReason: "timeOut" | "manual";
+  result: string;
+  userAnswers: Record<string, any>;
+  pointsForTasks: PointsForTasks;
+  variantId: string;
+  variantName: string;
+};
+
+const normalizeTypeTest = (value: unknown): NormalizedTypeTest | null => {
+  if (value === "main" || value === "retaking") return value;
+  return null;
+};
+
 const OneTimeTest = (props: { navigate: (path: string) => void }) => {
   //State / “фази” (щоб не було хаосу)-->
   const [status, setStatus] = useState<Status>({ phase: "loading" });
   //<--State / “фази” (щоб не було хаосу)
 
+  const [userName, setUserName] = useState<string | undefined>(undefined);
+  const [linkTypeTest, setLinkTypeTest] = useState<NormalizedTypeTest | null>(
+    null,
+  );
   const [variantMeta, setVariantMeta] = useState<VariantDoc | null>(null);
   const [localTasks, setLocalTasks] = useState<Tasks | null>(null);
   const [userAnswers, setUserAnswers] = useState<UserAnswersState>({});
@@ -71,7 +93,6 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
   }, []);
   // const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const EMPTY_TASKS = {};
-
   const parsed = useMemo(
     () => parseOneTimeParamsFromPathname(window.location.pathname),
     [],
@@ -81,6 +102,8 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
     status.phase !== "loading" && status.phase !== "invalid"
       ? `oneTimeAnswers:${status.linkId}`
       : undefined;
+  const isFinishDisabled =
+    status.phase !== "running" || Date.now() >= status.endAtMs;
 
   const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
   const isTask2 = (task: any): task is Task2 =>
@@ -132,6 +155,8 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
         }
 
         const data = snap.data() as TestLinkDoc;
+        setUserName(data.nameStudent);
+        setLinkTypeTest(normalizeTypeTest(data.typeTest));
         console.log(data.testLinkStatus);
         if (data.testLinkStatus !== "started") {
           setStatus({
@@ -346,44 +371,40 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
   //<--перехід у running фазу
 
   //таймер->>
-  // useEffect(() => {
-  //   if (status.phase !== "running") return;
+  useEffect(() => {
+    if (status.phase !== "running") return;
 
-  //   let cancelled = false;
+    const leftMs = status.endAtMs - Date.now();
 
-  //   const compute = () => {
-  //     const s = Math.max(0, Math.floor((status.endAtMs - Date.now()) / 1000));
-  //     return s;
-  //   };
+    if (leftMs <= 0) {
+      setStatus((prev) => {
+        if (prev.phase !== "running") return prev;
+        return {
+          phase: "finalizing",
+          finishReason: "timeOut",
+          studentId: prev.studentId,
+          variantId: prev.variantId,
+          linkId: prev.linkId,
+        };
+      });
+      return;
+    }
 
-  //   // одразу поставимо початкове значення
-  //   // setSecondsLeft(compute());
+    const timeoutId = window.setTimeout(() => {
+      setStatus((prev) => {
+        if (prev.phase !== "running") return prev;
+        return {
+          phase: "finalizing",
+          finishReason: "timeOut",
+          studentId: prev.studentId,
+          variantId: prev.variantId,
+          linkId: prev.linkId,
+        };
+      });
+    }, leftMs);
 
-  //   const id = window.setInterval(() => {
-  //     if (cancelled) return;
-
-  //     // const s = compute();
-  //     // setSecondsLeft(s);
-
-  //     if (s <= 0) {
-  //       window.clearInterval(id);
-
-  //       // ⚠️ перехід фази: робимо новий об’єкт (без ...status)
-  //       setStatus({
-  //         phase: "finalizing",
-  //         finishReason: "timeOut",
-  //         studentId: status.studentId,
-  //         variantId: status.variantId,
-  //         linkId: status.linkId,
-  //       });
-  //     }
-  //   }, 1000);
-
-  //   return () => {
-  //     cancelled = true;
-  //     window.clearInterval(id);
-  //   };
-  // }, [status.phase]);
+    return () => window.clearTimeout(timeoutId);
+  }, [status]);
   //<--таймер
 
   //автозбереження відповідей у sessionStorage-->
@@ -414,6 +435,18 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
   //кнопка “Завершити”-->
   const handleFinish = () => {
     if (status.phase !== "running") return;
+
+    if (Date.now() >= status.endAtMs) {
+      setStatus({
+        phase: "finalizing",
+        finishReason: "timeOut",
+        studentId: status.studentId,
+        variantId: status.variantId,
+        linkId: status.linkId,
+      });
+      return;
+    }
+
     const answers = getAnswersForFinalize();
     const testResult = buildTestResultString(answers);
     setPreparedTestResult(testResult);
@@ -504,29 +537,39 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
     return score;
   };
 
-  const buildTestResultString = (answers: Record<string, any>) => {
+  const buildResultDetails = (answers: Record<string, any>) => {
     if (!localTasks) {
       const answeredCount = Object.keys(answers).length;
-      return `${answeredCount}/?`;
+      return {
+        sum: 0,
+        pointsForTasks: {} as PointsForTasks,
+        result: `${answeredCount}/?`,
+      };
     }
 
     let sum = 0;
+    const pointsForTasks: PointsForTasks = {};
 
     Object.entries(localTasks).forEach(([taskId, task]) => {
       const userAnswer = answers[taskId];
+      let points = 0;
 
       if (isTask1(task)) {
         if (
           typeof userAnswer === "string" &&
           userAnswer === task.correctAnswer
         ) {
-          sum += 1;
+          points = 1;
         }
+        pointsForTasks[taskId] = points;
+        sum += points;
         return;
       }
 
       if (isTask2(task)) {
-        sum += scoreComparisonAnswer(task.correctComparison, userAnswer);
+        points = scoreComparisonAnswer(task.correctComparison, userAnswer);
+        pointsForTasks[taskId] = points;
+        sum += points;
         return;
       }
 
@@ -534,12 +577,20 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
         const correct = normalizeNumberAnswer(task.correctAnswer);
         const user = normalizeNumberAnswer(userAnswer);
         if (correct !== null && user !== null && correct === user) {
-          sum += 2;
+          points = 2;
         }
+        pointsForTasks[taskId] = points;
+        sum += points;
       }
     });
-    console.log(`${sum}/${getNmtMark(sum)}`);
-    return `${sum}/${getNmtMark(sum)}`;
+
+    const result = `${sum}/${getNmtMark(sum)}`;
+    console.log(result);
+    return { sum, pointsForTasks, result };
+  };
+
+  const buildTestResultString = (answers: Record<string, any>) => {
+    return buildResultDetails(answers).result;
   };
   const reasonMessageMap: Record<string, string> = {
     linkNotFound: "Посилання на тест не знайдено.",
@@ -549,6 +600,10 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
     variantLoadError: "Не вдалося завантажити варіант тесту.",
     tasksLoadError: "Не вдалося завантажити завдання.",
     finalizeError: "Не вдалося зберегти результат. Спробуйте ще раз.",
+    finalizeMissingData:
+      "Не вистачає даних для збереження результату. Зверніться до викладача.",
+    finalizeBadTypeTest:
+      "Некоректний тип тесту. Зверніться до викладача.",
   };
 
   const getReasonMessage = (reason: string) => {
@@ -570,9 +625,81 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
 
     const run = async () => {
       const answers = getAnswersForFinalize();
-      const testResult = preparedTestResult ?? buildTestResultString(answers);
+      const serialRaw = variantMeta?.variantSerialNumber;
+      const serialText =
+        serialRaw === undefined || serialRaw === null
+          ? ""
+          : String(serialRaw).trim();
+
+      if (!variantMeta?.variantName || !serialText) {
+        setStatus({
+          phase: "blocked",
+          reason: "finalizeMissingData",
+          studentId: status.studentId,
+          variantId: status.variantId,
+          linkId: status.linkId,
+        });
+        return;
+      }
+      if (!userName) {
+        setStatus({
+          phase: "blocked",
+          reason: "finalizeMissingData",
+          studentId: status.studentId,
+          variantId: status.variantId,
+          linkId: status.linkId,
+        });
+        return;
+      }
+      const normalizedTypeTest =
+        normalizeTypeTest(variantMeta.typeTest) ?? linkTypeTest;
+      if (!normalizedTypeTest) {
+        setStatus({
+          phase: "blocked",
+          reason: "finalizeBadTypeTest",
+          studentId: status.studentId,
+          variantId: status.variantId,
+          linkId: status.linkId,
+        });
+        return;
+      }
+
+      const resultDetails = buildResultDetails(answers);
+      const payload: FinalizePayload = {
+        finishReason: status.finishReason,
+        result: preparedTestResult ?? resultDetails.result,
+        userAnswers: answers,
+        pointsForTasks: resultDetails.pointsForTasks,
+        variantId: status.variantId,
+        variantName: variantMeta.variantName,
+      };
 
       const linkRef = doc(db, "Subjects", "Math", "TestLinks", status.linkId);
+      const testResultRef = doc(
+        db,
+        "Subjects",
+        "Math",
+        "TestLinks",
+        status.linkId,
+        "testResults",
+        userName,
+      );
+      const studentRef = doc(
+        db,
+        "Subjects",
+        "Math",
+        "MyStudents",
+        status.studentId,
+      );
+      const studentResultRef = doc(
+        db,
+        "Subjects",
+        "Math",
+        "MyStudents",
+        status.studentId,
+        "ResultsTest",
+        status.variantId,
+      );
 
       try {
         await runTransaction(db, async (tx) => {
@@ -590,9 +717,41 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
           tx.update(linkRef, {
             testLinkStatus: "finished",
             finishedAt: serverTimestamp(),
-            finishReason: status.finishReason, // "manual" | "timeOut"
-            testResult,
+            finishReason: payload.finishReason, // "manual" | "timeOut"
+            testResult: payload.result,
+            used: true,
           });
+
+          tx.set(
+            testResultRef,
+            {
+              pointsForTasks: payload.pointsForTasks,
+              result: payload.result,
+              userAnswers: payload.userAnswers,
+              variantId: payload.variantId,
+              variantName: payload.variantName,
+            },
+            { merge: true },
+          );
+
+          const topicKey = `topic${serialText}`;
+          const summaryUpdate =
+            normalizedTypeTest === "retaking"
+              ? { testScoresRetaking: { [topicKey]: payload.result } }
+              : { testScores: { [topicKey]: payload.result } };
+
+          tx.set(studentRef, summaryUpdate, { merge: true });
+          tx.set(
+            studentResultRef,
+            {
+              pointsForTasks: payload.pointsForTasks,
+              result: payload.result,
+              userAnswers: payload.userAnswers,
+              variantId: payload.variantId,
+              variantName: payload.variantName,
+            },
+            { merge: true },
+          );
         });
 
         // очистка sessionStorage
@@ -619,7 +778,15 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
     };
 
     run();
-  }, [status.phase, storageKey, userAnswers, preparedTestResult]);
+  }, [
+    status,
+    storageKey,
+    userAnswers,
+    preparedTestResult,
+    variantMeta,
+    userName,
+    linkTypeTest,
+  ]);
   //<--effect finalize (транзакція)
 
   //<--запис у Firestore + очистка sessionStorage + перехід у done
@@ -637,7 +804,7 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
 
       {status.phase === "running" && (
         <div>
-          <Countdown endAtMs={status.endAtMs} />
+          <Timer endAtMs={status.endAtMs} />
           <TaskList
             tasks={localTasks || EMPTY_TASKS}
             selectedVariant={variantMeta?.variantName || ""}
@@ -654,7 +821,7 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
           type="button"
           className="custom_button"
           onClick={handleFinish}
-          // disabled={secondsLeft !== null && secondsLeft <= 0}
+          disabled={isFinishDisabled}
         >
           Завершити
         </button>
@@ -666,18 +833,3 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
 };
 export default OneTimeTest;
 
-const Countdown = React.memo(function Countdown(props: { endAtMs: number }) {
-  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
-
-  useEffect(() => {
-    const tick = () => {
-      const left = Math.max(0, Math.ceil((props.endAtMs - Date.now()) / 1000));
-      setSecondsLeft(left);
-    };
-    tick();
-    const id = window.setInterval(tick, 1000);
-    return () => window.clearInterval(id);
-  }, [props.endAtMs]);
-
-  return <div>Залишилось: {secondsLeft ?? "..."}</div>;
-});

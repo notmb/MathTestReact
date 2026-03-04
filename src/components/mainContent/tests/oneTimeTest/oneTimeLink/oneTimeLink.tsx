@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  parseOneTimeParamsFromPathname,
   fetchTestLinkData,
   TestLinkData,
   startTestTransaction,
 } from "../functions";
+import { parseOneTimeParamsFromPathname } from "../shared/oneTime/parseOneTimeParamsFromPathname";
 
 const OneTimeLink = (props: { navigate: (path: string) => void }) => {
   const [status, setStatus] = useState<

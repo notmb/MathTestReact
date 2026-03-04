@@ -48,3 +48,64 @@ onAnswersChange?: (answers: Record<string, any>) => void
 перезавантаження сторінки під час running (відновлення відповідей);
 ручне завершення (manual);
 автозавершення (timeOut) після того, як доробиш пункт 1 з попереднього рев’ю.
+
+
+
+createdAt
+January 23, 2026 at 1:21:18 PM UTC+2
+(timestamp)
+
+durationSec
+3600
+(number)
+
+finishReason(string)
+
+finishedAt (timestamp)
+
+
+nameStudent
+"Симчич Ольга"
+(string)
+
+
+startedAt
+January 23, 2026 at 3:54:56 PM UTC+2
+(timestamp)
+
+
+studentId 
+"kMpQyAvdtp3D1Srp7XQb"
+(string)
+
+
+testLinkStatus(string)
+
+testResult(string)
+
+typeTest "main"/"retaking"
+(string)
+
+used (boolean)
+
+variantId(string)
+"gY4oCA8Bjrds476zmuA2"
+
+
+finishReason(string)
+finishedAt (timestamp)
+testLinkStatus(string)
+testResult(string)
+used (boolean)
+
+давай поступово реалізовувати цей крок
+я напишу все шо і де треба залити 
+
+за адресою /Subjects/Math/TestLinks/kMpQyAvdtp3D1Srp7XQb_gY4oCA8Bjrds476zmuA2, де kMpQyAvdtp3D1Srp7XQb_gY4oCA8Bjrds476zmuA2 - це linkId потрібно оновити чи додати такі поля:
+finishReason(string)
+finishedAt (timestamp)
+testLinkStatus(string)
+testResult(string)
+used (boolean)
+
+за адресою /Subjects/Math/TestLinks//kMpQyAvdtp3D1Srp7XQb_gY4oCA8Bjrds476zmuA2/testResults/Вікторія Назаркевич, де kMpQyAvdtp3D1Srp7XQb_gY4oCA8Bjrds476zmuA2 - це linkId, а Вікторія Назаркевич - це 
