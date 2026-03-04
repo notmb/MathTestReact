@@ -10,6 +10,7 @@ const TaskChoice = (props: {
   task: Question;
   answers: Answers;
   number: string;
+  currentAnswer?: string;
   updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
   return (
@@ -27,6 +28,7 @@ const TaskChoice = (props: {
         answers={props.answers}
       ></TableForAnswersToTaskChoice>
       <AnswerChoice
+        currentAnswer={props.currentAnswer}
         updateUserAnswer={props.updateUserAnswer}
         number={props.number}
       ></AnswerChoice>
@@ -114,6 +116,7 @@ const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
 //КОМПОНЕНТ ДЛЯ ВИБОРУ ВІДПОВІДІ
 const AnswerChoice = (props: {
   number: string;
+  currentAnswer?: string;
   updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
@@ -135,6 +138,7 @@ const AnswerChoice = (props: {
                 id={props.number}
                 value={item}
                 name={`task-${props.number}`}
+                checked={props.currentAnswer === item}
                 onChange={handleChoiceChange}
               />
               <label className="label" htmlFor={item}>

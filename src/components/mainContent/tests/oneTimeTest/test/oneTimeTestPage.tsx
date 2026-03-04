@@ -63,6 +63,9 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
   const [variantMeta, setVariantMeta] = useState<VariantDoc | null>(null);
   const [localTasks, setLocalTasks] = useState<Tasks | null>(null);
   const [userAnswers, setUserAnswers] = useState<UserAnswersState>({});
+  const [preparedTestResult, setPreparedTestResult] = useState<string | null>(
+    null,
+  );
   const handleAnswersChange = useCallback((answers: Record<string, any>) => {
     setUserAnswers((prev) => (prev === answers ? prev : answers));
   }, []);
@@ -140,7 +143,6 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
           });
           return;
         }
-        console.log("2");
 
         if (!data.startedAt || typeof data.durationSec !== "number") {
           setStatus({
@@ -281,7 +283,6 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
 
         if (cancelled) return;
         setLocalTasks(loaded);
-        console.log("2");
         console.log(localTasks);
       } catch (e) {
         if (cancelled) return;
@@ -413,6 +414,9 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
   //кнопка “Завершити”-->
   const handleFinish = () => {
     if (status.phase !== "running") return;
+    const answers = getAnswersForFinalize();
+    const testResult = buildTestResultString(answers);
+    setPreparedTestResult(testResult);
 
     setStatus({
       phase: "finalizing",
@@ -442,12 +446,101 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
     }
   };
 
-  const buildTestResultString = (answers: Record<string, any>) => {
-    // TODO: тут буде реальний підрахунок балів
-    const answeredCount = Object.keys(answers).length;
-    return `${answeredCount}/?`;
+  const getNmtMark = (sum: number): number | string => {
+    const map: Record<number, number> = {
+      5: 100,
+      6: 108,
+      7: 115,
+      8: 123,
+      9: 131,
+      10: 134,
+      11: 137,
+      12: 140,
+      13: 143,
+      14: 145,
+      15: 147,
+      16: 148,
+      17: 149,
+      18: 150,
+      19: 151,
+      20: 152,
+      21: 155,
+      22: 159,
+      23: 163,
+      24: 167,
+      25: 170,
+      26: 173,
+      27: 176,
+      28: 180,
+      29: 184,
+      30: 189,
+      31: 194,
+      32: 200,
+    };
+    if (sum < 5) return "не пройдено";
+    return map[sum] ?? "помилка результату";
   };
 
+  const normalizeNumberAnswer = (value: unknown): number | null => {
+    if (typeof value !== "string" && typeof value !== "number") return null;
+    const num = Number(String(value).replace(",", ".").trim());
+    return Number.isFinite(num) ? num : null;
+  };
+
+  const scoreComparisonAnswer = (
+    correct: Record<string, string>,
+    userAnswer: unknown,
+  ) => {
+    if (!userAnswer || typeof userAnswer !== "object") return 0;
+
+    let score = 0;
+    Object.entries(correct).forEach(([key, correctValue]) => {
+      const userValue = (userAnswer as Record<string, unknown>)[key];
+      if (typeof userValue === "string" && userValue === correctValue) {
+        score += 1;
+      }
+    });
+
+    return score;
+  };
+
+  const buildTestResultString = (answers: Record<string, any>) => {
+    if (!localTasks) {
+      const answeredCount = Object.keys(answers).length;
+      return `${answeredCount}/?`;
+    }
+
+    let sum = 0;
+
+    Object.entries(localTasks).forEach(([taskId, task]) => {
+      const userAnswer = answers[taskId];
+
+      if (isTask1(task)) {
+        if (
+          typeof userAnswer === "string" &&
+          userAnswer === task.correctAnswer
+        ) {
+          sum += 1;
+        }
+        return;
+      }
+
+      if (isTask2(task)) {
+        sum += scoreComparisonAnswer(task.correctComparison, userAnswer);
+        return;
+      }
+
+      if (isTask3(task)) {
+        const correct = normalizeNumberAnswer(task.correctAnswer);
+        const user = normalizeNumberAnswer(userAnswer);
+        if (correct !== null && user !== null && correct === user) {
+          sum += 2;
+        }
+      }
+    });
+    console.log(`${sum}/${getNmtMark(sum)}`);
+    return `${sum}/${getNmtMark(sum)}`;
+  };
   const reasonMessageMap: Record<string, string> = {
     linkNotFound: "Посилання на тест не знайдено.",
     badLinkData: "Дані посилання пошкоджені. Зверніться до викладача.",
@@ -477,7 +570,7 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
 
     const run = async () => {
       const answers = getAnswersForFinalize();
-      const testResult = buildTestResultString(answers);
+      const testResult = preparedTestResult ?? buildTestResultString(answers);
 
       const linkRef = doc(db, "Subjects", "Math", "TestLinks", status.linkId);
 
@@ -504,6 +597,7 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
 
         // очистка sessionStorage
         if (storageKey) sessionStorage.removeItem(storageKey);
+        setPreparedTestResult(null);
 
         // ✅ перехід у done (без ...status)
         setStatus({
@@ -525,7 +619,7 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
     };
 
     run();
-  }, [status.phase, storageKey, userAnswers]);
+  }, [status.phase, storageKey, userAnswers, preparedTestResult]);
   //<--effect finalize (транзакція)
 
   //<--запис у Firestore + очистка sessionStorage + перехід у done

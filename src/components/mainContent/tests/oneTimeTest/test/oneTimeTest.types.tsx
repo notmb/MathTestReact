@@ -38,7 +38,7 @@ export interface Comparison {
 
 type TaskId = string; // doc id, але логічно = номер завдання
 
-type MatchingAnswer = Record<string, Record<string, string>>;
+type MatchingAnswer = Record<string, string>;
 
 type UserAnswer = string | MatchingAnswer;
 

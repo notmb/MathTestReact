@@ -1,8 +1,7 @@
 import "../../../style.css";
 import { MathJax } from "better-react-mathjax";
 
-import { useEffect, useRef, useState } from "react";
-import { useImmer } from "use-immer";
+import { useEffect, useState } from "react";
 import type { Question, Comparison } from "../oneTimeTest.types";
 
 import { app } from "../../../../../../firebaseConfig";
@@ -13,7 +12,8 @@ const TaskComparison = (props: {
   task: Question;
   comparisonTable: Comparison;
   number: string;
-  updateUserAnswer: (userAnswer: string) => void;
+  currentAnswer?: Record<string, string>;
+  updateUserAnswer: (userAnswer: Record<string, string>) => void;
 }) => {
   return (
     <div className="tests_item">
@@ -32,6 +32,7 @@ const TaskComparison = (props: {
       <AnswerToComparisonTask
         number={props.number}
         comparisonTable={props.comparisonTable}
+        currentAnswer={props.currentAnswer}
         updateUserAnswer={props.updateUserAnswer}
       ></AnswerToComparisonTask>
     </div>
@@ -105,37 +106,21 @@ const ComparisonTable = (props: {
 const AnswerToComparisonTask = (props: {
   number: string;
   comparisonTable: Comparison;
-  updateUserAnswer: (userAnswer: any) => void;
+  currentAnswer?: Record<string, string>;
+  updateUserAnswer: (userAnswer: Record<string, string>) => void;
 }) => {
-  const [inputValues, updateInputValues] = useImmer<{ [key: string]: string }>(
-    () => {
-      return (
-        props.comparisonTable.list1.texts?.reduce(
-          (acc, _, index) => {
-            acc[(index + 1).toString()] = "";
-            return acc;
-          },
-          {} as { [key: string]: string },
-        ) ?? {}
-      );
-    },
-  );
-  // Оновлюємо батьківський стан
-  const updateUserAnswerRef = useRef(props.updateUserAnswer);
-
-  updateUserAnswerRef.current = props.updateUserAnswer;
-  useEffect(() => {
-    updateUserAnswerRef.current(inputValues);
-  }, [inputValues]);
+  const inputValues = props.currentAnswer ?? {};
 
   // Обробник зміни відповіді
   const handleChoiceChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
     index: number,
   ) => {
+    const key = (index + 1).toString();
     const userAnswer = event.target.value; // Отримуємо вибрану відповідь
-    updateInputValues((draft) => {
-      draft[(index + 1).toString()] = userAnswer;
+    props.updateUserAnswer({
+      ...inputValues,
+      [key]: userAnswer,
     });
   };
 

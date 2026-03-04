@@ -29,7 +29,9 @@ const TaskList = (props: {
 
   useEffect(() => {
     if (didHydrateFromInitialRef.current) return;
-    updateUserAnswers(() => (props.initialAnswers ?? {}) as UserAnswersState);
+    const incoming = (props.initialAnswers ?? {}) as UserAnswersState;
+    if (Object.keys(incoming).length === 0) return;
+    updateUserAnswers(() => incoming);
     didHydrateFromInitialRef.current = true;
   }, [props.initialAnswers, updateUserAnswers]);
 
@@ -56,6 +58,11 @@ const TaskList = (props: {
                 task={task.task}
                 answers={task.answers}
                 number={taskId}
+                currentAnswer={
+                  typeof userAnswers[taskId] === "string"
+                    ? (userAnswers[taskId] as string)
+                    : undefined
+                }
                 updateUserAnswer={(id, answer) =>
                   updateUserAnswers((draft) => {
                     draft[id] = answer;
@@ -70,6 +77,12 @@ const TaskList = (props: {
                 task={task.task}
                 comparisonTable={task.comparisonTable}
                 number={taskId}
+                currentAnswer={
+                  typeof userAnswers[taskId] === "object" &&
+                  userAnswers[taskId] !== null
+                    ? (userAnswers[taskId] as Record<string, string>)
+                    : undefined
+                }
                 updateUserAnswer={(answer) =>
                   updateUserAnswers((draft) => {
                     draft[taskId] = answer;
@@ -83,6 +96,11 @@ const TaskList = (props: {
                 selectedVariant={props.selectedVariant}
                 task={task.task}
                 number={taskId}
+                currentAnswer={
+                  typeof userAnswers[taskId] === "string"
+                    ? (userAnswers[taskId] as string)
+                    : undefined
+                }
                 updateUserAnswer={(id, answer) =>
                   updateUserAnswers((draft) => {
                     draft[id] = answer;
