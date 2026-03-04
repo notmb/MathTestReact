@@ -1,3 +1,4 @@
+import React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   doc,
@@ -9,11 +10,10 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db } from "../../../../../firebaseConfig";
-import { parseOneTimeParamsFromPathname } from "../functions";
-import type { Task1, Task2, Task3, Tasks } from "../../../types";
-import TaskList from "./components/tasksList";
+import type { Task1, Task2, Task3, Tasks } from "./taskTypes/typeTasks";
+import { parseOneTimeParamsFromPathname } from "../shared/oneTime/parseOneTimeParamsFromPathname";
 import type { UserAnswersState } from "./oneTimeTest.types";
-import React from "react";
+import TaskList from "./components/tasksList";
 
 type BaseParsed = { studentId: string; variantId: string; linkId: string };
 
@@ -477,7 +477,7 @@ const OneTimeTest = (props: { navigate: (path: string) => void }) => {
       31: 194,
       32: 200,
     };
-    if (sum < 5) return "не пройдено";
+    if (sum < 5) return "point<5, не пройдено";
     return map[sum] ?? "помилка результату";
   };
 

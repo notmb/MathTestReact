@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useImmer } from "use-immer";
-import type { Task1, Task2, Task3 } from "../../../../types";
-import { Tasks } from "../taskTypes/typeTasks";
+import type { Task1, Task2, Task3, Tasks } from "../taskTypes/typeTasks";
 import TaskChoice from "../taskTypes/taskChoice";
 import TaskComparison from "../taskTypes/taskComparison";
 import TaskOpenAnswer from "../taskTypes/taskOpenAnswer";

@@ -1,12 +1,9 @@
 import "../../../style.css";
-import { MathJax } from "better-react-mathjax";
-
-import type { Question } from "../oneTimeTest.types";
-
 import { useEffect, useState } from "react";
-
+import { MathJax } from "better-react-mathjax";
 import { app } from "../../../../../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import type { Question } from "../oneTimeTest.types";
 
 const TaskOpenAnswer = (props: {
   selectedVariant: string;
@@ -17,7 +14,9 @@ const TaskOpenAnswer = (props: {
 }) => {
   return (
     <div className="tests_item">
-      <p className="container_serial_num_task">Р—Р°РІРґР°РЅРЅСЏ {props.number}</p>
+      <p className="container_serial_num_task">
+        Р—Р°РІРґР°РЅРЅСЏ {props.number}
+      </p>
       <Task
         selectedVariant={props.selectedVariant}
         text={props.task.text}

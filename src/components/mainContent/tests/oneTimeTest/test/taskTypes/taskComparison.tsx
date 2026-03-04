@@ -1,11 +1,9 @@
 import "../../../style.css";
-import { MathJax } from "better-react-mathjax";
-
 import { useEffect, useState } from "react";
-import type { Question, Comparison } from "../oneTimeTest.types";
-
+import { MathJax } from "better-react-mathjax";
 import { app } from "../../../../../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import type { Question, Comparison } from "../oneTimeTest.types";
 
 const TaskComparison = (props: {
   selectedVariant: string;

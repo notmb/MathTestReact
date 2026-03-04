@@ -1,9 +1,9 @@
 import "../../../style.css";
+import { useState, useEffect } from "react";
 import { MathJax } from "better-react-mathjax";
 import type { Question, Answers } from "../oneTimeTest.types";
 import { app } from "../../../../../../firebaseConfig";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { useState, useEffect } from "react";
 
 const TaskChoice = (props: {
   selectedVariant: string;
