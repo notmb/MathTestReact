@@ -3,7 +3,7 @@ import {
   fetchTestLinkData,
   TestLinkData,
   startTestTransaction,
-} from "../functions";
+} from "../shared/functions";
 import { parseOneTimeParamsFromPathname } from "../shared/oneTime/parseOneTimeParamsFromPathname";
 
 const OneTimeLink = (props: { navigate: (path: string) => void }) => {

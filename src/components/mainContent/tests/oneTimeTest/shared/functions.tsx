@@ -5,7 +5,7 @@ import {
   serverTimestamp,
   Timestamp,
 } from "firebase/firestore";
-import { db } from "../../../../firebaseConfig";
+import { db } from "../../../../../firebaseConfig";
 
 export type TestLinkData = {
   used: boolean;

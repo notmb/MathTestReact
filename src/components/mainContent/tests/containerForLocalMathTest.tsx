@@ -1,5 +1,5 @@
 import { useVariantContext } from "./variantContext";
-import LocalMathTest from "./mathTests";
+import LocalMathTest from "./localMathTest";
 
 const ContainerForLocalMathTest = (props: { selectedVariant: string }) => {
   const { tasks } = useVariantContext();

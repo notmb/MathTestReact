@@ -5,7 +5,6 @@ import MainPage from "./components/mainPage";
 import AllTest from "./components/mainContent/tests/allTests";
 import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
-import ContainerForMathTest from "./components/mainContent/tests/containerForMathTests";
 import AddNewVariant from "./components/mainContent/creatorVariant/addVariant2";
 import SelectedVariant from "./components/mainContent/tests/selectedTest";
 import Header from "./components/header/header";
@@ -64,11 +63,6 @@ const routes = [
   {
     path: "/MathTestReact/account/singup",
     component: SingUp,
-  },
-
-  {
-    path: "/MathTestReact/tests/sortingbyclass",
-    component: ContainerForMathTest,
   },
 ];
 
