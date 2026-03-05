@@ -19,6 +19,7 @@ export const useOneTimeTestFlow = () => {
   const [preparedTestResult, setPreparedTestResult] = useState<string | null>(
     null,
   );
+  const [finalResult, setFinalResult] = useState<string | null>(null);
 
   const didHydrateAnswers = useRef(false);
 
@@ -138,6 +139,7 @@ export const useOneTimeTestFlow = () => {
     linkTypeTest,
     localTasks,
     getAnswersForFinalize,
+    setFinalResult,
     setPreparedTestResult,
     setStatus,
   });
@@ -147,6 +149,7 @@ export const useOneTimeTestFlow = () => {
     variantMeta,
     localTasks,
     userAnswers,
+    finalResult,
     storageKey,
     isFinishDisabled,
     handleAnswersChange,

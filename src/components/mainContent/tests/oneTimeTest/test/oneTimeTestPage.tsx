@@ -10,6 +10,7 @@ const OneTimeTest = () => {
     variantMeta,
     localTasks,
     userAnswers,
+    finalResult,
     isFinishDisabled,
     handleAnswersChange,
     handleFinish,
@@ -68,7 +69,12 @@ const OneTimeTest = () => {
       )}
       {status.phase === "done" && (
         <div className="one-time-test-status one-time-test-status_done">
-          Готово
+          <div>Готово</div>
+          {finalResult && (
+            <div className="one-time-test-final-result">
+              Ваш результат: {finalResult}
+            </div>
+          )}
         </div>
       )}
     </div>

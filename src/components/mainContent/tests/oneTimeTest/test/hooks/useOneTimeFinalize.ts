@@ -36,6 +36,7 @@ type UseOneTimeFinalizeParams = {
   linkTypeTest: NormalizedTypeTest | null;
   localTasks: Tasks | null;
   getAnswersForFinalize: () => Record<string, unknown>;
+  setFinalResult: Dispatch<SetStateAction<string | null>>;
   setPreparedTestResult: Dispatch<SetStateAction<string | null>>;
   setStatus: Dispatch<SetStateAction<Status>>;
 };
@@ -49,6 +50,7 @@ export const useOneTimeFinalize = ({
   linkTypeTest,
   localTasks,
   getAnswersForFinalize,
+  setFinalResult,
   setPreparedTestResult,
   setStatus,
 }: UseOneTimeFinalizeParams) => {
@@ -184,6 +186,7 @@ export const useOneTimeFinalize = ({
 
         if (cancelled) return;
         if (storageKey) sessionStorage.removeItem(storageKey);
+        setFinalResult(payload.result);
         setPreparedTestResult(null);
         setStatus({
           phase: "done",
@@ -212,6 +215,7 @@ export const useOneTimeFinalize = ({
     linkTypeTest,
     localTasks,
     preparedTestResult,
+    setFinalResult,
     setPreparedTestResult,
     setStatus,
     status,
