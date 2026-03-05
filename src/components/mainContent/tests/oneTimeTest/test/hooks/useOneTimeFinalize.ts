@@ -1,4 +1,10 @@
-import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  runTransaction,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import { useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { db } from "../../../../../../firebaseConfig";
@@ -144,26 +150,37 @@ export const useOneTimeFinalize = ({
             },
             { merge: true },
           );
-
-          const topicKey = `topic${serialText}`;
-          const summaryUpdate =
-            normalizedTypeTest === "retaking"
-              ? { testScoresRetaking: { [topicKey]: payload.result } }
-              : { testScores: { [topicKey]: payload.result } };
-
-          tx.set(studentRef, summaryUpdate, { merge: true });
-          tx.set(
-            studentResultRef,
-            {
-              pointsForTasks: payload.pointsForTasks,
-              result: payload.result,
-              userAnswers: payload.userAnswers,
-              variantId: payload.variantId,
-              variantName: payload.variantName,
-            },
-            { merge: true },
-          );
         });
+
+        const topicKey = serialText;
+        const summaryUpdate =
+          normalizedTypeTest === "retaking"
+            ? { testScoresRetaking: { [topicKey]: payload.result } }
+            : { testScores: { [topicKey]: payload.result } };
+
+        try {
+          await setDoc(studentRef, summaryUpdate, { merge: true });
+
+          const existingStudentResult = await getDoc(studentResultRef);
+          const existingVariantName = existingStudentResult.exists()
+            ? existingStudentResult.data().variantName
+            : undefined;
+          const studentResultVariantName =
+            typeof existingVariantName === "string" &&
+            existingVariantName.trim()
+              ? existingVariantName
+              : payload.variantName;
+
+          await setDoc(studentResultRef, {
+            pointsForTasks: payload.pointsForTasks,
+            result: payload.result,
+            userAnswers: payload.userAnswers,
+            variantId: payload.variantId,
+            variantName: studentResultVariantName,
+          });
+        } catch (studentWriteError) {
+          console.warn("Student profile sync skipped:", studentWriteError);
+        }
 
         if (cancelled) return;
         if (storageKey) sessionStorage.removeItem(storageKey);

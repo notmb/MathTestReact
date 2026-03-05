@@ -25,7 +25,7 @@
   /* border-radius: 20px; */
   box-shadow: 0 12px 28px rgba(20, 53, 94, 0.1);
   color: var(--ot-text);
-  font-family: "Manrope", "Segoe UI", sans-serif;
+  font-family: "Latin Modern Roman", "STIX Two Text", serif;
 }
 
 .one-time-test-fixed-meta {
@@ -192,6 +192,17 @@
   background-position: bottom;
   background-size: 100% 1px;
   background-repeat: no-repeat;
+}
+
+.text-for-task {
+  padding: 12px 0;
+}
+
+.item_answer_choise {
+  padding: 4px 0;
+}
+.item_of_comparison {
+  padding: 4px 0;
 }
 
 .one-time-test-page .task_box {

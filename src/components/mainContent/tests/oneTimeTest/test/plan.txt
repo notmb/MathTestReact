@@ -1,182 +1,69 @@
-1. High: таймер не завершує тест автоматично при 0
-У running стані показується лише Countdown, але він не переводить status у finalizing після завершення часу. Закоментований ефект таймера не працює, а в Countdown немає колбеку на таймаут.
-Посилання: oneTimeTestPage.tsx:343, oneTimeTestPage.tsx:539
-
-2. High: відповіді користувача фактично не збираються в цьому компоненті
-oneTimeTestPage має userAnswers і логіку автозбереження/finalize, але MathTest викликається без endTest/callback і не піднімає відповіді вгору. Отже userAnswers у сторінці лишається порожнім, і testResult майже завжди некоректний (0/? або fallback).
-Посилання: oneTimeTestPage.tsx:64, oneTimeTestPage.tsx:513, mathTests.tsx:14
-
-
-
-План реалізації (збір відповідей + sessionStorage)
-
-1.Узгодити джерело істини
-Зробити OneTimeTestPage єдиним source of truth для userAnswers (щоб фіналізація брала актуальні дані саме звідси).
-
-2.Розширити API MathTest
-У mathTests.tsx додати пропси:
-
-initialAnswers?: Record<string, any>
-onAnswersChange?: (answers: Record<string, any>) => void
-Локальний state у MathTest можна лишити, але синхронізувати його назовні через onAnswersChange.
-3.Гідрація відповідей в OneTimeTestPage
-У oneTimeTestPage.tsx:
-
-при loadingVariant прочитати sessionStorage по storageKey;
-встановити setUserAnswers(parsedAnswers || {});
-передати в MathTest як initialAnswers.
-4.Потік оновлень з MathTest у сторінку
-У OneTimeTestPage передати onAnswersChange={(a) => setUserAnswers(a)}.
-У MathTest викликати onAnswersChange при кожній зміні внутрішніх відповідей.
-
-5.Автозбереження в sessionStorage
-У OneTimeTestPage лишити/оновити useEffect:
-
-тригер: status.phase === "running" і зміна userAnswers;
-запис: sessionStorage.setItem(storageKey, JSON.stringify(userAnswers));
-пропустити перший прохід після гідрації (щоб не перезаписати щойно прочитане порожнім).
-6.Очистка після завершення
-Після успішного finalize видаляти storageKey (в тебе вже є), плюс скинути локальний userAnswers у {} при переході в done.
-
-7.Захист від зміни лінка
-При зміні linkId/storageKey скинути didHydrateAnswers.current = false, щоб новий тест не змішувався зі старим.
-
-8.Перевірка сценаріїв
-Перевірити 4 кейси:
-
-новий тест без чернетки;
-перезавантаження сторінки під час running (відновлення відповідей);
-ручне завершення (manual);
-автозавершення (timeOut) після того, як доробиш пункт 1 з попереднього рев’ю.
-
-
-
-createdAt
-January 23, 2026 at 1:21:18 PM UTC+2
-(timestamp)
-
-durationSec
-3600
-(number)
-
-finishReason(string)
-
-finishedAt (timestamp)
-
-
-nameStudent
-"Симчич Ольга"
-(string)
-
-
-startedAt
-January 23, 2026 at 3:54:56 PM UTC+2
-(timestamp)
-
-
-studentId 
-"kMpQyAvdtp3D1Srp7XQb"
-(string)
-
-
-testLinkStatus(string)
-
-testResult(string)
-
-typeTest "main"/"retaking"
-(string)
-
-used (boolean)
-
-variantId(string)
-"gY4oCA8Bjrds476zmuA2"
-
-
-finishReason(string)
-finishedAt (timestamp)
-testLinkStatus(string)
-testResult(string)
-used (boolean)
-
-давай поступово реалізовувати цей крок
-я напишу все шо і де треба залити 
-
-за адресою /Subjects/Math/TestLinks/kMpQyAvdtp3D1Srp7XQb_gY4oCA8Bjrds476zmuA2, де kMpQyAvdtp3D1Srp7XQb_gY4oCA8Bjrds476zmuA2 - це linkId потрібно оновити чи додати такі поля:
-finishReason(string)
-finishedAt (timestamp)
-testLinkStatus(string)
-testResult(string)
-used (boolean)
-
-за адресою /Subjects/Math/TestLinks//kMpQyAvdtp3D1Srp7XQb_gY4oCA8Bjrds476zmuA2/testResults/Вікторія Назаркевич, де kMpQyAvdtp3D1Srp7XQb_gY4oCA8Bjrds476zmuA2 - це linkId, а Вікторія Назаркевич - це 
-
-
-rules_version = '2';
+﻿rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-// READ TESTS
+    // Public read for one-time test content.
     match /Subjects/Math/Algebra/Topics/Mix/{docId=**} {
       allow read: if true;
     }
     match /Subjects/Math/Algebra/Topics/Retaking/{docId=**} {
       allow read: if true;
     }
-// READ TESTS
 
-// TESTLINKS
+    // One-time links and finalization status.
     match /Subjects/Math/TestLinks/{id} {
-      allow read, update: if true;
-    }
-
-    match /Subjects/Math/TestLinks/{linkId}/testResults/{docId} {
+      allow read: if true;
       allow create, update: if true;
     }
-// TESTLINKS
 
-// STUDENTS PROFIL
-match /Subjects/Math/MyStudents/{studentId} {
-  allow read: if true;
+    // Answers/result per one-time link.
+    match /Subjects/Math/TestLinks/{linkId}/testResults/{docId} {
+      allow read, create, update: if true;
+    }
 
-  allow create: if
-    request.resource.data.keys().hasOnly([
-      "testScores",
-      "testScoresRetaking"
-    ]);
+    // Student summary scores.
+    match /Subjects/Math/MyStudents/{studentId} {
+      allow read: if true;
 
-  allow update: if
-    // перевіряємо тільки поля, які змінюються
-    request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-      "testScores",
-      "testScoresRetaking"
-    ]);
+      // Create only score maps (if student profile doc is absent).
+      allow create: if
+        request.resource.data.keys().hasOnly([
+          "testScores",
+          "testScoresRetaking"
+        ]);
 
-  
-}
+      // Allow only score map changes on existing profile.
+      allow update: if
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "testScores",
+          "testScoresRetaking"
+        ]);
+    }
 
+    // Detailed result for a student + variant.
     match /Subjects/Math/MyStudents/{studentId}/ResultsTest/{testId} {
       allow read: if true;
 
-      allow create, update: if
+      allow create: if
         request.resource.data.keys().hasOnly([
           "pointsForTasks",
           "userAnswers",
           "result",
           "variantId",
           "variantName"
-        ])
-        && (
-          !exists(/databases/$(database)/documents/Subjects/Math/MyStudents/$(studentId)/ResultsTest/$(testId))
-          ||
-          (
-            request.resource.data.variantId == resource.data.variantId
-            && request.resource.data.variantName == resource.data.variantName
-          )
-        );
-    }
-// STUDENTS PROFIL
+        ]);
 
-    // 🔒 Все інше — лише для залогінених
+      // Allow updating only result fields; keep variantId immutable.
+      allow update: if
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "pointsForTasks",
+          "userAnswers",
+          "result",
+          "variantName"
+        ]) &&
+        request.resource.data.variantId == resource.data.variantId;
+    }
+
+    // Everything else is authenticated only.
     match /{document=**} {
       allow read, write: if request.auth != null;
     }

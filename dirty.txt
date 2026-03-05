@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+// READ TESTS
+    match /Subjects/Math/Algebra/Topics/Mix/{docId=**} {
+      allow read: if true;
+    }
+    match /Subjects/Math/Algebra/Topics/Retaking/{docId=**} {
+      allow read: if true;
+    }
+// READ TESTS
+
+// TESTLINKS
+    match /Subjects/Math/TestLinks/{id} {
+      allow read, update: if true;
+    }
+
+    match /Subjects/Math/TestLinks/{linkId}/testResults/{docId} {
+      allow create, update: if true;
+    }
+// TESTLINKS
+
+// STUDENTS PROFIL
+match /Subjects/Math/MyStudents/{studentId} {
+  allow read: if true;
+
+  allow create: if
+    request.resource.data.keys().hasOnly([
+      "testScores",
+      "testScoresRetaking"
+    ]);
+
+  allow update: if
+    // перевіряємо тільки поля, які змінюються
+    request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+      "testScores",
+      "testScoresRetaking"
+    ]);
+
+  
+}
+
+    match /Subjects/Math/MyStudents/{studentId}/ResultsTest/{testId} {
+      allow read: if true;
+
+      allow create, update: if
+        request.resource.data.keys().hasOnly([
+          "pointsForTasks",
+          "userAnswers",
+          "result",
+          "variantId",
+          "variantName"
+        ])
+        && (
+          !exists(/databases/$(database)/documents/Subjects/Math/MyStudents/$(studentId)/ResultsTest/$(testId))
+          ||
+          (
+            request.resource.data.variantId == resource.data.variantId
+            && request.resource.data.variantName == resource.data.variantName
+          )
+        );
+    }
+// STUDENTS PROFIL
+
+    // 🔒 Все інше — лише для залогінених
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
