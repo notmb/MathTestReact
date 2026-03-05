@@ -47,10 +47,10 @@ const TaskList = (props: {
   );
 
   return (
-    <div className="conteiner_for_test">
-      <div className="tests">
+    <div className="one-time-test-container">
+      <div className="one-time-test-list">
         {orderedTasks.map(([taskId, task]) => (
-          <div key={taskId}>
+          <div key={taskId} className="one-time-test-task-shell">
             {isTask1(task) && (
               <TaskChoice
                 selectedVariant={props.selectedVariant}

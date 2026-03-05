@@ -9,6 +9,7 @@ import { db } from "../../../../../firebaseConfig";
 
 export type TestLinkData = {
   used: boolean;
+  nameStudent: string;
   testLinkStatus: "notStarted" | "started" | "finished";
   startedAt: Timestamp | null;
   durationSec: number;
@@ -21,6 +22,11 @@ function isValidStatus(x: any): x is TestLinkData["testLinkStatus"] {
 function parseTestLinkData(raw: any): TestLinkData {
   // мінімальна перевірка, щоб не ловити "undefined" далі в логіці
   const used = !!raw?.used;
+
+  const nameStudent = raw?.nameStudent;
+  if (typeof raw?.nameStudent !== "string") {
+    throw new Error("Invalid nameStudent");
+  }
 
   const testLinkStatus = raw?.testLinkStatus;
   if (!isValidStatus(testLinkStatus)) {
@@ -46,7 +52,7 @@ function parseTestLinkData(raw: any): TestLinkData {
     throw new Error(`Invalid durationSec: ${String(durationSec)}`);
   }
 
-  return { used, testLinkStatus, startedAt, durationSec };
+  return { used, nameStudent, testLinkStatus, startedAt, durationSec };
 }
 
 export async function fetchTestLinkData(linkId: string): Promise<TestLinkData> {

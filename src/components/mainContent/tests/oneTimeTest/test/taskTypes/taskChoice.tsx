@@ -135,13 +135,13 @@ const AnswerChoice = (props: {
                 className="user_choice"
                 key={index}
                 type="radio"
-                id={props.number}
+                id={props.number + index}
                 value={item}
                 name={`task-${props.number}`}
                 checked={props.currentAnswer === item}
                 onChange={handleChoiceChange}
               />
-              <label className="label" htmlFor={item}>
+              <label className="label" htmlFor={props.number + index}>
                 <span className="answer">&nbsp; {item}</span>
               </label>
             </div>

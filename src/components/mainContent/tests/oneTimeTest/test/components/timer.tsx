@@ -19,15 +19,18 @@ const Timer = memo(function Timer(props: TimerProps) {
   }, [props.endAtMs]);
 
   if (secondsLeft === null) {
-    return <div>Залишилось: ...</div>;
+    return <div className="one-time-test-timer">Залишилось: ...</div>;
   }
 
   const minutesLeft = Math.floor(secondsLeft / 60);
   const secondsPart = String(secondsLeft % 60).padStart(2, "0");
 
   return (
-    <div>
-      Залишилось: {minutesLeft} хв : {secondsPart} сек
+    <div className="one-time-test-timer">
+      <div>Залишилось:</div>
+      <div>
+        {minutesLeft} хв : {secondsPart} сек
+      </div>
     </div>
   );
 });
