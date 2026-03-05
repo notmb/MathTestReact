@@ -8,7 +8,7 @@ import {
 import { parseOneTimeParamsFromPathname } from "../shared/oneTime/parseOneTimeParamsFromPathname";
 
 const statusLabel: Record<TestLinkData["testLinkStatus"], string> = {
-  notStarted: "Готовий до старту",
+  notStarted: "Тест готовий до старту",
   started: "Тест уже розпочато",
   finished: "Тест завершено",
 };
@@ -138,7 +138,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
 
   return (
     <div className="one-time-test-page one-time-link-page">
-      <h4 className="one-time-test-title one-time-link-title">One-time link</h4>
+      {/* <h4 className="one-time-test-title one-time-link-title">One-time link</h4> */}
 
       <div className="one-time-link-card">
         <div className="one-time-link-meta">

@@ -43,7 +43,7 @@ const OneTimeTest = () => {
         <div className="one-time-test-running">
           <TaskList
             tasks={localTasks || EMPTY_TASKS}
-            selectedVariant={variantMeta?.variantName || ""}
+            selectedVariant={status.variantId}
             initialAnswers={userAnswers}
             onAnswersChange={handleAnswersChange}
           ></TaskList>

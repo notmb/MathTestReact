@@ -97,6 +97,13 @@ const Router = (props: {
   currentPath: string;
   navigate: (path: string) => void;
 }) => {
+  const publicPaths = [
+    "/MathTestReact/account/login",
+    "/MathTestReact/account/singup",
+    "/MathTestReact/:variant/one-time-link",
+    "/MathTestReact/:variant/one-time-link/one-time-test",
+  ];
+
   const [user, setUser] = useState(auth.currentUser);
   const [authChecked, setAuthChecked] = useState(false);
 
@@ -144,10 +151,7 @@ const Router = (props: {
   );
   if (
     !user &&
-    ![
-      "/MathTestReact/account/login",
-      "/MathTestReact/:variant/one-time-test",
-    ].includes(matchedRoute.path)
+    !publicPaths.includes(matchedRoute.path)
   ) {
     // Якщо не залогінений, і це не сторінка логіну
     return (

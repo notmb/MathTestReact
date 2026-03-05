@@ -14,9 +14,7 @@ const TaskOpenAnswer = (props: {
 }) => {
   return (
     <div className="tests_item">
-      <p className="container_serial_num_task">
-        Р—Р°РІРґР°РЅРЅСЏ {props.number}
-      </p>
+      <p className="container_serial_num_task">Завдання {props.number}</p>
       <Task
         selectedVariant={props.selectedVariant}
         text={props.task.text}
@@ -33,7 +31,6 @@ const TaskOpenAnswer = (props: {
 
 export default TaskOpenAnswer;
 
-//РљРћРњРџРћРќР•РќРў Р—РђР’Р”РђРќРќРЇ
 const Task = (props: {
   selectedVariant: string;
   text: string;
@@ -44,6 +41,7 @@ const Task = (props: {
   picture?: string;
   list?: string[];
 }) => {
+  console.log(props.selectedVariant);
   return (
     <div className="task_box">
       <div className="text-2xl">
@@ -58,9 +56,7 @@ const Task = (props: {
     </div>
   );
 };
-//РљРћРњРџРћРќР•РќРў Р—РђР’Р”РђРќРќРЇ
 
-//РљРћРњРџРћРќР•РќРў Р’Р†Р”РџРћР’Р†Р”Р† Р”Рћ Р—РђР’Р”РђРќРќРЇ Р— Р’Р†Р”РљР РРўРћР® Р’Р†Р”РџРћР’Р†Р”Р”Р®
 const OpenAnswer = (props: {
   number: string;
   currentAnswer?: string;
@@ -77,23 +73,20 @@ const OpenAnswer = (props: {
         className="user_answer_open"
         id={props.number}
         type="number"
-        placeholder="РІС–РґРїРѕРІС–РґСЊ.."
+        placeholder="відповідь.."
         value={props.currentAnswer ?? ""}
         onChange={handleChoiceChange}
       />
     </div>
   );
 };
-//РљРћРњРџРћРќР•РќРў Р’Р†Р”РџРћР’Р†Р”Р† Р”Рћ Р—РђР’Р”РђРќРќРЇ Р— Р’Р†Р”РљР РРўРћР® Р’Р†Р”РџРћР’Р†Р”Р”Р®
 
 const fetchImage = async (url: string) => {
-  console.log(url);
   const storage = getStorage(app);
   const storageRef = ref(storage, url);
   return getDownloadURL(storageRef);
 };
 
-//РљРћРњРџРћРќР•РќРў Р—РћР‘Р РђР–Р•РќРќРЇ
 const Picture = (props: { url: string; classForPicture: string }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -110,9 +103,8 @@ const Picture = (props: { url: string; classForPicture: string }) => {
           alt="Loaded from Firebase"
         />
       ) : (
-        <p>Р—Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ Р·РѕР±СЂР°Р¶РµРЅРЅСЏ...</p>
+        <p>Завантаження зображення...</p>
       )}
     </div>
   );
 };
-//РљРћРњРџРћРќР•РќРў Р—РћР‘Р РђР–Р•РќРќРЇ

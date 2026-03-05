@@ -38,7 +38,6 @@ const TaskChoice = (props: {
 
 export default TaskChoice;
 
-//КОМПОНЕНТ ЗАВДАННЯ
 const Task = (props: {
   selectedVariant: string;
   text: string;
@@ -70,9 +69,7 @@ const Task = (props: {
     </div>
   );
 };
-//КОМПОНЕНТ ЗАВДАННЯ
 
-//КОМПОНЕНТ СПИСКУ ДО ЗАПИТАННЯ
 const ListToQestion = (props: { list: string[] }) => {
   return (
     <div className="box_for_list_in_task">
@@ -84,9 +81,7 @@ const ListToQestion = (props: { list: string[] }) => {
     </div>
   );
 };
-//КОМПОНЕНТ СПИСКУ ДО ЗАПИТАННЯ
 
-//КОМПОНЕНТ ТАБЛИЦІ ДО ЗАПИТАННЯ
 const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
   return (
     <div className="box_for_table_in_task">
@@ -111,20 +106,19 @@ const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
     </div>
   );
 };
-//КОМПОНЕНТ ТАБЛИЦІ ДО ЗАПИТАННЯ
 
-//КОМПОНЕНТ ДЛЯ ВИБОРУ ВІДПОВІДІ
 const AnswerChoice = (props: {
   number: string;
   currentAnswer?: string;
   updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
-  // Обробник зміни відповіді
+
   const handleChoiceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const userAnswer = event.target.value; // Отримуємо вибрану відповідь
-    props.updateUserAnswer(props.number, userAnswer); // Викликаємо функцію для оновлення відповіді
+    const userAnswer = event.target.value;
+    props.updateUserAnswer(props.number, userAnswer);
   };
+
   return (
     <div className="box_for_user_answers">
       <form className="form_for_user_answer" action="#" method="post">
@@ -151,23 +145,21 @@ const AnswerChoice = (props: {
     </div>
   );
 };
-//КОМПОНЕНТ ДЛЯ ВИБОРУ ВІДПОВІДІ
 
 const fetchImage = async (url: string) => {
-  console.log(url);
-  const storage = getStorage(app); // Отримуємо екземпляр Storage
-  const storageRef = ref(storage, url); // Шлях до файлу в Storage
+  const storage = getStorage(app);
+  const storageRef = ref(storage, url);
 
   return getDownloadURL(storageRef);
 };
 
-//КОМПОНЕНТ ЗОБРАЖЕННЯ
 const Picture = (props: { url: string; classForPicture: string }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl)); // Викликаємо завантаження зображення при завантаженні компонента
+    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl));
   }, [props.url]);
+
   return (
     <div className="container_for_picture">
       {imageUrl ? (
@@ -182,13 +174,13 @@ const Picture = (props: { url: string; classForPicture: string }) => {
     </div>
   );
 };
-//КОМПОНЕНТ ЗОБРАЖЕННЯ
 
 const TableForAnswersToTaskChoice = (props: {
   answers: Answers;
   selectedVariant: string;
 }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
+
   return (
     <div>
       <div className="answer_table1">

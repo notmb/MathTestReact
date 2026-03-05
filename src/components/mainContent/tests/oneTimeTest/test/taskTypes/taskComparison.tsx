@@ -39,7 +39,6 @@ const TaskComparison = (props: {
 
 export default TaskComparison;
 
-//КОМПОНЕНТ ЗАВДАННЯ
 const Task = (props: {
   selectedVariant: string;
   text: string;
@@ -64,14 +63,13 @@ const Task = (props: {
     </div>
   );
 };
-//КОМПОНЕНТ ЗАВДАННЯ
 
-//КОМПОНЕНТ СПИСКИ ДЛЯ СПІВСТАВЛЕННЯ
 const ComparisonTable = (props: {
   comparisonTable: Comparison;
   selectedVariant: string;
 }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
+
   return (
     <div className="comparison_table">
       <div className="box_for_list1">
@@ -85,7 +83,6 @@ const ComparisonTable = (props: {
         </ul>
       </div>
       <div className="box_for_list2">
-        {" "}
         <ul className="list2">
           {props.comparisonTable.list2.texts &&
             props.comparisonTable.list2.texts.map((item, index) => (
@@ -98,9 +95,7 @@ const ComparisonTable = (props: {
     </div>
   );
 };
-//КОМПОНЕНТ СПИСКИ ДЛЯ СПІВСТАВЛЕННЯ
 
-//КОМПОНЕНТ ВІДПОВІДІ ДО ЗАВДАННЯ ІЗ СПІВСТАВЛЕННЯ
 const AnswerToComparisonTask = (props: {
   number: string;
   comparisonTable: Comparison;
@@ -109,13 +104,12 @@ const AnswerToComparisonTask = (props: {
 }) => {
   const inputValues = props.currentAnswer ?? {};
 
-  // Обробник зміни відповіді
   const handleChoiceChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
     index: number,
   ) => {
     const key = (index + 1).toString();
-    const userAnswer = event.target.value; // Отримуємо вибрану відповідь
+    const userAnswer = event.target.value;
     props.updateUserAnswer({
       ...inputValues,
       [key]: userAnswer,
@@ -154,23 +148,21 @@ const AnswerToComparisonTask = (props: {
     </div>
   );
 };
-//КОМПОНЕНТ ВІДПОВІДІ ДО ЗАВДАННЯ ІЗ СПІВСТАВЛЕННЯ
 
 const fetchImage = async (url: string) => {
-  console.log(url);
-  const storage = getStorage(app); // Отримуємо екземпляр Storage
-  const storageRef = ref(storage, url); // Шлях до файлу в Storage
+  const storage = getStorage(app);
+  const storageRef = ref(storage, url);
 
   return getDownloadURL(storageRef);
 };
 
-//КОМПОНЕНТ ЗОБРАЖЕННЯ
 const Picture = (props: { url: string; classForPicture: string }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl)); // Викликаємо завантаження зображення при завантаженні компонента
+    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl));
   }, [props.url]);
+
   return (
     <div className="container_for_picture">
       {imageUrl ? (
@@ -185,4 +177,3 @@ const Picture = (props: { url: string; classForPicture: string }) => {
     </div>
   );
 };
-//КОМПОНЕНТ ЗОБРАЖЕННЯ
