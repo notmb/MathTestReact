@@ -1,4 +1,4 @@
-import "../styleOneTime.css";
+﻿import "../styleOneTime.css";
 import { useEffect, useMemo, useState } from "react";
 import {
   fetchTestLinkData,
@@ -90,7 +90,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
         <h4 className="one-time-test-title one-time-link-title">
           One-time link
         </h4>
-        <div className="one-time-test-status one-time-test-status_progress">
+        <div className="one-time-test-status one-time-test-status-progress">
           Перевіряю посилання...
         </div>
       </div>
@@ -103,7 +103,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
         <h4 className="one-time-test-title one-time-link-title">
           One-time link
         </h4>
-        <div className="one-time-test-status one-time-test-status_invalid">
+        <div className="one-time-test-status one-time-test-status-invalid">
           Посилання недійсне: {status.reason}
         </div>
       </div>
@@ -116,7 +116,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
         <h4 className="one-time-test-title one-time-link-title">
           One-time link
         </h4>
-        <div className="one-time-test-status one-time-test-status_blocked">
+        <div className="one-time-test-status one-time-test-status-blocked">
           Помилка читання лінка: {error}
         </div>
       </div>
@@ -129,7 +129,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
         <h4 className="one-time-test-title one-time-link-title">
           One-time link
         </h4>
-        <div className="one-time-test-status one-time-test-status_progress">
+        <div className="one-time-test-status one-time-test-status-progress">
           Завантажую дані тесту...
         </div>
       </div>
@@ -138,22 +138,12 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
 
   return (
     <div className="one-time-test-page one-time-link-page">
-      {/* <h4 className="one-time-test-title one-time-link-title">One-time link</h4> */}
-
       <div className="one-time-link-card">
         <div className="one-time-link-meta">
           <div>
             <span className="one-time-link-meta-label">Stusent:</span>{" "}
             {data.nameStudent}
           </div>
-          {/* <div>
-            <span className="one-time-link-meta-label">variantId:</span>{" "}
-            {status.variantId}
-          </div>
-          <div>
-            <span className="one-time-link-meta-label">linkId:</span>{" "}
-            {status.linkId}
-          </div> */}
         </div>
 
         <div className="one-time-link-state">
@@ -166,7 +156,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
           <div className="one-time-link-actions">
             <button
               type="button"
-              className="custom_button one-time-test-finish"
+              className="custom-button one-time-test-finish"
               onClick={handleStartTest}
               disabled={starting}
             >
@@ -179,7 +169,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
           <div className="one-time-link-actions">
             <button
               type="button"
-              className="custom_button one-time-test-finish"
+              className="custom-button one-time-test-finish"
               onClick={handleContinueTest}
             >
               Продовжити тест
@@ -188,7 +178,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
         )}
 
         {data.testLinkStatus === "finished" && (
-          <div className="one-time-test-status one-time-test-status_done">
+          <div className="one-time-test-status one-time-test-status-done">
             Тест вже завершено.
           </div>
         )}
@@ -198,3 +188,4 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
 };
 
 export default OneTimeLink;
+

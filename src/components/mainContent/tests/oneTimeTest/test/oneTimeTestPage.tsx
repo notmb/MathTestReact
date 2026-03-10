@@ -30,12 +30,12 @@ const OneTimeTest = () => {
       </div>
 
       {status.phase === "invalid" && (
-        <div className="one-time-test-status one-time-test-status_invalid">
+        <div className="one-time-test-status one-time-test-status-invalid">
           Некоректне посилання: {status.reason}
         </div>
       )}
       {status.phase === "blocked" && (
-        <div className="one-time-test-status one-time-test-status_blocked">
+        <div className="one-time-test-status one-time-test-status-blocked">
           {getReasonMessage(status.reason)}
         </div>
       )}
@@ -54,7 +54,7 @@ const OneTimeTest = () => {
         <div className="one-time-test-actions">
           <button
             type="button"
-            className="custom_button one-time-test-finish"
+            className="custom-button one-time-test-finish"
             onClick={handleFinish}
             disabled={isFinishDisabled}
           >
@@ -63,12 +63,12 @@ const OneTimeTest = () => {
         </div>
       )}
       {status.phase === "finalizing" && (
-        <div className="one-time-test-status one-time-test-status_progress">
+        <div className="one-time-test-status one-time-test-status-progress">
           Зберігаємо результат...
         </div>
       )}
       {status.phase === "done" && (
-        <div className="one-time-test-status one-time-test-status_done">
+        <div className="one-time-test-status one-time-test-status-done">
           <div>Готово</div>
           {finalResult && (
             <div className="one-time-test-final-result">
@@ -82,3 +82,4 @@ const OneTimeTest = () => {
 };
 
 export default OneTimeTest;
+

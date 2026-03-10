@@ -1,9 +1,6 @@
-import "../../../style.css";
-import { useEffect, useState } from "react";
-import { MathJax } from "better-react-mathjax";
-import { app } from "../../../../../../firebaseConfig";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import type { Question, Comparison } from "../oneTimeTest.types";
+﻿import { MathJax } from "better-react-mathjax";
+import type { Comparison, Question } from "../oneTimeTest.types";
+import TaskBody from "../components/taskBody";
 
 const TaskComparison = (props: {
   selectedVariant: string;
@@ -14,19 +11,10 @@ const TaskComparison = (props: {
   updateUserAnswer: (userAnswer: Record<string, string>) => void;
 }) => {
   return (
-    <div className="tests_item">
-      <p className="container_serial_num_task">Завдання {props.number}</p>
-      <Task
-        selectedVariant={props.selectedVariant}
-        text={props.task.text}
-        picture={props.task.picture}
-        list={props.task.list}
-        table={props.task.table}
-      ></Task>
-      <ComparisonTable
-        selectedVariant={props.selectedVariant}
-        comparisonTable={props.comparisonTable}
-      ></ComparisonTable>
+    <div className="tests-item">
+      <p className="container-serial-num-task">Завдання {props.number}</p>
+      <TaskBody selectedVariant={props.selectedVariant} task={props.task}></TaskBody>
+      <ComparisonTable comparisonTable={props.comparisonTable}></ComparisonTable>
       <AnswerToComparisonTask
         number={props.number}
         comparisonTable={props.comparisonTable}
@@ -39,54 +27,28 @@ const TaskComparison = (props: {
 
 export default TaskComparison;
 
-const Task = (props: {
-  selectedVariant: string;
-  text: string;
-  table?: {
-    value1: string[];
-    value2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}) => {
-  return (
-    <div className="task_box">
-      <div className="text-2xl text-for-task">
-        <MathJax>{props.text}</MathJax>
-      </div>
-      {props.picture && (
-        <Picture
-          url={`${props.selectedVariant}/${props.picture}`}
-          classForPicture="picture_for_question"
-        ></Picture>
-      )}
-    </div>
-  );
-};
-
 const ComparisonTable = (props: {
   comparisonTable: Comparison;
-  selectedVariant: string;
 }) => {
   const mark = ["А", "Б", "В", "Г", "Д"];
 
   return (
-    <div className="comparison_table">
-      <div className="box_for_list1">
+    <div className="comparison-table">
+      <div className="box-for-list1">
         <ul className="list1">
           {props.comparisonTable.list1.texts &&
             props.comparisonTable.list1.texts.map((item, index) => (
-              <li key={index} className="item_of_comparison text-xl">
+              <li key={index} className="item-of-comparison text-xl">
                 {index + 1}) &nbsp;<MathJax>{item}</MathJax>
               </li>
             ))}
         </ul>
       </div>
-      <div className="box_for_list2">
+      <div className="box-for-list2">
         <ul className="list2">
           {props.comparisonTable.list2.texts &&
             props.comparisonTable.list2.texts.map((item, index) => (
-              <li key={index} className="item_of_comparison text-xl">
+              <li key={index} className="item-of-comparison text-xl">
                 {mark[index]}) &nbsp;<MathJax>{item}</MathJax>
               </li>
             ))}
@@ -117,15 +79,15 @@ const AnswerToComparisonTask = (props: {
   };
 
   return (
-    <div className="box_for_answers_comparison">
-      <ul className="list_of_answers_comparison">
+    <div className="box-for-answers-comparison">
+      <ul className="list-of-answers-comparison">
         {props.comparisonTable.list1.texts &&
           props.comparisonTable.list1.texts.map((_, index) => (
-            <li key={index} className="item_user_answer_comparison">
+            <li key={index} className="item-user-answer-comparison">
               {index + 1}) &nbsp;
               <select
-                className="user_answer_comparison"
-                id={props.number}
+                className="user-answer-comparison"
+                id={`${props.number}-${index}`}
                 value={inputValues[(index + 1).toString()] || ""}
                 onChange={(e) => handleChoiceChange(e, index)}
               >
@@ -149,31 +111,5 @@ const AnswerToComparisonTask = (props: {
   );
 };
 
-const fetchImage = async (url: string) => {
-  const storage = getStorage(app);
-  const storageRef = ref(storage, url);
 
-  return getDownloadURL(storageRef);
-};
 
-const Picture = (props: { url: string; classForPicture: string }) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl));
-  }, [props.url]);
-
-  return (
-    <div className="container_for_picture">
-      {imageUrl ? (
-        <img
-          className={props.classForPicture}
-          src={imageUrl}
-          alt="Loaded from Firebase"
-        />
-      ) : (
-        <p>Завантаження зображення...</p>
-      )}
-    </div>
-  );
-};

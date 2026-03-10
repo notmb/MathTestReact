@@ -1,9 +1,10 @@
-import ChoosingTypeTask from "./choosingTaskType";
+﻿import ChoosingTypeTask from "./choosingTaskType";
 import CreatorTaskChoice from "./creatorTaskChoice";
 import CreatorTaskMatching from "./creatorTaskMatching";
 import CreatorTaskOpenAnswer from "./creatorTaskOpenAnswer";
+import type { TaskType } from "../types";
 
-//ФОРМА ДЛЯ СТВОРЕННЯ ЗАВДАННЯ
+//Р¤РћР РњРђ Р”Р›РЇ РЎРўР’РћР Р•РќРќРЇ Р—РђР’Р”РђРќРќРЇ
 const CreatorTask = (props: {
   typeTest: string;
   nameOfVarint: string;
@@ -14,7 +15,7 @@ const CreatorTask = (props: {
   ) => void;
   updateTaskIsAdded: (numTask: number, isAdded: boolean) => void;
   taskIsAdded: boolean;
-  typeOfTasks: string | undefined;
+  typeOfTasks: TaskType | undefined;
 }) => {
   return (
     <div className="creator_task">
@@ -50,3 +51,4 @@ const CreatorTask = (props: {
   );
 };
 export default CreatorTask;
+

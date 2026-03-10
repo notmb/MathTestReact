@@ -1,5 +1,5 @@
-import type { Timestamp } from "firebase/firestore";
-import type { Task1, Task2, Task3 } from "../taskTypes/typeTasks";
+﻿import type { Timestamp } from "firebase/firestore";
+import type { Task1, Task2, Task3 } from "../oneTimeTest.types";
 
 export type BaseParsed = { studentId: string; variantId: string; linkId: string };
 
@@ -57,3 +57,5 @@ export const isTask3 = (task: unknown): task is Task3 =>
   !!task &&
   typeof task === "object" &&
   (task as Task3).typeOfTask === "openAnswer";
+
+

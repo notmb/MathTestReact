@@ -1,5 +1,6 @@
 import TestResults from "../testResults";
 import CreatorNewLinkForStudent from "./creatorNewLinkForSt";
+import "./styleOneTime.css";
 import { useEffect, useState } from "react";
 // import { useVariantContext } from "../variantContext";
 import { WrapperForModalWindow } from "../../reactTsUtils";
@@ -110,8 +111,11 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
       {testLinks.length > 0 &&
         testLinks.map((item, index) => {
           return (
-            <div className="border border-black" key={item.id}>
-              <span onClick={() => getLink(item.id)}>
+            <div className="one-time-links-item" key={item.id}>
+              <span
+                className="one-time-links-item-body"
+                onClick={() => getLink(item.id)}
+              >
                 <p>{item.id}</p>
                 <p>Учень: {item.nameStudent}</p>
                 <p>
@@ -122,13 +126,13 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
               </span>
               <button
                 onClick={() => removeLink(item.id, index)}
-                className="m-2"
+                className="one-time-links-btn"
               >
                 Видалити Link
               </button>
               {item.used === true && (
                 <button
-                  className="m-2"
+                  className="one-time-links-btn"
                   onClick={() => ViewTheResults(item.id, item.nameStudent)}
                 >
                   Переглянутити результати

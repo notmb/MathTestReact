@@ -1,4 +1,4 @@
-import type { Task1, Task2, Task3, Tasks } from "../taskTypes/typeTasks";
+﻿import type { Task1, Task2, Task3, Tasks } from "../oneTimeTest.types";
 
 export type PointsForTasks = Record<string, number>;
 
@@ -128,3 +128,5 @@ export const buildTestResultString = (
 ) => {
   return buildResultDetails(tasks, answers).result;
 };
+
+

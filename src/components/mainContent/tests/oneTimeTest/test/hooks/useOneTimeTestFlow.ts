@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { parseOneTimeParamsFromPathname } from "../../shared/oneTime/parseOneTimeParamsFromPathname";
 import type { UserAnswersState } from "../oneTimeTest.types";
-import type { Tasks } from "../taskTypes/typeTasks";
+import type { Tasks } from "../oneTimeTest.types";
 import { buildTestResultString } from "../utils/oneTimeTestScoring";
 import { useOneTimeDataLoad } from "./useOneTimeDataLoad";
 import { useOneTimeFinalize } from "./useOneTimeFinalize";
@@ -156,3 +156,5 @@ export const useOneTimeTestFlow = () => {
     handleFinish,
   };
 };
+
+

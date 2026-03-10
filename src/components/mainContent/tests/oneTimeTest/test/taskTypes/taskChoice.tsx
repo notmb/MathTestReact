@@ -1,9 +1,7 @@
-import "../../../style.css";
-import { useState, useEffect } from "react";
-import { MathJax } from "better-react-mathjax";
-import type { Question, Answers } from "../oneTimeTest.types";
-import { app } from "../../../../../../firebaseConfig";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+﻿import { MathJax } from "better-react-mathjax";
+import type { Answers, Question } from "../oneTimeTest.types";
+import FirebasePicture from "../components/FirebasePicture";
+import TaskBody from "../components/taskBody";
 
 const TaskChoice = (props: {
   selectedVariant: string;
@@ -14,15 +12,9 @@ const TaskChoice = (props: {
   updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
   return (
-    <div className="tests_item">
-      <p className="container_serial_num_task">Завдання {props.number}</p>
-      <Task
-        selectedVariant={props.selectedVariant}
-        text={props.task.text}
-        picture={props.task.picture}
-        list={props.task.list}
-        table={props.task.table}
-      ></Task>
+    <div className="tests-item">
+      <p className="container-serial-num-task">Завдання {props.number}</p>
+      <TaskBody selectedVariant={props.selectedVariant} task={props.task}></TaskBody>
       <TableForAnswersToTaskChoice
         selectedVariant={props.selectedVariant}
         answers={props.answers}
@@ -38,75 +30,6 @@ const TaskChoice = (props: {
 
 export default TaskChoice;
 
-const Task = (props: {
-  selectedVariant: string;
-  text: string;
-  table?: {
-    value1: string[];
-    value2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}) => {
-  return (
-    <div className="task_box">
-      <div className="text-2xl text-for-task">
-        <MathJax>{props.text}</MathJax>
-      </div>
-      {props.list && <ListToQestion list={props.list}></ListToQestion>}
-      {props.table && (
-        <TableToQestion
-          list1={props.table.value1}
-          list2={props.table.value2}
-        ></TableToQestion>
-      )}
-      {props.picture && (
-        <Picture
-          url={`${props.selectedVariant}/${props.picture}`}
-          classForPicture="picture_for_question"
-        ></Picture>
-      )}
-    </div>
-  );
-};
-
-const ListToQestion = (props: { list: string[] }) => {
-  return (
-    <div className="box_for_list_in_task">
-      {props.list.map((item, index) => (
-        <span key={index} className="list_in_task">
-          {index + 1}. <MathJax>{item}</MathJax>
-        </span>
-      ))}
-    </div>
-  );
-};
-
-const TableToQestion = (props: { list1: string[]; list2: string[] }) => {
-  return (
-    <div className="box_for_table_in_task">
-      <table className="table_to_qestion">
-        <tbody>
-          <tr>
-            {props.list1.map((item, index) => (
-              <td key={index} className="table_to_qestion_list1">
-                <MathJax>{item}</MathJax>
-              </td>
-            ))}
-          </tr>
-          <tr>
-            {props.list2.map((item, index) => (
-              <td key={index} className="table_to_qestion_list2">
-                <MathJax>{item}</MathJax>
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
 const AnswerChoice = (props: {
   number: string;
   currentAnswer?: string;
@@ -120,13 +43,13 @@ const AnswerChoice = (props: {
   };
 
   return (
-    <div className="box_for_user_answers">
-      <form className="form_for_user_answer" action="#" method="post">
+    <div className="box-for-user-answers">
+      <form className="form-for-user-answer" action="#" method="post">
         {mark.map((item, index) => {
           return (
-            <div className="item_answer_choise" key={index}>
+            <div className="item-answer-choice" key={index}>
               <input
-                className="user_choice"
+                className="user-choice"
                 key={index}
                 type="radio"
                 id={props.number + index}
@@ -146,35 +69,6 @@ const AnswerChoice = (props: {
   );
 };
 
-const fetchImage = async (url: string) => {
-  const storage = getStorage(app);
-  const storageRef = ref(storage, url);
-
-  return getDownloadURL(storageRef);
-};
-
-const Picture = (props: { url: string; classForPicture: string }) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl));
-  }, [props.url]);
-
-  return (
-    <div className="container_for_picture">
-      {imageUrl ? (
-        <img
-          className={props.classForPicture}
-          src={imageUrl}
-          alt="Loaded from Firebase"
-        />
-      ) : (
-        <p>Завантаження зображення...</p>
-      )}
-    </div>
-  );
-};
-
 const TableForAnswersToTaskChoice = (props: {
   answers: Answers;
   selectedVariant: string;
@@ -183,21 +77,21 @@ const TableForAnswersToTaskChoice = (props: {
 
   return (
     <div>
-      <div className="answer_table1">
+      <div className="answer-table1">
         {[0, 1, 2, 3, 4].map((_, index) => (
           <div
             key={index}
-            className={`columns_in_answers_table columns_in_answers_table_${index}`}
+            className={`columns-in-answers-table columns-in-answers-table-${index}`}
           >
-            <div className="mark_in_answers_table font-bold text-xl">
+            <div className="mark-in-answers-table font-bold text-xl">
               {mark[index]}
             </div>
-            <div className="option_in_answers_table text-xl ">
+            <div className="option-in-answers-table text-xl ">
               {props.answers.pictures && props.answers.pictures[index] && (
-                <Picture
+                <FirebasePicture
                   url={`${props.selectedVariant}/${props.answers.pictures[index]}`}
-                  classForPicture="picture_for_answer"
-                ></Picture>
+                  className="picture-for-answer"
+                ></FirebasePicture>
               )}
               {props.answers.values && props.answers.values[index] && (
                 <MathJax>{props.answers.values[index]}</MathJax>
@@ -209,3 +103,6 @@ const TableForAnswersToTaskChoice = (props: {
     </div>
   );
 };
+
+
+

@@ -1,4 +1,4 @@
-import {
+﻿import {
   doc,
   getDoc,
   runTransaction,
@@ -8,7 +8,7 @@ import {
 import { useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { db } from "../../../../../../firebaseConfig";
-import type { Tasks } from "../taskTypes/typeTasks";
+import type { Tasks } from "../oneTimeTest.types";
 import { buildResultDetails } from "../utils/oneTimeTestScoring";
 import type { PointsForTasks } from "../utils/oneTimeTestScoring";
 import {
@@ -224,3 +224,5 @@ export const useOneTimeFinalize = ({
     variantMeta,
   ]);
 };
+
+

@@ -1,9 +1,5 @@
-import "../../../style.css";
-import { useEffect, useState } from "react";
-import { MathJax } from "better-react-mathjax";
-import { app } from "../../../../../../firebaseConfig";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import type { Question } from "../oneTimeTest.types";
+﻿import type { Question } from "../oneTimeTest.types";
+import TaskBody from "../components/taskBody";
 
 const TaskOpenAnswer = (props: {
   selectedVariant: string;
@@ -13,13 +9,9 @@ const TaskOpenAnswer = (props: {
   updateUserAnswer: (idTask: string, userAnswer: string) => void;
 }) => {
   return (
-    <div className="tests_item">
-      <p className="container_serial_num_task">Завдання {props.number}</p>
-      <Task
-        selectedVariant={props.selectedVariant}
-        text={props.task.text}
-        picture={props.task.picture}
-      ></Task>
+    <div className="tests-item">
+      <p className="container-serial-num-task">Завдання {props.number}</p>
+      <TaskBody selectedVariant={props.selectedVariant} task={props.task}></TaskBody>
       <OpenAnswer
         number={props.number}
         currentAnswer={props.currentAnswer}
@@ -30,32 +22,6 @@ const TaskOpenAnswer = (props: {
 };
 
 export default TaskOpenAnswer;
-
-const Task = (props: {
-  selectedVariant: string;
-  text: string;
-  table?: {
-    value1: string[];
-    velue2: string[];
-  };
-  picture?: string;
-  list?: string[];
-}) => {
-  console.log(props.selectedVariant);
-  return (
-    <div className="task_box">
-      <div className="text-2xl text-for-task">
-        <MathJax>{props.text}</MathJax>
-      </div>
-      {props.picture && (
-        <Picture
-          url={`${props.selectedVariant}/${props.picture}`}
-          classForPicture="picture_for_question"
-        ></Picture>
-      )}
-    </div>
-  );
-};
 
 const OpenAnswer = (props: {
   number: string;
@@ -68,9 +34,9 @@ const OpenAnswer = (props: {
   };
 
   return (
-    <div className="box_for_user_answer">
+    <div className="box-for-user-answer">
       <input
-        className="user_answer_open"
+        className="user-answer-open"
         id={props.number}
         type="number"
         placeholder="відповідь.."
@@ -81,30 +47,5 @@ const OpenAnswer = (props: {
   );
 };
 
-const fetchImage = async (url: string) => {
-  const storage = getStorage(app);
-  const storageRef = ref(storage, url);
-  return getDownloadURL(storageRef);
-};
 
-const Picture = (props: { url: string; classForPicture: string }) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl));
-  }, [props.url]);
-
-  return (
-    <div className="container_for_picture">
-      {imageUrl ? (
-        <img
-          className={props.classForPicture}
-          src={imageUrl}
-          alt="Loaded from Firebase"
-        />
-      ) : (
-        <p>Завантаження зображення...</p>
-      )}
-    </div>
-  );
-};

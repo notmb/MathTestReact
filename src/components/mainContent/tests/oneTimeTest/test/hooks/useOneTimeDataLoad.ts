@@ -1,9 +1,9 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+﻿import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { db } from "../../../../../../firebaseConfig";
 import type { UserAnswersState } from "../oneTimeTest.types";
-import type { Tasks } from "../taskTypes/typeTasks";
+import type { Tasks } from "../oneTimeTest.types";
 import {
   isTask1,
   isTask2,
@@ -275,3 +275,5 @@ export const useOneTimeDataLoad = ({
     return () => window.clearTimeout(timeoutId);
   }, [status, toFinalizing]);
 };
+
+

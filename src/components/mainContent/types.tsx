@@ -1,23 +1,25 @@
-import { Timestamp } from "firebase/firestore";
+﻿import { Timestamp } from "firebase/firestore";
+export type TaskType = "choice" | "comparison" | "openAnswer";
+
 export interface Task1 {
-  //тип даних для завдання з з вибором 1 відповіді
+  //С‚РёРї РґР°РЅРёС… РґР»СЏ Р·Р°РІРґР°РЅРЅСЏ Р· Р· РІРёР±РѕСЂРѕРј 1 РІС–РґРїРѕРІС–РґС–
   task: Question;
   answers: Answers;
   correctAnswer: string;
-  typeOfTask: string;
+  typeOfTask: "choice";
 }
 export interface Task2 {
-  //тип даних для завдання співставлення
+  //С‚РёРї РґР°РЅРёС… РґР»СЏ Р·Р°РІРґР°РЅРЅСЏ СЃРїС–РІСЃС‚Р°РІР»РµРЅРЅСЏ
   task: Question;
   comparisonTable: ComparisonTable;
   correctComparison: CorrectComparison;
-  typeOfTask: string;
+  typeOfTask: "comparison";
 }
 export interface Task3 {
-  //тип даних для завдання з відкритою відповіддю
+  //С‚РёРї РґР°РЅРёС… РґР»СЏ Р·Р°РІРґР°РЅРЅСЏ Р· РІС–РґРєСЂРёС‚РѕСЋ РІС–РґРїРѕРІС–РґРґСЋ
   task: Question;
   correctAnswer: string;
-  typeOfTask: string;
+  typeOfTask: "openAnswer";
 }
 export interface Question {
   text: string;
@@ -46,7 +48,7 @@ interface CorrectComparison {
   [key: string]: string;
 }
 export interface Tasks {
-  // Колекція з різними завданнями
+  // РљРѕР»РµРєС†С–СЏ Р· СЂС–Р·РЅРёРјРё Р·Р°РІРґР°РЅРЅСЏРјРё
   [key: string]: Task1 | Task2 | Task3;
 }
 export interface Comparison {
@@ -68,3 +70,4 @@ export interface VaiantData {
   numberOfTasks: string;
   variantSerialNumber: string;
 }
+

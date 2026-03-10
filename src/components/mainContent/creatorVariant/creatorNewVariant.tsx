@@ -1,13 +1,14 @@
-import CreatorTask from "./creatorTask";
+﻿import CreatorTask from "./creatorTask";
 import { useState } from "react";
+import type { TaskType } from "../types";
 
 interface Task {
   numberTask: string;
-  typeTask: string | undefined;
+  typeTask: TaskType | undefined;
   taskIsAdded: boolean;
 }
 type Tasks = Task[];
-//ФОРМА ДЛЯ СТВОРЕННЯ ВАРІАНТУ
+//Р¤РћР РњРђ Р”Р›РЇ РЎРўР’РћР Р•РќРќРЇ Р’РђР Р†РђРќРўРЈ
 const CreatorNewVariant = (props: {
   nameVariant: string; // Id
   tasks: Tasks;
@@ -21,14 +22,14 @@ const CreatorNewVariant = (props: {
   const [selectedTask, setSelectedTask] = useState<number | null>(null);
 
   const handleClick = (item: number) => {
-    // item - номер завдання (1,2,3,4...)
+    // item - РЅРѕРјРµСЂ Р·Р°РІРґР°РЅРЅСЏ (1,2,3,4...)
     setSelectedTask(item);
   };
   console.log(props.tasks);
 
   return (
     <div className="creator_new_variant">
-      <p>Додайте завдання до вашого варіанту</p>
+      <p>Р”РѕРґР°Р№С‚Рµ Р·Р°РІРґР°РЅРЅСЏ РґРѕ РІР°С€РѕРіРѕ РІР°СЂС–Р°РЅС‚Сѓ</p>
       <div className="box_for_numbers_of task">
         {props.tasks.length < 30 &&
           props.tasks.map((_, index) => (
@@ -53,7 +54,7 @@ const CreatorNewVariant = (props: {
         <CreatorTask
           typeTest={props.typeTest}
           nameOfVarint={props.nameVariant}
-          numSelectedTask={selectedTask?.toString()} // number-№завдання від 1,2,3..
+          numSelectedTask={selectedTask?.toString()} // number-в„–Р·Р°РІРґР°РЅРЅСЏ РІС–Рґ 1,2,3..
           typeOfTasks={props.tasks[selectedTask - 1].typeTask}
           updateTypeOfTask={props.updateTypeOfTask}
           updateTaskIsAdded={props.updateTaskIsAdded}
@@ -69,3 +70,4 @@ const CreatorNewVariant = (props: {
   );
 };
 export default CreatorNewVariant;
+
