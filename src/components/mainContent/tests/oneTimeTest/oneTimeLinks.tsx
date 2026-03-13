@@ -28,26 +28,24 @@ interface SelectedLink {
   selectedLink: string;
   nameStudent: string;
 }
+
 type FetchStatus = "loading" | "success" | "error";
 
 const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [testLinks, updateTestLinks] = useImmer<TestLink[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOFAddingLinkOpen, setIsModalOFAddingLinkOpen] = useState(false);
-
   const [selectedAnswersData, updateSelectedAnswersData] =
     useImmer<SelectedLink | null>(null);
-
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
-
   const [fetchStatus, setFetchStatus] = useState<FetchStatus>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const fetchTestLinks = async () => {
     setFetchStatus("loading");
     setErrorMessage(null);
-    const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
 
+    const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
     const dataLinks = query(
       testLinksRef,
       where("variantId", "==", props.selectedVariant),
@@ -81,7 +79,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
       await navigator.clipboard.writeText(link);
       setCopiedLinkId(idLink);
       setTimeout(() => {
-        setCopiedLinkId((currunt) => (currunt === idLink ? null : currunt));
+        setCopiedLinkId((current) => (current === idLink ? null : current));
       }, 2000);
     } catch (error) {
       console.error("Не вдалося скопіювати лінк:", error);
@@ -127,59 +125,85 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
 
   return (
     <div className="one-time-links">
-      <button onClick={() => setIsModalOFAddingLinkOpen(true)}>
-        Створити Link
-      </button>
-      {fetchStatus === "loading" && <p>Завантаження лінків...</p>}
-      {fetchStatus === "error" && errorMessage && <p>{errorMessage}</p>}
+      <div className="one-time-links-toolbar">
+        <button
+          className="one-time-links-create-btn"
+          onClick={() => setIsModalOFAddingLinkOpen(true)}
+        >
+          Створити Link
+        </button>
+      </div>
+
+      {fetchStatus === "loading" && (
+        <p className="one-time-links-state one-time-links-state-loading">
+          Завантаження лінків...
+        </p>
+      )}
+      {fetchStatus === "error" && errorMessage && (
+        <p className="one-time-links-state one-time-links-state-error">
+          {errorMessage}
+        </p>
+      )}
       {fetchStatus === "success" && testLinks.length === 0 && (
-        <p>Для цього варіанту ще немає одноразових лінків.</p>
+        <p className="one-time-links-state one-time-links-state-empty">
+          Для цього варіанту ще немає одноразових лінків.
+        </p>
       )}
 
-      <p>ONE TIME LINKS:</p>
+      <p className="one-time-links-title">ONE TIME LINKS:</p>
+
       {fetchStatus === "success" &&
         testLinks.length > 0 &&
         testLinks.map((item) => {
           return (
             <div className="one-time-links-item" key={item.id}>
-              <p>{item.id}</p>
-              <p>Учень: {item.nameStudent}</p>
-              <p>
+              <p className="one-time-links-item-id">{item.id}</p>
+              <p className="one-time-links-item-meta">
+                <span className="one-time-links-item-label">Учень:</span>{" "}
+                {item.nameStudent}
+              </p>
+              <p className="one-time-links-item-meta">
+                <span className="one-time-links-item-label">Стан:</span>{" "}
                 {item.used === false
                   ? "не пройдено"
                   : `пройдено, результат: ${item.testResult}`}
               </p>
 
-              <div className="one-time-links-copy-block">
-                {copiedLinkId != item.id && (
+              <div className="one-time-links-actions">
+                <div className="one-time-links-copy-block">
+                  {copiedLinkId !== item.id && (
+                    <button
+                      onClick={() => copyLink(item.id)}
+                      className="one-time-links-btn"
+                    >
+                      Скопіювати лінк
+                    </button>
+                  )}
+                  {copiedLinkId === item.id && (
+                    <p className="one-time-links-copy-status">
+                      Лінк скопійовано
+                    </p>
+                  )}
+                </div>
+                {item.used === true && (
                   <button
-                    onClick={() => copyLink(item.id)}
                     className="one-time-links-btn"
+                    onClick={() => openResults(item.id, item.nameStudent)}
                   >
-                    Скопіювати лінк
+                    Переглянути результати
                   </button>
                 )}
-                {copiedLinkId === item.id && (
-                  <p className="one-time-links-copy-status">Лінк скопійовано</p>
-                )}
-              </div>
-              <button
-                onClick={() => removeLink(item.id)}
-                className="one-time-links-btn"
-              >
-                Видалити Link
-              </button>
-              {item.used === true && (
                 <button
-                  className="one-time-links-btn"
-                  onClick={() => openResults(item.id, item.nameStudent)}
+                  onClick={() => removeLink(item.id)}
+                  className="one-time-links-btn one-time-links-btn-danger"
                 >
-                  Переглянути результати
+                  Видалити Link
                 </button>
-              )}
+              </div>
             </div>
           );
         })}
+
       {isModalOpen && selectedAnswersData && (
         <TestResults
           onClose={() => setIsModalOpen(false)}
