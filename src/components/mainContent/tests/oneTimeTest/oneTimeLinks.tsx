@@ -2,22 +2,17 @@ import TestResults from "../testResults";
 import CreatorNewLinkForStudent from "./creatorNewLinkForSt";
 import "./styleOneTime.css";
 import { useEffect, useState } from "react";
-// import { useVariantContext } from "../variantContext";
 import { WrapperForModalWindow } from "../../reactTsUtils";
 import { useImmer } from "use-immer";
 import {
   collection,
-  // setDoc,
-  // updateDoc,
   query,
   where,
   getDocs,
-  // addDoc,
   deleteDoc,
   doc,
 } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
-// import { findDocIdByField } from "../../firebaseUtils";
 
 interface TestLink {
   id: string; // id лінку
@@ -33,6 +28,7 @@ interface SelectedLink {
   selectedLink: string;
   nameStudent: string;
 }
+type FetchStatus = "loading" | "success" | "error";
 
 const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [testLinks, updateTestLinks] = useImmer<TestLink[]>([]);
@@ -44,7 +40,12 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
 
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
 
+  const [fetchStatus, setFetchStatus] = useState<FetchStatus>("loading");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const fetchTestLinks = async () => {
+    setFetchStatus("loading");
+    setErrorMessage(null);
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
 
     const dataLinks = query(
@@ -61,8 +62,11 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
       })) as TestLink[];
 
       updateTestLinks(links);
+      setFetchStatus("success");
     } catch (error) {
       console.error("Помилка при отриманні документів:", error);
+      setErrorMessage("Не вдалося завантажити одноразові лінки.");
+      setFetchStatus("error");
     }
   };
 
@@ -70,11 +74,20 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
     fetchTestLinks();
   }, [props.selectedVariant]);
 
-  const getLink = (idLink: string) => {
+  const copyLink = async (idLink: string) => {
     const link = `${window.location.origin}/MathTestReact/${idLink}/one-time-link`;
 
-    alert(`Твій лінк на тест - ${link}`);
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopiedLinkId(idLink);
+      setTimeout(() => {
+        setCopiedLinkId((currunt) => (currunt === idLink ? null : currunt));
+      }, 2000);
+    } catch (error) {
+      console.error("Не вдалося скопіювати лінк:", error);
+    }
   };
+
   const removeLink = async (linkId: string) => {
     try {
       const linkPath = `Subjects/Math/TestLinks/${linkId}`;
@@ -104,7 +117,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
     }
   };
 
-  const ViewTheResults = (selectedLink: string, nameStudent: string) => {
+  const openResults = (selectedLink: string, nameStudent: string) => {
     setIsModalOpen(true);
     updateSelectedAnswersData(() => ({
       selectedLink: selectedLink,
@@ -117,23 +130,39 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
       <button onClick={() => setIsModalOFAddingLinkOpen(true)}>
         Створити Link
       </button>
+      {fetchStatus === "loading" && <p>Завантаження лінків...</p>}
+      {fetchStatus === "error" && errorMessage && <p>{errorMessage}</p>}
+      {fetchStatus === "success" && testLinks.length === 0 && (
+        <p>Для цього варіанту ще немає одноразових лінків.</p>
+      )}
+
       <p>ONE TIME LINKS:</p>
-      {testLinks.length > 0 &&
+      {fetchStatus === "success" &&
+        testLinks.length > 0 &&
         testLinks.map((item) => {
           return (
             <div className="one-time-links-item" key={item.id}>
-              <span
-                className="one-time-links-item-body"
-                onClick={() => getLink(item.id)}
-              >
-                <p>{item.id}</p>
-                <p>Учень: {item.nameStudent}</p>
-                <p>
-                  {item.used === false
-                    ? "не пройдено"
-                    : `пройдено, результат: ${item.testResult}`}
-                </p>
-              </span>
+              <p>{item.id}</p>
+              <p>Учень: {item.nameStudent}</p>
+              <p>
+                {item.used === false
+                  ? "не пройдено"
+                  : `пройдено, результат: ${item.testResult}`}
+              </p>
+
+              <div className="one-time-links-copy-block">
+                {copiedLinkId != item.id && (
+                  <button
+                    onClick={() => copyLink(item.id)}
+                    className="one-time-links-btn"
+                  >
+                    Скопіювати лінк
+                  </button>
+                )}
+                {copiedLinkId === item.id && (
+                  <p className="one-time-links-copy-status">Лінк скопійовано</p>
+                )}
+              </div>
               <button
                 onClick={() => removeLink(item.id)}
                 className="one-time-links-btn"
@@ -143,7 +172,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
               {item.used === true && (
                 <button
                   className="one-time-links-btn"
-                  onClick={() => ViewTheResults(item.id, item.nameStudent)}
+                  onClick={() => openResults(item.id, item.nameStudent)}
                 >
                   Переглянути результати
                 </button>

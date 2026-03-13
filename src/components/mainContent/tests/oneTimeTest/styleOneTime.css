@@ -429,11 +429,6 @@ input.user-answer-open::-webkit-inner-spin-button {
   padding: 12px 14px;
 }
 
-.one-time-links-item-body {
-  display: block;
-  cursor: pointer;
-}
-
 .one-time-links-btn {
   margin: 8px 8px 0 0;
   padding: 5px 10px;
@@ -446,6 +441,24 @@ input.user-answer-open::-webkit-inner-spin-button {
 .one-time-links-btn:hover {
   background: #dfeeff;
   border-color: #86abd2;
+}
+
+.one-time-links-copy-block {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.one-time-links-copy-status {
+  display: inline-block;
+  margin: 8px 8px 4px 0;
+  padding: 5px 10px;
+  border: 1px solid #b9e4c4;
+  border-radius: 8px;
+  background: #effaf2;
+  color: #1f6c35;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .one-time-link-page {
