@@ -28,6 +28,7 @@ interface TestLink {
   testResult: string;
   // інші поля, які є в документі
 }
+
 interface SelectedLink {
   selectedLink: string;
   nameStudent: string;
@@ -41,13 +42,16 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   const [selectedAnswersData, updateSelectedAnswersData] =
     useImmer<SelectedLink | null>(null);
 
+  const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
+
   const fetchTestLinks = async () => {
     const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
 
     const dataLinks = query(
       testLinksRef,
-      where("variantId", "==", props.selectedVariant)
+      where("variantId", "==", props.selectedVariant),
     );
+
     try {
       const querySnapshot = await getDocs(dataLinks);
 
@@ -55,6 +59,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
         id: doc.id,
         ...doc.data(),
       })) as TestLink[];
+
       updateTestLinks(links);
     } catch (error) {
       console.error("Помилка при отриманні документів:", error);
@@ -63,32 +68,37 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
 
   useEffect(() => {
     fetchTestLinks();
-  }, []);
+  }, [props.selectedVariant]);
 
-  const host = window.location.host;
   const getLink = (idLink: string) => {
-    alert(
-      `твій лінк на тест - http://${host}/MathTestReact/${idLink}/one-time-link`
-    );
-  };
+    const link = `${window.location.origin}/MathTestReact/${idLink}/one-time-link`;
 
-  const removeLink = async (link: string, index: number) => {
+    alert(`Твій лінк на тест - ${link}`);
+  };
+  const removeLink = async (linkId: string) => {
     try {
-      const linkPath = `Subjects/Math/TestLinks/${link}`;
-      //  🔹 1. Знайти єдиний документ у підколекції testResults
+      const linkPath = `Subjects/Math/TestLinks/${linkId}`;
+      // 1. Знайти єдиний документ у підколекції testResults
       const resultsColRef = collection(db, linkPath, "testResults");
       const resultsSnap = await getDocs(resultsColRef);
+
       if (!resultsSnap.empty) {
         const resultDoc = resultsSnap.docs[0];
         await deleteDoc(resultDoc.ref);
       }
-      // 🔹 2. Видалити сам документ
+
+      // 2. Видалити сам документ
       await deleteDoc(doc(db, linkPath));
-      // 🔹 3. Оновити стан
+
+      // 3. Оновити стан
       updateTestLinks((draft) => {
-        draft.splice(index, 1);
+        const itemIndex = draft.findIndex((item) => item.id === linkId);
+        if (itemIndex !== -1) {
+          draft.splice(itemIndex, 1);
+        }
       });
-      console.log(`✅ Документ ${link} і testResults успішно видалені`);
+
+      console.log(`Документ ${linkId} і testResults успішно видалені`);
     } catch (error) {
       console.error("Помилка при видаленні документа:", error);
     }
@@ -105,11 +115,11 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   return (
     <div className="one-time-links">
       <button onClick={() => setIsModalOFAddingLinkOpen(true)}>
-        Cтворити Link
+        Створити Link
       </button>
       <p>ONE TIME LINKS:</p>
       {testLinks.length > 0 &&
-        testLinks.map((item, index) => {
+        testLinks.map((item) => {
           return (
             <div className="one-time-links-item" key={item.id}>
               <span
@@ -125,7 +135,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
                 </p>
               </span>
               <button
-                onClick={() => removeLink(item.id, index)}
+                onClick={() => removeLink(item.id)}
                 className="one-time-links-btn"
               >
                 Видалити Link
@@ -135,7 +145,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
                   className="one-time-links-btn"
                   onClick={() => ViewTheResults(item.id, item.nameStudent)}
                 >
-                  Переглянутити результати
+                  Переглянути результати
                 </button>
               )}
             </div>
@@ -167,4 +177,5 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
     </div>
   );
 };
+
 export default OneTimeLinks;
