@@ -3,20 +3,20 @@ import type { Answers } from "../../types";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { useState, useEffect } from "react";
 import { app } from "../../../../firebaseConfig";
+
 const Answers = (props: { answers: Answers; selectedVariant: string }) => {
-  props.answers.pictures &&
-    console.log(`${props.selectedVariant}/${props.answers.pictures[0]}`);
-  const mark = ["А", "Б", "В", "Г", "Д"];
+  const marks = ["А", "Б", "В", "Г", "Д"];
+
   return (
-    <div className="box_for_view_answers">
-      {mark.map((item, index) => (
-        <div key={index} className="view_answer p-2">
-          <p className="m-0">{item})&nbsp; </p>
-          <div>
+    <div className="review-answers">
+      {marks.map((mark, index) => (
+        <div key={index} className="review-answer-option">
+          <p className="review-answer-mark">{mark})</p>
+          <div className="review-answer-content">
             {props.answers.pictures && props.answers.pictures[index] && (
               <Picture
                 url={`${props.selectedVariant}/${props.answers.pictures[index]}`}
-                classForPicture="picture_for_view"
+                classForPicture="review-answer-picture"
               ></Picture>
             )}
             {props.answers.values && props.answers.values[index] && (
@@ -28,24 +28,25 @@ const Answers = (props: { answers: Answers; selectedVariant: string }) => {
     </div>
   );
 };
+
 export default Answers;
-//КОМПОНЕНТ ДЛЯ ВІДПОВІДЕЙ
+
 const fetchImage = async (url: string) => {
-  const storage = getStorage(app); // Отримуємо екземпляр Storage
-  const storageRef = ref(storage, url); // Шлях до файлу в Storage
+  const storage = getStorage(app);
+  const storageRef = ref(storage, url);
 
   return getDownloadURL(storageRef);
 };
 
-//КОМПОНЕНТ ЗОБРАЖЕННЯ
 const Picture = (props: { url: string; classForPicture: string }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl)); // Викликаємо завантаження зображення при завантаженні компонента
+    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl));
   }, [props.url]);
+
   return (
-    <div className="container_for_picture">
+    <div className="review-answer-picture-wrap">
       {imageUrl ? (
         <img
           className={props.classForPicture}
@@ -53,9 +54,8 @@ const Picture = (props: { url: string; classForPicture: string }) => {
           alt="Loaded from Firebase"
         />
       ) : (
-        <p>Завантаження зображення...</p>
+        <p className="review-answer-picture-loading">Завантаження зображення...</p>
       )}
     </div>
   );
 };
-//КОМПОНЕНТ ЗОБРАЖЕННЯ

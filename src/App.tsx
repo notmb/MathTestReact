@@ -6,12 +6,12 @@ import "./App.css";
 
 function App() {
   const [currentPath, setcurrentPath] = useState<string>(
-    window.location.pathname
+    window.location.pathname,
   );
 
   const navigate = (path: string) => {
     window.history.pushState({}, "", path);
-    setcurrentPath(path);
+    setcurrentPath(window.location.pathname);
   };
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-import TestResults from "../testResults";
 import CreatorNewLinkForStudent from "./creatorNewLinkForSt";
 import "./styleOneTime.css";
 import { useEffect, useState } from "react";
@@ -24,19 +23,14 @@ interface TestLink {
   // інші поля, які є в документі
 }
 
-interface SelectedLink {
-  selectedLink: string;
-  nameStudent: string;
-}
-
 type FetchStatus = "loading" | "success" | "error";
 
-const OneTimeLinks = (props: { selectedVariant: string }) => {
+const OneTimeLinks = (props: {
+  selectedVariant: string;
+  navigate?: (path: string) => void;
+}) => {
   const [testLinks, updateTestLinks] = useImmer<TestLink[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOFAddingLinkOpen, setIsModalOFAddingLinkOpen] = useState(false);
-  const [selectedAnswersData, updateSelectedAnswersData] =
-    useImmer<SelectedLink | null>(null);
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
   const [fetchStatus, setFetchStatus] = useState<FetchStatus>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -89,7 +83,6 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
   const removeLink = async (linkId: string) => {
     try {
       const linkPath = `Subjects/Math/TestLinks/${linkId}`;
-      // 1. Знайти єдиний документ у підколекції testResults
       const resultsColRef = collection(db, linkPath, "testResults");
       const resultsSnap = await getDocs(resultsColRef);
 
@@ -98,10 +91,8 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
         await deleteDoc(resultDoc.ref);
       }
 
-      // 2. Видалити сам документ
       await deleteDoc(doc(db, linkPath));
 
-      // 3. Оновити стан
       updateTestLinks((draft) => {
         const itemIndex = draft.findIndex((item) => item.id === linkId);
         if (itemIndex !== -1) {
@@ -115,12 +106,18 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
     }
   };
 
-  const openResults = (selectedLink: string, nameStudent: string) => {
-    setIsModalOpen(true);
-    updateSelectedAnswersData(() => ({
-      selectedLink: selectedLink,
-      nameStudent: nameStudent,
-    }));
+  const openResults = (selectedLink: string) => {
+    if (!props.navigate) {
+      return;
+    }
+
+    const searchParams = new URLSearchParams({
+      link: selectedLink,
+    });
+
+    props.navigate(
+      `${window.location.pathname}/results?${searchParams.toString()}`,
+    );
   };
 
   return (
@@ -188,7 +185,7 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
                 {item.used === true && (
                   <button
                     className="one-time-links-btn"
-                    onClick={() => openResults(item.id, item.nameStudent)}
+                    onClick={() => openResults(item.id)}
                   >
                     Переглянути результати
                   </button>
@@ -204,14 +201,6 @@ const OneTimeLinks = (props: { selectedVariant: string }) => {
           );
         })}
 
-      {isModalOpen && selectedAnswersData && (
-        <TestResults
-          onClose={() => setIsModalOpen(false)}
-          variantId={props.selectedVariant}
-          nameStudent={selectedAnswersData.nameStudent}
-          selectedLink={selectedAnswersData.selectedLink}
-        />
-      )}
       {isModalOFAddingLinkOpen && (
         <WrapperForModalWindow
           onClose={() => setIsModalOFAddingLinkOpen(false)}

@@ -12,6 +12,7 @@ import Footer from "./components/footer/footer";
 import OneTimeLinks from "./components/mainContent/tests/oneTimeTest/oneTimeLinks";
 import OneTimeLink from "./components/mainContent/tests/oneTimeTest/oneTimeLink/oneTimeLink";
 import OneTimeTest from "./components/mainContent/tests/oneTimeTest/test/oneTimeTestPage";
+import TestResults from "./components/mainContent/tests/oneTimeTest/testResults";
 import VariantContextWrapper from "./components/mainContent/tests/variantContextWrapper";
 import StudentsProfil from "./components/mainContent/studentsProfiles/studentsProfil";
 import ContainerForLocalMathTest from "./components/mainContent/tests/containerForLocalMathTest";
@@ -40,6 +41,10 @@ const routes = [
   {
     path: "/MathTestReact/allTest/selectedVariant/:type/:variant/one-time-links",
     component: OneTimeLinks,
+  },
+  {
+    path: "/MathTestReact/allTest/selectedVariant/:type/:variant/one-time-links/results",
+    component: TestResults,
   },
   {
     path: "/MathTestReact/:variant/one-time-link",
@@ -149,10 +154,7 @@ const Router = (props: {
       </main>
     </VariantContextWrapper>
   );
-  if (
-    !user &&
-    !publicPaths.includes(matchedRoute.path)
-  ) {
+  if (!user && !publicPaths.includes(matchedRoute.path)) {
     // Якщо не залогінений, і це не сторінка логіну
     return (
       <>
