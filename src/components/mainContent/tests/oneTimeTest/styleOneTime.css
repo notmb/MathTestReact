@@ -661,6 +661,38 @@ input.user-answer-open::-webkit-inner-spin-button {
   font-size: 15px;
 }
 
+.test-results-page-result {
+  margin: 10px 0 0;
+  display: inline-block;
+  padding: 8px 12px;
+  border: 1px solid #b9d1f1;
+  border-radius: 999px;
+  background: #e8f2ff;
+  color: #275f9b;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.test-results-page-summary-actions {
+  margin-top: 12px;
+}
+
+.test-results-summary-btn {
+  padding: 9px 14px;
+  border: 1px solid #1f6fb5;
+  border-radius: 10px;
+  background: #1f6fb5;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 8px 16px rgba(31, 111, 181, 0.18);
+}
+
+.test-results-summary-btn:hover {
+  background: #164f8e;
+  border-color: #164f8e;
+}
+
 .test-results-page-state {
   margin: 0 0 16px;
   padding: 12px 14px;
@@ -1032,6 +1064,158 @@ input.user-answer-open::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.result-correction-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(17, 31, 48, 0.48);
+  backdrop-filter: blur(4px);
+}
+
+.result-correction-modal-card {
+  width: min(560px, 100%);
+  max-height: min(88vh, 760px);
+  overflow-y: auto;
+  border: 1px solid #cfdcf0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 22px 48px rgba(24, 45, 74, 0.22);
+  padding: 18px 18px 16px;
+}
+
+.result-correction-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.result-correction-modal-title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #25598b;
+}
+
+.result-correction-modal-subtitle {
+  margin: 8px 0 0;
+  color: #5f6e84;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.result-correction-modal-close {
+  border: 0;
+  background: transparent;
+  color: #5f6e84;
+  font-size: 28px;
+  line-height: 1;
+  padding: 0;
+}
+
+.result-correction-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.result-correction-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-correction-modal-label {
+  color: #25598b;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.result-correction-modal-current,
+.result-correction-modal-input,
+.result-correction-modal-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cfdcf0;
+  border-radius: 12px;
+  background: #fbfdff;
+  color: #182230;
+  font-size: 16px;
+}
+
+.result-correction-modal-current {
+  padding: 12px 14px;
+  font-weight: 600;
+}
+
+.result-correction-modal-input,
+.result-correction-modal-textarea {
+  padding: 12px 14px;
+}
+
+.result-correction-modal-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.result-correction-modal-input:focus,
+.result-correction-modal-textarea:focus {
+  outline: none;
+  border-color: #6ca3d8;
+  box-shadow: 0 0 0 2px rgba(93, 153, 214, 0.2);
+}
+
+.result-correction-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.result-correction-modal-btn {
+  min-width: 140px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.result-correction-modal-btn-secondary {
+  border: 1px solid #9fbedf;
+  background: #edf4ff;
+  color: #234f81;
+}
+
+.result-correction-modal-btn-secondary:hover {
+  background: #dfeeff;
+  border-color: #86abd2;
+}
+
+.result-correction-modal-btn-primary {
+  border: 1px solid #1f6fb5;
+  background: #1f6fb5;
+  color: #fff;
+}
+
+.result-correction-modal-btn-primary:hover {
+  background: #164f8e;
+  border-color: #164f8e;
+}
+
+.result-correction-modal-btn:disabled,
+.result-correction-modal-close:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @media (max-width: 1024px) {
   .one-time-test-page {
     padding: 20px 24px 24px;
@@ -1203,5 +1387,29 @@ input.user-answer-open::-webkit-inner-spin-button {
 
   .review-task-table-cell {
     font-size: 15px;
+  }
+
+  .result-correction-modal {
+    padding: 12px;
+  }
+
+  .result-correction-modal-card {
+    padding: 14px 14px 12px;
+  }
+
+  .result-correction-modal-header {
+    gap: 10px;
+  }
+
+  .result-correction-modal-title {
+    font-size: 20px;
+  }
+
+  .result-correction-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .result-correction-modal-btn {
+    width: 100%;
   }
 }
