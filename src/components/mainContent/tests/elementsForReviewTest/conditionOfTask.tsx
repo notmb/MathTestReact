@@ -1,7 +1,5 @@
 import { MathJax } from "better-react-mathjax";
-import { app } from "../../../../firebaseConfig";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { useState, useEffect } from "react";
+import FirebaseImage from "./firebaseImage";
 
 const Task = (props: {
   selectedVariant: string;
@@ -26,45 +24,18 @@ const Task = (props: {
         ></TableToQuestion>
       )}
       {props.picture && (
-        <Picture
+        <FirebaseImage
           url={`${props.selectedVariant}/${props.picture}`}
-          classForPicture="review-task-picture"
-        ></Picture>
+          className="review-task-picture"
+          wrapperClassName="review-task-picture-wrap"
+          loadingClassName="review-task-picture-loading"
+        />
       )}
     </div>
   );
 };
 
 export default Task;
-
-const fetchImage = async (url: string) => {
-  const storage = getStorage(app);
-  const storageRef = ref(storage, url);
-
-  return getDownloadURL(storageRef);
-};
-
-const Picture = (props: { url: string; classForPicture: string }) => {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchImage(props.url).then((newUrl) => setImageUrl(newUrl));
-  }, [props.url]);
-
-  return (
-    <div className="review-task-picture-wrap">
-      {imageUrl ? (
-        <img
-          className={props.classForPicture}
-          src={imageUrl}
-          alt="Loaded from Firebase"
-        />
-      ) : (
-        <p className="review-task-picture-loading">Завантаження зображення...</p>
-      )}
-    </div>
-  );
-};
 
 const ListToQuestion = (props: { list: string[] }) => {
   return (

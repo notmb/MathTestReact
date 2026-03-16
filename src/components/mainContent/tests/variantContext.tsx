@@ -4,6 +4,8 @@ import type { Tasks, VaiantData, Task1, Task2, Task3 } from "../types";
 export type VariantContextType = {
   tasks: Tasks;
   dataVariant: VaiantData;
+  isLoading: boolean;
+  errorMessage: string | null;
   updateTask: (numTask: string, updatedTask: Task1 | Task2 | Task3) => void;
 };
 

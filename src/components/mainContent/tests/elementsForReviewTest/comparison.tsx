@@ -1,40 +1,73 @@
 import { MathJax } from "better-react-mathjax";
-import { Comparison } from "../../types";
+import type { ComparisonTable } from "../../types";
+import FirebaseImage from "./firebaseImage";
+
+const marks = ["А", "Б", "В", "Г", "Д"];
 
 const ComparisonData = (props: {
-  comparisonTable: Comparison;
+  comparisonTable: ComparisonTable;
   selectedVariant: string;
 }) => {
-  const marks = ["А", "Б", "В", "Г", "Д"];
-
   return (
     <div className="review-comparison">
-      <div className="review-comparison-column">
-        <ul className="review-comparison-list">
-          {props.comparisonTable.list1.texts &&
-            props.comparisonTable.list1.texts.map((item, index) => (
-              <li key={index} className="review-comparison-item">
-                <span className="review-comparison-item-mark">{index + 1})</span>
-                <span className="review-comparison-item-value">
-                  <MathJax dynamic>{item}</MathJax>
-                </span>
-              </li>
-            ))}
-        </ul>
-      </div>
-      <div className="review-comparison-column">
-        <ul className="review-comparison-list">
-          {props.comparisonTable.list2.texts &&
-            props.comparisonTable.list2.texts.map((item, index) => (
-              <li key={index} className="review-comparison-item">
-                <span className="review-comparison-item-mark">{marks[index]})</span>
-                <span className="review-comparison-item-value">
-                  <MathJax dynamic>{item}</MathJax>
-                </span>
-              </li>
-            ))}
-        </ul>
-      </div>
+      <ComparisonColumn
+        items={props.comparisonTable.list1.texts}
+        pictures={props.comparisonTable.list1.pictures}
+        selectedVariant={props.selectedVariant}
+        getMark={(index) => `${index + 1})`}
+      />
+      <ComparisonColumn
+        items={props.comparisonTable.list2.texts}
+        pictures={props.comparisonTable.list2.pictures}
+        selectedVariant={props.selectedVariant}
+        getMark={(index) => `${marks[index] ?? ""})`}
+      />
+    </div>
+  );
+};
+
+const ComparisonColumn = (props: {
+  items?: string[];
+  pictures?: string[];
+  selectedVariant: string;
+  getMark: (index: number) => string;
+}) => {
+  const rowCount = Math.max(
+    props.items?.length ?? 0,
+    props.pictures?.length ?? 0,
+  );
+
+  if (rowCount === 0) {
+    return <div className="review-comparison-column"></div>;
+  }
+
+  return (
+    <div className="review-comparison-column">
+      <ul className="review-comparison-list">
+        {Array.from({ length: rowCount }, (_, index) => {
+          const text = props.items?.[index];
+          const picture = props.pictures?.[index];
+
+          return (
+            <li key={index} className="review-comparison-item">
+              <span className="review-comparison-item-mark">
+                {props.getMark(index)}
+              </span>
+              <div className="review-comparison-item-value">
+                {text && <MathJax dynamic>{text}</MathJax>}
+                {picture && (
+                  <FirebaseImage
+                    url={`${props.selectedVariant}/${picture}`}
+                    className="review-answer-picture"
+                    wrapperClassName="review-answer-picture-wrap"
+                    loadingClassName="review-answer-picture-loading"
+                  />
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };

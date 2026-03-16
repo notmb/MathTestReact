@@ -1,19 +1,10 @@
-import type { Task1, Task2, Task3 } from "../../types";
 import Task from "../elementsForReviewTest/conditionOfTask";
 import Answers from "../elementsForReviewTest/answersForTaskChoise";
 import ComparisonData from "../elementsForReviewTest/comparison";
+import { isTask1, isTask2, isTask3 } from "../taskGuards";
 import { useVariantContext } from "../variantContext";
 
 type UserAnswerValue = string | Record<string, string> | null | undefined;
-
-const isTask1 = (task: Task1 | Task2 | Task3): task is Task1 =>
-  task.typeOfTask === "choice";
-
-const isTask2 = (task: Task1 | Task2 | Task3): task is Task2 =>
-  task.typeOfTask === "comparison";
-
-const isTask3 = (task: Task1 | Task2 | Task3): task is Task3 =>
-  task.typeOfTask === "openAnswer";
 
 const formatComparisonAnswer = (value: Record<string, string>) =>
   Object.entries(value)
@@ -60,10 +51,7 @@ const isCorrectComparisonAnswer = (
   return correctEntries.every(([key, value]) => answer[key] === value);
 };
 
-const getAnswerStateClass = (
-  task: Task1 | Task2 | Task3,
-  answer: UserAnswerValue,
-) => {
+const getAnswerStateClass = (task: unknown, answer: UserAnswerValue) => {
   if (answer == null) {
     return "test-results-sticky-answer-item-incorrect";
   }
@@ -91,14 +79,14 @@ const TestResultsReview = (props: {
   const { tasks } = useVariantContext();
 
   if (!tasks || Object.keys(tasks).length === 0) {
-    return <p>Немає завдань для відображення.</p>;
+    return <p>РќРµРјР°С” Р·Р°РІРґР°РЅСЊ РґР»СЏ РІС–РґРѕР±СЂР°Р¶РµРЅРЅСЏ.</p>;
   }
 
   return (
     <div className="test-results-review">
       <section className="test-results-sticky-answers">
         <div className="test-results-sticky-answers-head">
-          <h2 className="test-results-sticky-answers-title">Відповіді учня</h2>
+          <h2 className="test-results-sticky-answers-title">Р’С–РґРїРѕРІС–РґС– СѓС‡РЅСЏ</h2>
         </div>
 
         <div className="test-results-sticky-answers-grid">
@@ -121,8 +109,7 @@ const TestResultsReview = (props: {
       </section>
 
       <div className="test-results-review-body">
-        {/* <div className="test_review"> */}
-        <h2 className="test-results-review-title">Огляд завдань</h2>
+        <h2 className="test-results-review-title">РћРіР»СЏРґ Р·Р°РІРґР°РЅСЊ</h2>
 
         {Object.entries(tasks).map(([key, task]) => {
           const userAnswer = props.userAnswers[key];
@@ -130,7 +117,7 @@ const TestResultsReview = (props: {
           return (
             <article key={key} className="test-results-task-card">
               <div className="test-results-task-card-header">
-                <p className="test-results-task-card-title">Завдання {key}</p>
+                <p className="test-results-task-card-title">Р—Р°РІРґР°РЅРЅСЏ {key}</p>
               </div>
 
               <div className="test-results-task-card-body">
@@ -150,11 +137,11 @@ const TestResultsReview = (props: {
                     />
                     <div className="test-results-answer-summary">
                       <p className="test-results-answer-line">
-                        <strong>Правильна відповідь:</strong>{" "}
+                        <strong>РџСЂР°РІРёР»СЊРЅР° РІС–РґРїРѕРІС–РґСЊ:</strong>{" "}
                         {task.correctAnswer}
                       </p>
                       <div className="test-results-answer-line">
-                        <strong>Відповідь учня:</strong>
+                        <strong>Р’С–РґРїРѕРІС–РґСЊ СѓС‡РЅСЏ:</strong>
                         {renderUserAnswer(userAnswer)}
                       </div>
                     </div>
@@ -169,11 +156,11 @@ const TestResultsReview = (props: {
                     />
                     <div className="test-results-answer-summary">
                       <p className="test-results-answer-line">
-                        <strong>Правильна відповідь:</strong>{" "}
+                        <strong>РџСЂР°РІРёР»СЊРЅР° РІС–РґРїРѕРІС–РґСЊ:</strong>{" "}
                         {formatComparisonAnswer(task.correctComparison)}
                       </p>
                       <div className="test-results-answer-line">
-                        <strong>Відповідь учня:</strong>
+                        <strong>Р’С–РґРїРѕРІС–РґСЊ СѓС‡РЅСЏ:</strong>
                         {renderUserAnswer(userAnswer)}
                       </div>
                     </div>
@@ -183,10 +170,10 @@ const TestResultsReview = (props: {
                 {isTask3(task) && (
                   <div className="test-results-answer-summary">
                     <p className="test-results-answer-line">
-                      <strong>Правильна відповідь:</strong> {task.correctAnswer}
+                      <strong>РџСЂР°РІРёР»СЊРЅР° РІС–РґРїРѕРІС–РґСЊ:</strong> {task.correctAnswer}
                     </p>
                     <div className="test-results-answer-line">
-                      <strong>Відповідь учня:</strong>
+                      <strong>Р’С–РґРїРѕРІС–РґСЊ СѓС‡РЅСЏ:</strong>
                       {renderUserAnswer(userAnswer)}
                     </div>
                   </div>
@@ -195,7 +182,6 @@ const TestResultsReview = (props: {
             </article>
           );
         })}
-        {/* </div> */}
       </div>
     </div>
   );

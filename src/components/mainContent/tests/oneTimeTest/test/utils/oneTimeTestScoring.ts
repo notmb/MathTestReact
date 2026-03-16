@@ -1,13 +1,7 @@
-﻿import type { Task1, Task2, Task3, Tasks } from "../oneTimeTest.types";
+import type { Tasks } from "../oneTimeTest.types";
+import { isTask1, isTask2, isTask3 } from "../../../taskGuards";
 
 export type PointsForTasks = Record<string, number>;
-
-const isTask1 = (task: Task1 | Task2 | Task3): task is Task1 =>
-  task.typeOfTask === "choice";
-const isTask2 = (task: Task1 | Task2 | Task3): task is Task2 =>
-  task.typeOfTask === "comparison";
-const isTask3 = (task: Task1 | Task2 | Task3): task is Task3 =>
-  task.typeOfTask === "openAnswer";
 
 const getNmtMark = (sum: number): number | string => {
   const map: Record<number, number> = {
@@ -128,5 +122,3 @@ export const buildTestResultString = (
 ) => {
   return buildResultDetails(tasks, answers).result;
 };
-
-

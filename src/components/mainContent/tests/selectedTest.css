@@ -1,0 +1,148 @@
+.selected-test-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 24px 24px;
+}
+
+.selected-test-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 18px 20px;
+  border: 1px solid #cfdcf0;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 20px rgba(24, 45, 74, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.selected-test-header-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selected-test-title {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #25598b;
+}
+
+.selected-test-subtitle {
+  margin: 0;
+  color: #4f6785;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.selected-test-delete-link {
+  margin: 2px 0 0;
+  padding: 0;
+  width: fit-content;
+  border: 0;
+  background: transparent;
+  color: #8b7b7b;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.25s;
+}
+
+.selected-test-delete-link:hover {
+  color: #8d2525;
+}
+
+.selected-test-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  max-width: 620px;
+}
+
+.selected-test-content {
+  min-width: 0;
+}
+
+.selected-test-footer-actions {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.selected-test-btn {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.25s,
+    border-color 0.25s,
+    color 0.25s,
+    box-shadow 0.25s;
+}
+
+.selected-test-btn-primary {
+  background: #1f6fb5;
+  border-color: #1f6fb5;
+  color: #fff;
+  box-shadow: 0 8px 16px rgba(31, 111, 181, 0.18);
+}
+
+.selected-test-btn-primary:hover {
+  background: #164f8e;
+  border-color: #164f8e;
+}
+
+.selected-test-btn-secondary {
+  background: #edf4ff;
+  border-color: #9fbedf;
+  color: #234f81;
+}
+
+.selected-test-btn-secondary:hover {
+  background: #dfeeff;
+  border-color: #86abd2;
+}
+
+@media (max-width: 768px) {
+  .selected-test-page {
+    padding: 0 12px 20px;
+    gap: 14px;
+  }
+
+  .selected-test-header {
+    flex-direction: column;
+    padding: 14px 12px;
+  }
+
+  .selected-test-title {
+    font-size: 24px;
+  }
+
+  .selected-test-header-actions {
+    width: 100%;
+    max-width: none;
+    justify-content: stretch;
+  }
+
+  .selected-test-btn {
+    width: 100%;
+  }
+
+  .selected-test-footer-actions {
+    justify-content: stretch;
+  }
+}

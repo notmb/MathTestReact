@@ -1,8 +1,9 @@
-import { Tasks, Task1, Task2, Task3 } from "../types";
+import { Tasks } from "../types";
 import { useImmer } from "use-immer";
 import TaskChoice from "./taskChoice";
 import TaskComparison from "./taskComparison";
 import TaskOpenAnswer from "./taskOpenAnswer";
+import { isTask1, isTask2, isTask3 } from "./taskGuards";
 
 interface CorrectComparison {
   [key: string]: string;
@@ -12,11 +13,6 @@ const LocalMathTest = (props: { tasks: Tasks; selectedVariant: string }) => {
   const selectedVariant = props.selectedVariant;
   const [userAnswers, updateUserAnswers] = useImmer<{ [key: string]: any }>({});
 
-  const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
-  const isTask2 = (task: any): task is Task2 =>
-    task.typeOfTask === "comparison";
-  const isTask3 = (task: any): task is Task3 =>
-    task.typeOfTask === "openAnswer";
 
   //Перевірка
   const CheckComparison = (

@@ -1,47 +1,105 @@
-import { Task1, Task2, Task3 } from "../../types";
+import { useState } from "react";
+import "./reviewTest.css";
+import { WrapperForModalWindow } from "../../reactTsUtils";
+import type { SupportedTask } from "../taskGuards";
+import { isTask1, isTask2 } from "../taskGuards";
 import TaskEditor from "../taskEditor";
 import { useVariantContext } from "../variantContext";
-import Task from "./conditionOfTask";
 import Answers from "./answersForTaskChoise";
 import ComparisonData from "./comparison";
-import { WrapperForModalWindow } from "../../reactTsUtils";
-import { useState } from "react";
+import Task from "./conditionOfTask";
+
+const formatComparisonAnswer = (correctComparison: Record<string, string>) =>
+  Object.entries(correctComparison)
+    .map(([key, value]) => `${key}-${value}`)
+    .join("; ");
+
+const renderTaskContent = (task: SupportedTask, selectedVariant: string) => {
+  if (isTask1(task)) {
+    return (
+      <Answers
+        selectedVariant={selectedVariant}
+        answers={task.answers}
+      ></Answers>
+    );
+  }
+
+  if (isTask2(task)) {
+    return (
+      <ComparisonData
+        selectedVariant={selectedVariant}
+        comparisonTable={task.comparisonTable}
+      ></ComparisonData>
+    );
+  }
+
+  return null;
+};
+
+const getCorrectAnswerText = (task: SupportedTask) => {
+  if (isTask1(task)) {
+    return task.correctAnswer;
+  }
+
+  if (isTask2(task)) {
+    return formatComparisonAnswer(task.correctComparison);
+  }
+
+  return task.correctAnswer;
+};
 
 const TestReview = (props: { selectedVariant: string }) => {
-  const { tasks } = useVariantContext();
+  const { tasks, isLoading, errorMessage } = useVariantContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [numTaskForEditing, setNumTaskForEditing] = useState<string>("");
 
-  const isEditingEnabled = true;
-  const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
-  const isTask2 = (task: any): task is Task2 =>
-    task.typeOfTask === "comparison";
-  const isTask3 = (task: any): task is Task3 =>
-    task.typeOfTask === "openAnswer";
   const taskForEditingSelected = (num: string) => {
     setNumTaskForEditing(num);
     setIsModalOpen(true);
   };
-  return (
-    <div className="box_for_test_review">
-      <div className="test_review">
-        {tasks &&
-          Object.entries(tasks).map(([key, task]) => (
-            <div key={key}>
-              <div className="container_for_num_task">
-                <p className="text-lg font-bold m-0">Завдання {key}</p>
-                {isEditingEnabled && (
-                  <button
-                    className="custom_edit_button"
-                    onClick={() => {
-                      taskForEditingSelected(key);
-                    }}
-                  >
-                    edit
-                  </button>
-                )}
-              </div>
 
+  if (isLoading) {
+    return (
+      <div className="review-test-shell">
+        <p>Завантаження тесту...</p>
+      </div>
+    );
+  }
+
+  if (errorMessage) {
+    return (
+      <div className="review-test-shell">
+        <p>{errorMessage}</p>
+      </div>
+    );
+  }
+
+  if (Object.keys(tasks).length === 0) {
+    return (
+      <div className="review-test-shell">
+        <p>У вибраному тесті ще немає завдань.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="review-test-shell">
+      <div className="review-test-list">
+        {Object.entries(tasks).map(([key, task]) => (
+          <article key={key} className="review-task-card">
+            <div className="review-task-header">
+              <p className="text-lg font-bold m-0">Завдання {key}</p>
+              <button
+                className="review-task-edit-button"
+                onClick={() => {
+                  taskForEditingSelected(key);
+                }}
+              >
+                Редагувати
+              </button>
+            </div>
+
+            <div className="review-task-card-body">
               <Task
                 selectedVariant={props.selectedVariant}
                 text={task.task.text}
@@ -50,34 +108,16 @@ const TestReview = (props: { selectedVariant: string }) => {
                 table={task.task.table}
               ></Task>
 
-              {isTask1(task) && (
-                <div>
-                  <Answers
-                    selectedVariant={props.selectedVariant}
-                    answers={task.answers}
-                  />
-                  <p>Відповідь: {task.correctAnswer}</p>
-                </div>
-              )}
-              {isTask2(task) && (
-                <div>
-                  <ComparisonData
-                    selectedVariant={props.selectedVariant}
-                    comparisonTable={task.comparisonTable}
-                  />
-                  {task.correctComparison && (
-                    <p>
-                      Відповідь: 1-{task.correctComparison[1]}; 2-
-                      {task.correctComparison[2]}; 3-{task.correctComparison[3]}
-                    </p>
-                  )}
-                </div>
-              )}
-              {isTask3(task) && <p>Відповідь: {task.correctAnswer}</p>}
-            </div>
-          ))}
+              <div className="review-task-card-content">
+                {renderTaskContent(task, props.selectedVariant)}
+              </div>
 
-        {!tasks && <p>Loading...</p>}
+              <div className="review-task-card-answer">
+                <p>Правильна відповідь: {getCorrectAnswerText(task)}</p>
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
 
       {isModalOpen && (

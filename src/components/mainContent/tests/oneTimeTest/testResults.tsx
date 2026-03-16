@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
 import TestResultsReview from "./TestResultsReview";
-import ResultCorrectionModal from "./ResultCorrectionModal";
+import ResultCorrectionModal from "./resultCorrectionModal";
 
 type UserAnswerValue = string | Record<string, string>;
 type UserAnswersState = Record<string, UserAnswerValue>;
@@ -75,12 +81,15 @@ const TestResults = (props: {
             : null,
         );
         setFinalResult(
-          typeof currentFinalResult === "string" && currentFinalResult.trim() !== ""
+          typeof currentFinalResult === "string" &&
+            currentFinalResult.trim() !== ""
             ? currentFinalResult
             : null,
         );
         setTeacherComment(
-          typeof currentTeacherComment === "string" ? currentTeacherComment : "",
+          typeof currentTeacherComment === "string"
+            ? currentTeacherComment
+            : "",
         );
         setLinkTypeTest(
           currentTypeTest === "main" || currentTypeTest === "retaking"

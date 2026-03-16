@@ -1,17 +1,17 @@
-import TestReview from "./elementsForReviewTest/testReview";
-import AddTask from "../creatorVariant/addTask";
 import { useState } from "react";
-import { useVariantContext } from "./variantContext";
-
+import "./selectedTest.css";
 import {
-  doc,
-  deleteDoc,
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   writeBatch,
 } from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
+import AddTask from "../creatorVariant/addTask";
 import { WrapperForModalWindow } from "../reactTsUtils";
+import { db } from "../../../firebaseConfig";
+import TestReview from "./elementsForReviewTest/testReview";
+import { useVariantContext } from "./variantContext";
 
 const SelectedVariant = (props: {
   selectedVariant: string;
@@ -82,12 +82,12 @@ const SelectedVariant = (props: {
       );
 
       Object.entries(tasks).forEach(([key, item]) => {
-        const docRef = doc(colRef, key);
-        batch.set(docRef, item);
+        const taskRef = doc(colRef, key);
+        batch.set(taskRef, item);
       });
 
-      await batch.commit(); // ✅ обов’язково!
-      console.log("✅ Tasks saved successfully!");
+      await batch.commit();
+      console.log("Tasks saved successfully.");
     } catch (error) {
       console.error("Помилка:", error);
     }
@@ -95,65 +95,81 @@ const SelectedVariant = (props: {
 
   return (
     <div className="container_for_selected_test">
-      {isDelete === false && (
-        <div className="selected_test">
-          <div className="buttons">
-            <div className="left_side">
+      {!isDelete && (
+        <div className="selected-test-page">
+          <section className="selected-test-header">
+            <div className="selected-test-header-meta">
+              <h1 className="selected-test-title">
+                {dataVariant.variantName || `Тест ${props.selectedVariant}`}
+              </h1>
+              <p className="selected-test-subtitle">
+                Варіант: {dataVariant.variantSerialNumber || props.selectedVariant}
+              </p>
               <button
-                className="custom_button"
+                className="selected-test-delete-link"
                 onClick={() => setIsModalOpen(true)}
               >
-                Видалити
+                Видалити тест
               </button>
-              {isModalOpen && (
-                <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
-                  <div style={{ padding: "20px", textAlign: "center" }}>
-                    <p className="text-xl">Ви дійсно хочете видалити тест?</p>
-                    <div style={{ marginTop: "20px" }}>
-                      <button
-                        className="text-xl"
-                        onClick={handleDelete}
-                        style={{ marginRight: "10px" }}
-                      >
-                        Так
-                      </button>
-                      <button
-                        className="text-xl"
-                        onClick={() => setIsModalOpen(false)}
-                      >
-                        Ні
-                      </button>
-                    </div>
-                  </div>
-                </WrapperForModalWindow>
-              )}
+            </div>
 
+            <div className="selected-test-header-actions">
               <button
-                className="custom_button"
+                className="selected-test-btn selected-test-btn-secondary"
                 onClick={() => handleOneTimePassTheTest(props.selectedVariant)}
               >
                 Одноразові посилання
               </button>
               <button
-                className="custom_button"
+                className="selected-test-btn selected-test-btn-secondary"
                 onClick={() => handleCopyToRetaking()}
               >
-                Скопіювати у Перездачу
+                Скопіювати у перездачу
               </button>
-            </div>
-            <div className="right_side">
               <button
-                className="custom_button"
+                className="selected-test-btn selected-test-btn-primary"
                 onClick={() => handlePassTheTest(props.selectedVariant)}
               >
                 Пройти тест
               </button>
             </div>
-          </div>
-          <TestReview selectedVariant={props.selectedVariant}></TestReview>
-          <button className="custom_button" onClick={() => handleAddTask()}>
-            Додати завдання до тесту
-          </button>
+          </section>
+
+          {isModalOpen && (
+            <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
+              <div style={{ padding: "20px", textAlign: "center" }}>
+                <p className="text-xl">Ви дійсно хочете видалити тест?</p>
+                <div style={{ marginTop: "20px" }}>
+                  <button
+                    className="text-xl"
+                    onClick={handleDelete}
+                    style={{ marginRight: "10px" }}
+                  >
+                    Так
+                  </button>
+                  <button
+                    className="text-xl"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Ні
+                  </button>
+                </div>
+              </div>
+            </WrapperForModalWindow>
+          )}
+
+          <section className="selected-test-content">
+            <TestReview selectedVariant={props.selectedVariant}></TestReview>
+          </section>
+
+          <section className="selected-test-footer-actions">
+            <button
+              className="selected-test-btn selected-test-btn-primary"
+              onClick={() => handleAddTask()}
+            >
+              Додати завдання
+            </button>
+          </section>
 
           {isModalForAddTaskOpen && (
             <WrapperForModalWindow
@@ -176,8 +192,10 @@ const SelectedVariant = (props: {
           )}
         </div>
       )}
-      {isDelete === true && <h1>Тест Видалено</h1>}
+
+      {isDelete && <h1>Тест видалено</h1>}
     </div>
   );
 };
+
 export default SelectedVariant;

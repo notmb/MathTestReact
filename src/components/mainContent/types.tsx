@@ -2,21 +2,21 @@
 export type TaskType = "choice" | "comparison" | "openAnswer";
 
 export interface Task1 {
-  //С‚РёРї РґР°РЅРёС… РґР»СЏ Р·Р°РІРґР°РЅРЅСЏ Р· Р· РІРёР±РѕСЂРѕРј 1 РІС–РґРїРѕРІС–РґС–
+  // Тип даних для завдання з вибором 1 відповіді
   task: Question;
   answers: Answers;
   correctAnswer: string;
   typeOfTask: "choice";
 }
 export interface Task2 {
-  //С‚РёРї РґР°РЅРёС… РґР»СЏ Р·Р°РІРґР°РЅРЅСЏ СЃРїС–РІСЃС‚Р°РІР»РµРЅРЅСЏ
+  // Тип даних для завдання на співставлення
   task: Question;
   comparisonTable: ComparisonTable;
   correctComparison: CorrectComparison;
   typeOfTask: "comparison";
 }
 export interface Task3 {
-  //С‚РёРї РґР°РЅРёС… РґР»СЏ Р·Р°РІРґР°РЅРЅСЏ Р· РІС–РґРєСЂРёС‚РѕСЋ РІС–РґРїРѕРІС–РґРґСЋ
+  // Тип даних для завдання з відкритою відповіддю
   task: Question;
   correctAnswer: string;
   typeOfTask: "openAnswer";
@@ -48,19 +48,10 @@ interface CorrectComparison {
   [key: string]: string;
 }
 export interface Tasks {
-  // РљРѕР»РµРєС†С–СЏ Р· СЂС–Р·РЅРёРјРё Р·Р°РІРґР°РЅРЅСЏРјРё
+  // Колекція з різними завданнями
   [key: string]: Task1 | Task2 | Task3;
 }
-export interface Comparison {
-  list1: {
-    texts?: string[];
-    pictures?: string[];
-  };
-  list2: {
-    texts?: string[];
-    picture?: string[];
-  };
-}
+export type Comparison = ComparisonTable;
 
 export interface VaiantData {
   id?: string;

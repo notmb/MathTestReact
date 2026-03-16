@@ -1,6 +1,7 @@
-﻿import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useImmer } from "use-immer";
-import type { Task1, Task2, Task3, Tasks } from "../oneTimeTest.types";
+import type { Tasks } from "../oneTimeTest.types";
+import { isTask1, isTask2, isTask3 } from "../../../taskGuards";
 import TaskChoice from "../taskTypes/taskChoice";
 import TaskComparison from "../taskTypes/taskComparison";
 import TaskOpenAnswer from "../taskTypes/taskOpenAnswer";
@@ -9,10 +10,6 @@ type TaskId = string;
 type MatchingAnswer = Record<string, string>;
 type UserAnswer = string | MatchingAnswer;
 type UserAnswersState = Record<TaskId, UserAnswer>;
-
-const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
-const isTask2 = (task: any): task is Task2 => task.typeOfTask === "comparison";
-const isTask3 = (task: any): task is Task3 => task.typeOfTask === "openAnswer";
 
 const TaskList = (props: {
   tasks: Tasks;
@@ -115,5 +112,3 @@ const TaskList = (props: {
 };
 
 export default TaskList;
-
-

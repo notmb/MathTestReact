@@ -1,19 +1,16 @@
-import { VariantContext } from "./variantContext";
-import { Tasks, Task1, Task2, Task3, VaiantData } from "../types";
-import { useImmer } from "use-immer";
-import { db } from "../../../firebaseConfig";
 import {
-  getDocs,
   collection,
   doc,
   getDoc,
+  getDocs,
   Timestamp,
 } from "firebase/firestore";
-import { useEffect } from "react";
-
-const isTask1 = (task: any): task is Task1 => task.typeOfTask === "choice";
-const isTask2 = (task: any): task is Task2 => task.typeOfTask === "comparison";
-const isTask3 = (task: any): task is Task3 => task.typeOfTask === "openAnswer";
+import { useEffect, useState } from "react";
+import { useImmer } from "use-immer";
+import { db } from "../../../firebaseConfig";
+import { Task1, Task2, Task3, Tasks, VaiantData } from "../types";
+import { VariantContext } from "./variantContext";
+import { isTask1, isTask2, isTask3 } from "./taskGuards";
 
 const VariantContextWrapper = (props: {
   variant: string;
@@ -29,51 +26,91 @@ const VariantContextWrapper = (props: {
     numberOfTasks: "",
     variantSerialNumber: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchVariantData = async () => {
-      const docRef = doc(
-        db,
-        "Subjects",
-        "Math",
-        "Algebra",
-        "Topics",
-        props.typeTest === "main" ? "Mix" : "Retaking",
-        props.variant
-      );
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        updateDataVariant(() => docSnap.data() as VaiantData);
+    let isCancelled = false;
+
+    const fetchVariantContent = async () => {
+      setIsLoading(true);
+      setErrorMessage(null);
+      updateTasks(() => ({}));
+      updateDataVariant(() => ({
+        id: props.variant,
+        typeTest: props.typeTest,
+        variantName: "",
+        createdAt: new Timestamp(0, 0),
+        numberOfTasks: "",
+        variantSerialNumber: "",
+      }));
+
+      try {
+        const topicName = props.typeTest === "main" ? "Mix" : "Retaking";
+        const docRef = doc(
+          db,
+          "Subjects",
+          "Math",
+          "Algebra",
+          "Topics",
+          topicName,
+          props.variant,
+        );
+        const tasksRef = collection(
+          db,
+          "Subjects",
+          "Math",
+          "Algebra",
+          "Topics",
+          topicName,
+          props.variant,
+          "tasks",
+        );
+
+        const [docSnap, snapshot] = await Promise.all([
+          getDoc(docRef),
+          getDocs(tasksRef),
+        ]);
+
+        if (isCancelled) {
+          return;
+        }
+
+        if (docSnap.exists()) {
+          updateDataVariant(() => ({
+            ...(docSnap.data() as VaiantData),
+            id: props.variant,
+            typeTest: props.typeTest,
+          }));
+        }
+
+        const loaded: Tasks = {};
+        snapshot.forEach((taskDoc) => {
+          const data = taskDoc.data();
+          if (isTask1(data)) loaded[taskDoc.id] = data as Task1;
+          else if (isTask2(data)) loaded[taskDoc.id] = data as Task2;
+          else if (isTask3(data)) loaded[taskDoc.id] = data as Task3;
+        });
+        updateTasks(() => loaded);
+      } catch (error) {
+        console.error("Помилка при завантаженні вибраного тесту:", error);
+        if (!isCancelled) {
+          setErrorMessage("Не вдалося завантажити вибраний тест.");
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
-    const fetchTasks = async () => {
-      const tasksRef = collection(
-        db,
-        "Subjects",
-        "Math",
-        "Algebra",
-        "Topics",
-        props.typeTest === "main" ? "Mix" : "Retaking",
-        props.variant,
-        "tasks"
-      );
-      const snapshot = await getDocs(tasksRef);
-      const loaded: Tasks = {};
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (isTask1(data)) loaded[doc.id] = data as Task1;
-        else if (isTask2(data)) loaded[doc.id] = data as Task2;
-        else if (isTask3(data)) loaded[doc.id] = data as Task3;
-      });
-      updateTasks(() => loaded);
+    fetchVariantContent();
+
+    return () => {
+      isCancelled = true;
     };
+  }, [props.typeTest, props.variant, updateDataVariant, updateTasks]);
 
-    fetchVariantData();
-    fetchTasks();
-  }, [props.variant]);
-
-  // Додаємо метод для оновлення конкретного завдання
   const updateTask = (numTask: string, updatedTask: Task1 | Task2 | Task3) => {
     updateTasks((draft) => {
       draft[numTask] = updatedTask;
@@ -81,9 +118,12 @@ const VariantContextWrapper = (props: {
   };
 
   return (
-    <VariantContext.Provider value={{ tasks, dataVariant, updateTask }}>
+    <VariantContext.Provider
+      value={{ tasks, dataVariant, isLoading, errorMessage, updateTask }}
+    >
       {props.children}
     </VariantContext.Provider>
   );
 };
+
 export default VariantContextWrapper;
