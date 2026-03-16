@@ -8,7 +8,7 @@ const AnswersToSinglChoiceTask = (props: {
   updateAnswerPictures: (index: number, picture: File) => void;
 }) => {
   const { tasks } = useVariantContext();
-  const task = tasks[props.numTask] as Task1; // витягаємо потрібне завдання
+  const task = tasks[props.numTask] as Task1;
   const [answers, updateAnswers] = useImmer(task?.answers.values || []);
 
   const [nameFileAnswers, updateNameFileAnswers] = useImmer<string[]>([]);
@@ -22,7 +22,7 @@ const AnswersToSinglChoiceTask = (props: {
 
   const handleTextOfAnswersChange = (
     letter: string,
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const index = letterToIndex[letter];
 
@@ -38,7 +38,7 @@ const AnswersToSinglChoiceTask = (props: {
 
   const handleFileAnswersChange = (
     letter: string,
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const index = letterToIndex[letter];
     const file = e.target.files?.[0];
@@ -47,7 +47,7 @@ const AnswersToSinglChoiceTask = (props: {
       console.log("Файл вибрано:", file.name);
 
       updateNameFileAnswers((draft) => {
-        draft[index] = file.name; // Записуємо в масив назву файлу за індексом
+        draft[index] = file.name;
       });
       console.log([]);
       props.updateAnswerPictures(index, file);
@@ -99,4 +99,5 @@ const AnswersToSinglChoiceTask = (props: {
     </fieldset>
   );
 };
+
 export default AnswersToSinglChoiceTask;

@@ -3,7 +3,7 @@ import "./reviewTest.css";
 import { WrapperForModalWindow } from "../../reactTsUtils";
 import type { SupportedTask } from "../taskGuards";
 import { isTask1, isTask2 } from "../taskGuards";
-import TaskEditor from "../taskEditor";
+import TaskEditor from "../taskEditor/TaskEditor";
 import { useVariantContext } from "../variantContext";
 import Answers from "./answersForTaskChoise";
 import ComparisonData from "./comparison";

@@ -1,21 +1,23 @@
 import { useVariantContext } from "../tests/variantContext";
 import { Task3 } from "../types";
 import { useState } from "react";
+
 const CorrectAnswerToTaskOpenAnswer = (props: {
   numTask: string;
   updateCorrectAnswerText: (text: string) => void;
 }) => {
   const { tasks } = useVariantContext();
-  const task = tasks[props.numTask] as Task3; // витягаємо потрібне завдання
+  const task = tasks[props.numTask] as Task3;
   const [correctAnswer, setCorrectAnswer] = useState(task?.correctAnswer || "");
 
   const handleCorrectAnswerOfTaskChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const value = e.currentTarget.value;
     setCorrectAnswer(value);
     props.updateCorrectAnswerText(value);
   };
+
   return (
     <fieldset className="data_correct_answer">
       <legend>Дані для правильної відповіді</legend>
@@ -31,4 +33,5 @@ const CorrectAnswerToTaskOpenAnswer = (props: {
     </fieldset>
   );
 };
+
 export default CorrectAnswerToTaskOpenAnswer;

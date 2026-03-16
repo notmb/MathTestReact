@@ -1,19 +1,20 @@
 import { useImmer } from "use-immer";
 import { useVariantContext } from "../tests/variantContext";
 import { Task2 } from "../types";
+
 const CorrectAnswerToTaskMatching = (props: {
   numTask: string;
   updateCorrectAwswerText: (index: string, text: string) => void;
 }) => {
   const { tasks } = useVariantContext();
-  const task = tasks[props.numTask] as Task2; // витягаємо потрібне завдання
+  const task = tasks[props.numTask] as Task2;
   const [correctComparison, updateCorrectComparison] = useImmer(
-    task?.correctComparison || {}
+    task?.correctComparison || {},
   );
 
   const handleCorrectAnswerChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
-    item: string
+    item: string,
   ) => {
     const value = e.currentTarget.value;
     props.updateCorrectAwswerText(item, e.currentTarget.value);
@@ -21,6 +22,7 @@ const CorrectAnswerToTaskMatching = (props: {
       draft[item] = value;
     });
   };
+
   return (
     <fieldset className="data_correct_answer">
       <legend>Дані для правильної відповіді</legend>
@@ -45,4 +47,5 @@ const CorrectAnswerToTaskMatching = (props: {
     </fieldset>
   );
 };
+
 export default CorrectAnswerToTaskMatching;

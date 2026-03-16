@@ -8,10 +8,11 @@ const ConditionOfTask = (props: {
 }) => {
   const [nameFileTask, setNameFileTask] = useState<string | null>(null);
   const { tasks } = useVariantContext();
-  const task = tasks[props.numTask]; // витягаємо потрібне завдання
+  const task = tasks[props.numTask];
   const [condition, setCondition] = useState(task?.task.text || "");
+
   const handleTextOfTaskChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     props.updateTaskText(e.currentTarget.value);
     setCondition(e.currentTarget.value);
@@ -27,6 +28,7 @@ const ConditionOfTask = (props: {
       console.warn("Файл не вибрано!");
     }
   };
+
   return (
     <fieldset>
       <legend>Дані для запитання</legend>
@@ -59,15 +61,9 @@ const ConditionOfTask = (props: {
         >
           {nameFileTask ? `Файл: ${nameFileTask}` : "Додати зображення"}
         </label>
-
-        {/* <button type="button" className="more_condition mx-4">
-          Додати таблицю
-        </button>
-        <button type="button" className="more_condition">
-          Додати картинку
-        </button> */}
       </div>
     </fieldset>
   );
 };
+
 export default ConditionOfTask;

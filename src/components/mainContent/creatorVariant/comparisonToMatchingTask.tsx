@@ -1,6 +1,7 @@
 import { useImmer } from "use-immer";
 import { useVariantContext } from "../tests/variantContext";
 import type { Task2 } from "../types";
+
 const ComparisonToMatchingTask = (props: {
   numTask: string;
   updateList1Text: (index: number, text: string) => void;
@@ -10,12 +11,12 @@ const ComparisonToMatchingTask = (props: {
 }) => {
   const { tasks } = useVariantContext();
 
-  const task = tasks[props.numTask] as Task2; // витягаємо потрібне завдання
+  const task = tasks[props.numTask] as Task2;
   const [list1Text, updateList1Text] = useImmer(
-    task?.comparisonTable.list1.texts || []
+    task?.comparisonTable.list1.texts || [],
   );
   const [list2Text, updateList2Text] = useImmer(
-    task?.comparisonTable.list2.texts || []
+    task?.comparisonTable.list2.texts || [],
   );
 
   const [listFileName, updataListFileName] = useImmer<{
@@ -24,7 +25,7 @@ const ComparisonToMatchingTask = (props: {
 
   const handleFilesOfList1 = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const inputId = e.target.id;
     const file = e.target.files?.[0];
@@ -39,9 +40,10 @@ const ComparisonToMatchingTask = (props: {
     }
     console.log(listFileName);
   };
+
   const handleFilesOfList2 = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const inputId = e.target.id;
     const file = e.target.files?.[0];
@@ -55,9 +57,10 @@ const ComparisonToMatchingTask = (props: {
       console.warn("Файл не вибрано!");
     }
   };
+
   const handleList1Change = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
-    index: number
+    index: number,
   ) => {
     if (index !== undefined) {
       const value = e.currentTarget.value;
@@ -70,7 +73,7 @@ const ComparisonToMatchingTask = (props: {
 
   const handleList2Change = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
-    index: number
+    index: number,
   ) => {
     if (index !== undefined) {
       const value = e.currentTarget.value;
@@ -80,6 +83,7 @@ const ComparisonToMatchingTask = (props: {
       });
     }
   };
+
   return (
     <fieldset className="data_for_comparison">
       <legend>Дані для співставлення</legend>
@@ -162,4 +166,5 @@ const ComparisonToMatchingTask = (props: {
     </fieldset>
   );
 };
+
 export default ComparisonToMatchingTask;

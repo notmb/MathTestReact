@@ -1,16 +1,17 @@
 import { useVariantContext } from "../tests/variantContext";
 import { Task1 } from "../types";
 import { useState } from "react";
+
 const CorrectAnswerToSinglChoiceTask = (props: {
   numTask: string;
   updateCorrectAnswerText: (text: string) => void;
 }) => {
   const { tasks } = useVariantContext();
-  const task = tasks[props.numTask] as Task1; // витягаємо потрібне завдання
+  const task = tasks[props.numTask] as Task1;
   const [correctAnswer, setCorrectAnswer] = useState(task?.correctAnswer || "");
 
   const handleCorrectAnswerOfTaskChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const value = e.currentTarget.value;
     setCorrectAnswer(value);
@@ -32,4 +33,5 @@ const CorrectAnswerToSinglChoiceTask = (props: {
     </fieldset>
   );
 };
+
 export default CorrectAnswerToSinglChoiceTask;
