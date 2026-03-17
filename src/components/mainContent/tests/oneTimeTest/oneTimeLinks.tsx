@@ -14,7 +14,7 @@ import {
 import { db } from "../../../../firebaseConfig";
 
 interface TestLink {
-  id: string; // id лінку
+  id: string; // id посилання
   variantId: string; // id варіанту
   typeTest: string;
   used: boolean;
@@ -57,7 +57,7 @@ const OneTimeLinks = (props: {
       setFetchStatus("success");
     } catch (error) {
       console.error("Помилка при отриманні документів:", error);
-      setErrorMessage("Не вдалося завантажити одноразові лінки.");
+      setErrorMessage("Не вдалося завантажити одноразові посилання.");
       setFetchStatus("error");
     }
   };
@@ -76,7 +76,7 @@ const OneTimeLinks = (props: {
         setCopiedLinkId((current) => (current === idLink ? null : current));
       }, 2000);
     } catch (error) {
-      console.error("Не вдалося скопіювати лінк:", error);
+      console.error("Не вдалося скопіювати посилання:", error);
     }
   };
 
@@ -127,13 +127,13 @@ const OneTimeLinks = (props: {
           className="one-time-links-create-btn"
           onClick={() => setIsModalOFAddingLinkOpen(true)}
         >
-          Створити Link
+          Створити посилання
         </button>
       </div>
 
       {fetchStatus === "loading" && (
         <p className="one-time-links-state one-time-links-state-loading">
-          Завантаження лінків...
+          Завантаження посилань...
         </p>
       )}
       {fetchStatus === "error" && errorMessage && (
@@ -143,11 +143,11 @@ const OneTimeLinks = (props: {
       )}
       {fetchStatus === "success" && testLinks.length === 0 && (
         <p className="one-time-links-state one-time-links-state-empty">
-          Для цього варіанту ще немає одноразових лінків.
+          Для цього варіанту ще немає одноразових посилань.
         </p>
       )}
 
-      <p className="one-time-links-title">ONE TIME LINKS:</p>
+      <p className="one-time-links-title">ОДНОРАЗОВІ ПОСИЛАННЯ:</p>
 
       {fetchStatus === "success" &&
         testLinks.length > 0 &&
@@ -173,12 +173,12 @@ const OneTimeLinks = (props: {
                       onClick={() => copyLink(item.id)}
                       className="one-time-links-btn"
                     >
-                      Скопіювати лінк
+                      Скопіювати посилання
                     </button>
                   )}
                   {copiedLinkId === item.id && (
                     <p className="one-time-links-copy-status">
-                      Лінк скопійовано
+                      Посилання скопійовано
                     </p>
                   )}
                 </div>
@@ -194,7 +194,7 @@ const OneTimeLinks = (props: {
                   onClick={() => removeLink(item.id)}
                   className="one-time-links-btn one-time-links-btn-danger"
                 >
-                  Видалити Link
+                  Видалити посилання
                 </button>
               </div>
             </div>

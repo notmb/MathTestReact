@@ -71,9 +71,9 @@ const ResultCorrectionModal = ({
             className="result-correction-modal-close"
             onClick={onClose}
             disabled={isSaving}
-            aria-label="Закрити модалку"
+            aria-label="Закрити модальне вікно"
           >
-            ×
+            x
           </button>
         </div>
 
@@ -88,7 +88,9 @@ const ResultCorrectionModal = ({
           </label>
 
           <label className="result-correction-modal-field">
-            <span className="result-correction-modal-label">Новий результат</span>
+            <span className="result-correction-modal-label">
+              Новий результат
+            </span>
             <input
               className="result-correction-modal-input"
               type="text"

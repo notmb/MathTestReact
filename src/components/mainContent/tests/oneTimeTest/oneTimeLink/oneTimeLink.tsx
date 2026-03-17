@@ -88,7 +88,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
     return (
       <div className="one-time-test-page one-time-link-page">
         <h4 className="one-time-test-title one-time-link-title">
-          One-time link
+          Одноразове посилання
         </h4>
         <div className="one-time-test-status one-time-test-status-progress">
           Перевіряю посилання...
@@ -101,7 +101,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
     return (
       <div className="one-time-test-page one-time-link-page">
         <h4 className="one-time-test-title one-time-link-title">
-          One-time link
+          Одноразове посилання
         </h4>
         <div className="one-time-test-status one-time-test-status-invalid">
           Посилання недійсне: {status.reason}
@@ -114,10 +114,10 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
     return (
       <div className="one-time-test-page one-time-link-page">
         <h4 className="one-time-test-title one-time-link-title">
-          One-time link
+          Одноразове посилання
         </h4>
         <div className="one-time-test-status one-time-test-status-blocked">
-          Помилка читання лінка: {error}
+          Помилка читання посилання: {error}
         </div>
       </div>
     );
@@ -127,7 +127,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
     return (
       <div className="one-time-test-page one-time-link-page">
         <h4 className="one-time-test-title one-time-link-title">
-          One-time link
+          Одноразове посилання
         </h4>
         <div className="one-time-test-status one-time-test-status-progress">
           Завантажую дані тесту...
@@ -141,7 +141,7 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
       <div className="one-time-link-card">
         <div className="one-time-link-meta">
           <div>
-            <span className="one-time-link-meta-label">Stusent:</span>{" "}
+            <span className="one-time-link-meta-label">Студент:</span>{" "}
             {data.nameStudent}
           </div>
         </div>

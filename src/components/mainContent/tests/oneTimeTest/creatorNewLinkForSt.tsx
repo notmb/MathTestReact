@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { db } from "../../../../firebaseConfig"; // твоя ініціалізація firebase
+import { db } from "../../../../firebaseConfig";
 import {
   collection,
   doc,
@@ -10,13 +10,15 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useImmer } from "use-immer";
+import { useVariantContext } from "../variantContext";
 
 type StudentOption = {
   id: string;
   name: string;
 };
+
 interface TestLink {
-  id: string; // id лінку
+  id: string; // id посилання
   variantId: string; // id варіанту
   typeTest: string;
   used: boolean;
@@ -24,8 +26,6 @@ interface TestLink {
   testResult: string;
   // інші поля, які є в документі
 }
-
-import { useVariantContext } from "../variantContext";
 
 const CreatorNewLinkForStudent = (props: {
   selectedVariant: string;
@@ -42,29 +42,23 @@ const CreatorNewLinkForStudent = (props: {
     const fetchStudents = async () => {
       setLoading(true);
       setError(null);
+
       try {
         const colRef = collection(db, "Subjects", "Math", "MyStudents");
         const snapshot = await getDocs(colRef);
 
-        // Створюємо список учнів із документів Firestore
         const list: StudentOption[] = snapshot.docs
           .map((doc) => {
-            // Беремо дані документа
             const data = doc.data() as { name?: unknown };
-
-            // Перевіряємо, чи є поле name рядком і прибираємо зайві пробіли
             const name = typeof data.name === "string" ? data.name.trim() : "";
 
-            // Якщо name валідне, повертаємо об’єкт {id, name}, інакше — null
             return name ? { id: doc.id, name } : null;
           })
-          // Видаляємо всі null, залишаємо лише валідні об’єкти
           .filter((item): item is StudentOption => item !== null);
 
-        // Оновлюємо стан students через useImmer
         updateStudents((draft) => {
-          draft.length = 0; // Очищаємо попередній стан
-          list.forEach((student) => draft.push(student)); // Додаємо нові значення
+          draft.length = 0;
+          list.forEach((student) => draft.push(student));
         });
       } catch (err) {
         console.error("Помилка завантаження учнів:", err);
@@ -88,12 +82,11 @@ const CreatorNewLinkForStudent = (props: {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      alert("Лінк для цього учня і варіанта вже існує");
+      alert("Посилання для цього учня і варіанта вже існує");
       return;
     }
 
     try {
-      // Оновлюємо testScores в профілі учня
       const docRefStudent = doc(
         db,
         "Subjects",
@@ -101,19 +94,15 @@ const CreatorNewLinkForStudent = (props: {
         "MyStudents",
         selectedStudentId,
       );
-      console.log(dataVariant?.typeTest);
       const property =
         dataVariant?.typeTest === "retaking"
           ? "testScoresRetaking"
           : "testScores";
-      console.log(property);
 
       await updateDoc(docRefStudent, {
         [`${property}.${dataVariant.variantSerialNumber}`]: "не почато",
       });
-      console.log(`Поле ${property} оновлено}`);
-
-      //в профілі учня створюємо або редагуємо колекцію ResultsTest - детальні результати тесту
+      console.log(`Поле ${property} оновлено`);
       const resultTestDocRef = doc(
         collection(docRefStudent, "ResultsTest"),
         props.selectedVariant,
@@ -125,12 +114,12 @@ const CreatorNewLinkForStudent = (props: {
         variantId: props.selectedVariant,
         variantName: dataVariant.variantSerialNumber || dataVariant.variantName,
       });
-      console.log("Документ ResultsTest створено/оновлено");
+      console.log("Документ ResultsTest створено або оновлено");
 
-      // Додаємо документ (дані лінки) у TestLinks
       await setDoc(docRef, {
         createdAt: serverTimestamp(),
         typeTest: dataVariant.typeTest || "main",
+        variantSerialNumber: dataVariant.variantSerialNumber,
         durationSec: 3600,
         testLinkStatus: "notStarted",
         used: false,
@@ -140,9 +129,6 @@ const CreatorNewLinkForStudent = (props: {
         variantId: props.selectedVariant,
         testResult: "-",
       });
-      console.log("Лінка додана");
-
-      //оновлюємо локальний список лінків
       props.updateTestLinks({
         id: linkDocId,
         variantId: props.selectedVariant,
@@ -152,7 +138,6 @@ const CreatorNewLinkForStudent = (props: {
           students.find((s) => s.id === selectedStudentId)?.name || "",
         testResult: "не пройдено",
       } as TestLink);
-      // Закриваємо модалку
       props.onClose();
     } catch (error) {
       console.error("Помилка створення:", error);

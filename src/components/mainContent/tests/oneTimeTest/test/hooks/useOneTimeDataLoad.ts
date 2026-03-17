@@ -275,5 +275,3 @@ export const useOneTimeDataLoad = ({
     return () => window.clearTimeout(timeoutId);
   }, [status, toFinalizing]);
 };
-
-

@@ -5,7 +5,11 @@ import type { Tasks } from "../oneTimeTest.types";
 import { buildTestResultString } from "../utils/oneTimeTestScoring";
 import { useOneTimeDataLoad } from "./useOneTimeDataLoad";
 import { useOneTimeFinalize } from "./useOneTimeFinalize";
-import type { NormalizedTypeTest, Status, VariantDoc } from "./useOneTimeFlow.types";
+import type {
+  NormalizedTypeTest,
+  Status,
+  VariantDoc,
+} from "./useOneTimeFlow.types";
 
 export const useOneTimeTestFlow = () => {
   const [status, setStatus] = useState<Status>({ phase: "loading" });
@@ -124,7 +128,6 @@ export const useOneTimeTestFlow = () => {
       toFinalizing("timeOut", status);
       return;
     }
-
     const answers = getAnswersForFinalize();
     setPreparedTestResult(buildTestResultString(localTasks, answers));
     toFinalizing("manual", status);
@@ -156,5 +159,3 @@ export const useOneTimeTestFlow = () => {
     handleFinish,
   };
 };
-
-

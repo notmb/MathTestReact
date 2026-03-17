@@ -52,7 +52,7 @@ const TestResults = (props: {
         const linkSnap = await getDoc(linkRef);
 
         if (!linkSnap.exists()) {
-          setErrorMessage("Лінк не знайдено.");
+          setErrorMessage("Посилання не знайдено.");
           setFetchStatus("error");
           return;
         }
