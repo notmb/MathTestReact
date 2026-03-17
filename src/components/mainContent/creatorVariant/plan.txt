@@ -1,0 +1,145 @@
+# План стабілізації `creatorVariant`
+
+## Коротко
+Мета: прибрати критичні баги потоку створення нового варіанту, зробити збереження задач надійним, а далі спростити архітектуру так, щоб форма створення не залежала від `VariantContext`, який зараз більше орієнтований на читання існуючого варіанту.
+
+Перший пріоритет: гарантувати, що `variantId` створений до початку роботи із задачами, і що задача позначається як додана тільки після успішного запису в Firestore/Storage.
+
+## Основні зміни
+
+### 1. Стабілізувати створення варіанту
+Фокус: `addVariant2.tsx`, `infoAboutNewVariant.tsx`
+
+- Переробити `createVariant` так, щоб він повертав `docRef.id` або кидав помилку.
+- Зробити `handleClickSet` асинхронним і чекати `await createVariant(...)`.
+- Показувати `CreatorNewVariant` тільки після успішного створення варіанту і отримання валідного `id`.
+- Додати локальні стани `isCreatingVariant` і `variantCreateError`.
+- Не згортати форму опису варіанту до успішного завершення створення.
+- Додати валідацію полів `variantName`, `variantSerialNumber`, `numberOfTasks`, `typeTest`.
+- Для `numberOfTasks` використовувати `type="number"` і мінімум `1`.
+- Для `typeTest` задати дефолтне значення `main` через контрольований state або `defaultChecked`.
+
+### 2. Заборонити роботу із задачами до готовності варіанту
+Фокус: `creatorNewVariant.tsx`
+
+- Додати явну ознаку готовності варіанту, наприклад `isVariantReady`.
+- Не відкривати форму задачі, якщо `variantId` ще порожній.
+- Показувати зрозумілий текст стану, якщо варіант ще створюється.
+- Додати `key` на `CreatorTask`, щоб при зміні номера задачі або типу задачі форма монтувалася заново і не тягнула старий локальний state.
+
+### 3. Зробити збереження задачі атомарним з точки зору UI
+Фокус: `creatorTaskChoice.tsx`, `creatorTaskMatching.tsx`, `creatorTaskOpenAnswer.tsx`
+
+- У кожному creator-компоненті додати `isSavingTask` і `taskSaveError`.
+- Перед збереженням валідовувати `taskData`.
+- Виклик `updateTaskIsAdded(..., true)` робити тільки після повного успіху:
+  - `setDoc` пройшов успішно
+  - усі файли, якщо є, успішно завантажені
+- Якщо будь-який крок впав, задача не позначається як додана.
+- Кнопка `Зберегти завдання` блокується під час збереження.
+- У разі помилки показується повідомлення в UI, а не тільки `console.error`.
+
+### 4. Винести дубльований код збереження в окремий helper/service
+Фокус: новий helper у `creatorVariant`
+
+- Винести `getTypePath(typeTest)` в одну функцію.
+- Винести побудову `doc(...)` для шляху задачі в одну функцію.
+- Винести upload файлів у спільну функцію.
+- Створити єдиний `saveTask({ typeTest, variantId, taskNumber, taskData, files })`.
+- Перевести всі три типи задач на цей спільний persistence layer.
+
+### 5. Винести фабрики чернеток задач
+Фокус: новий helper `taskDraftFactories.ts`
+
+- Створити:
+  - `createEmptyChoiceTask()`
+  - `createEmptyComparisonTask()`
+  - `createEmptyOpenAnswerTask()`
+- Використовувати ці фабрики як єдине джерело початкової структури для `useImmer`.
+- Це ж використовувати для майбутнього reset форми.
+
+### 6. Прибрати залежність creator-форм від `VariantContext`
+Фокус: підкомпоненти форми в `creatorVariant`
+
+- `ConditionOfTask`, `AnswersToSinglChoiceTask`, `ComparisonToMatchingTask`, `CorrectAnswer*` не повинні самі читати `tasks[props.numTask]` з `VariantContext`.
+- Дані для полів мають приходити зверху через `value`/`onChange`.
+- Чернетка задачі має жити в батьківському creator-компоненті, а підкомпоненти бути максимально dumb/presentational.
+- `VariantContext` залишити для читання/редагування існуючих варіантів, а не для створення нового.
+
+### 7. Заміна вибору типу задачі на керований `select`
+Фокус: `choosingTaskType.tsx`
+
+- Замінити `input + datalist` на `select`.
+- Дозволити лише фіксовані значення: `choice`, `comparison`, `openAnswer`.
+- Додати placeholder-опцію або дефолтне порожнє значення з `required`.
+- Не дозволяти вводити довільний текст.
+
+### 8. Додати валідацію по типах задач
+Фокус: новий helper `taskValidation.ts`
+
+- `validateChoiceTask(taskData)`
+- `validateComparisonTask(taskData)`
+- `validateOpenAnswerTask(taskData)`
+
+Мінімальні правила:
+- умова задачі не порожня
+- для `choice` заповнено щонайменше 2 варіанти і `correctAnswer`
+- для `comparison` заповнені обидва списки та `correctComparison`
+- для `openAnswer` заповнено `correctAnswer`
+
+### 9. Прибрати технічний шум
+Фокус: вся папка `creatorVariant`
+
+- Прибрати зайві `console.log` / `console.warn`.
+- Виправити назви зі строкатими друкарськими помилками:
+  - `nameOfVarint` -> `nameOfVariant`
+  - `updateFiels` -> `updateFiles`
+  - `Singl` -> `Single`
+- Прибрати биті коментарі з неправильним кодуванням.
+- Уніфікувати неймінг `numTask`, `taskNumber`, `numSelectedTask`.
+
+## Зміни в інтерфейсах / публічних контрактах
+
+- `createVariant(...)` має повертати `Promise<string>`.
+- `InfoAboutNewVariant` має приймати стани на кшталт:
+  - `isSubmitting`
+  - `submitError`
+  - за потреби `initialValues` або `onSuccessCollapse`
+- `CreatorNewVariant` має приймати `isVariantReady`.
+- Підкомпоненти creator-форми мають перейти з читання з контексту на явні пропси `value` / `onChange`.
+- Має з’явитись спільний helper `saveTask(...)` для всіх типів задач.
+
+## Тести і сценарії перевірки
+
+### Ручні сценарії
+- Створення нового варіанту з валідними даними успішно показує список задач тільки після отримання `variantId`.
+- Неможливо перейти до створення задач, якщо створення варіанту ще триває або впало.
+- Якщо не вибрати `typeTest`, форма не відправляється.
+- Якщо `numberOfTasks <= 0` або нечислове, форма не відправляється.
+- Якщо Firestore падає під час створення варіанту, форма не згортається і показує помилку.
+- Якщо Firestore падає при збереженні задачі, задача не позначається зеленим як додана.
+- Якщо upload картинки падає, задача також не позначається як додана.
+- При переході між задачею 1 і задачею 2 не залипають дані попередньої задачі.
+- Для `choice` неможливо ввести невалідний тип задачі вручну.
+- Для `comparison` і `openAnswer` валідація не дає зберегти порожню задачу.
+
+### Технічні перевірки
+- Перевірити TypeScript після зміни сигнатур пропсів.
+- Перевірити, що нові helper-функції не дублюють логіку шляху Firestore.
+- Перевірити, що `variantContext` більше не потрібен всередині creator-підкомпонентів.
+
+## Пріоритет реалізації
+
+1. `addVariant2.tsx` + `infoAboutNewVariant.tsx`
+2. `creatorNewVariant.tsx`
+3. `creatorTaskChoice.tsx`, `creatorTaskMatching.tsx`, `creatorTaskOpenAnswer.tsx`
+4. helper для `saveTask/getTypePath`
+5. `choosingTaskType.tsx`
+6. винесення draft-state з `VariantContext`
+7. валідація і cleanup
+
+## Прийняті припущення
+- Поточна бізнес-логіка збереження варіантів у `Subjects/Math/Algebra/Topics/{Mix|Retaking}` залишається без змін.
+- `main -> Mix`, `retaking -> Retaking` залишається чинним правилом.
+- На цьому етапі не змінюється структура документів у Firestore, лише стабілізується потік створення і збереження.
+- Перший етап не вимагає повного редизайну UI, лише надійної поведінки і базової видимої валідації.
