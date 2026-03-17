@@ -1,95 +1,88 @@
-import "./style.css";
+import "./tests.style.css";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useState, useEffect } from "react";
 
+type VariantItem = {
+  id: string;
+  name: string;
+  variantSerialNumber: string;
+};
+
 const AllTest = (props: { navigate: (path: string) => void }) => {
-  const [variantsIsSorted, setVariantsIsSorted] = useState<
-    { id: string; name: string; variantSerialNumber: string }[]
-  >([]);
+  const [variantsIsSorted, setVariantsIsSorted] = useState<VariantItem[]>([]);
+  const [isLoadingMain, setIsLoadingMain] = useState(true);
+  const [mainError, setMainError] = useState("");
 
   const [variantsRetakingIsSorted, setVariantsRetakingIsSorted] = useState<
-    { id: string; name: string; variantSerialNumber: string }[]
+    VariantItem[]
   >([]);
+  const [isLoadingRetaking, setIsLoadingRetaking] = useState(true);
+  const [retakingError, setRetakingError] = useState("");
 
-  const getAllVariants = async () => {
+  const getVariants = async (topic: "Mix" | "Retaking") => {
     const variantsRef = collection(
       db,
       "Subjects",
       "Math",
       "Algebra",
       "Topics",
-      "Mix"
+      topic
     );
-    try {
-      const snapshot = await getDocs(variantsRef);
-      const variants = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          name: data.variantName || doc.id,
-          variantSerialNumber: data.variantSerialNumber,
-        };
-      });
-      console.log(variants);
-      return variants;
-    } catch (error) {
-      console.log("Помилка при завантаженні варіантів:", error);
-      return [];
-    }
+    const snapshot = await getDocs(variantsRef);
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: data.variantName || doc.id,
+        variantSerialNumber: String(data.variantSerialNumber ?? ""),
+      };
+    });
   };
 
-  const getAllVariantsRetaking = async () => {
-    const variantsRetakingRef = collection(
-      db,
-      "Subjects",
-      "Math",
-      "Algebra",
-      "Topics",
-      "Retaking"
-    );
-    try {
-      const snapshot = await getDocs(variantsRetakingRef);
-      const variantsRetaking = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          name: data.variantName || doc.id,
-          variantSerialNumber: data.variantSerialNumber,
-        };
-      });
-      return variantsRetaking;
-    } catch (error) {
-      console.log("Помилка при завантаженні варіантів:", error);
-      return [];
-    }
-  };
-
-  function sortByVariantNumber(
-    arr: { id: string; name: string; variantSerialNumber: string }[]
-  ): { id: string; name: string; variantSerialNumber: string }[] {
+  function sortByVariantNumber(arr: VariantItem[]): VariantItem[] {
     return [...arr].sort((a, b) => {
-      const numA = parseInt(a.variantSerialNumber.match(/\d+/)?.[0] ?? "0", 10);
-      const numB = parseInt(b.variantSerialNumber.match(/\d+/)?.[0] ?? "0", 10);
+      const numA = parseInt(a.variantSerialNumber?.match(/\d+/)?.[0] ?? "0", 10);
+      const numB = parseInt(b.variantSerialNumber?.match(/\d+/)?.[0] ?? "0", 10);
       return numA - numB;
     });
   }
 
-  //завантажуємо основні варіанти
   useEffect(() => {
     const fetchVariants = async () => {
-      const data = await getAllVariants();
-      setVariantsIsSorted(sortByVariantNumber(data));
+      setIsLoadingMain(true);
+      setMainError("");
+
+      try {
+        const data = await getVariants("Mix");
+        setVariantsIsSorted(sortByVariantNumber(data));
+      } catch (error) {
+        console.error("Не вдалося завантажити список тестів:", error);
+        setMainError("Не вдалося завантажити список тестів.");
+      } finally {
+        setIsLoadingMain(false);
+      }
     };
+
     fetchVariants();
   }, []);
 
-  //завантажуємо варіанти для перездачі
   useEffect(() => {
     const fetchVariantsRetaking = async () => {
-      const data = await getAllVariantsRetaking();
-      setVariantsRetakingIsSorted(sortByVariantNumber(data));
+      setIsLoadingRetaking(true);
+      setRetakingError("");
+
+      try {
+        const data = await getVariants("Retaking");
+        setVariantsRetakingIsSorted(sortByVariantNumber(data));
+      } catch (error) {
+        console.error("Не вдалося завантажити список тестів на перездачу:", error);
+        setRetakingError("Не вдалося завантажити список тестів на перездачу.");
+      } finally {
+        setIsLoadingRetaking(false);
+      }
     };
+
     fetchVariantsRetaking();
   }, []);
 
@@ -98,39 +91,57 @@ const AllTest = (props: { navigate: (path: string) => void }) => {
   };
 
   return (
-    <div className="box_for_list_of_tests">
+    <div className="box-for-list-of-tests">
       <div>
-        <ul className="list_of_variant">
-          <h3>Тести:</h3>
-
-          {variantsIsSorted.map((variant) => (
-            <li className="variant_item" key={variant.id}>
-              <p
-                className="cursor-pointer m-1"
-                onClick={() => selectTest(variant.id, "main")}
-              >
-                {variant.name}
-              </p>
-            </li>
-          ))}
+        <h3>Тести:</h3>
+        <ul className="list-of-variant">
+          {isLoadingMain ? (
+            <li>Завантаження тестів...</li>
+          ) : mainError ? (
+            <li>{mainError}</li>
+          ) : variantsIsSorted.length === 0 ? (
+            <li>Список тестів порожній.</li>
+          ) : (
+            variantsIsSorted.map((variant) => (
+              <li className="variant-item" key={variant.id}>
+                <button
+                  type="button"
+                  className="variant-button"
+                  onClick={() => selectTest(variant.id, "main")}
+                >
+                  {variant.name}
+                </button>
+              </li>
+            ))
+          )}
         </ul>
       </div>
       <div>
-        <ul className="list_of_variant">
-          <h3>Тести на перездачу:</h3>
-          {variantsRetakingIsSorted.map((variant) => (
-            <li className="variant_item" key={variant.id}>
-              <p
-                className="cursor-pointer m-1"
-                onClick={() => selectTest(variant.id, "retaking")}
-              >
-                {variant.name}
-              </p>
-            </li>
-          ))}
+        <h3>Тести на перездачу:</h3>
+        <ul className="list-of-variant">
+          {isLoadingRetaking ? (
+            <li>Завантаження тестів на перездачу...</li>
+          ) : retakingError ? (
+            <li>{retakingError}</li>
+          ) : variantsRetakingIsSorted.length === 0 ? (
+            <li>Список тестів на перездачу порожній.</li>
+          ) : (
+            variantsRetakingIsSorted.map((variant) => (
+              <li className="variant-item" key={variant.id}>
+                <button
+                  type="button"
+                  className="variant-button"
+                  onClick={() => selectTest(variant.id, "retaking")}
+                >
+                  {variant.name}
+                </button>
+              </li>
+            ))
+          )}
         </ul>
       </div>
     </div>
   );
 };
+
 export default AllTest;
