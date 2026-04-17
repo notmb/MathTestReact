@@ -1,0 +1,331 @@
+# Компонентна структура для `creatorVariant`
+
+## Коротко
+Цільова структура має розділити 3 речі: метадані варіанту, draft-стан створення, і UI конкретного типу задачі. Головна ідея: форма створення нового варіанту не повинна залежати від `VariantContext` читання існуючого тесту, а компоненти полів не повинні самі знати про Firestore.
+
+## Цільова ієрархія
+
+### Верхній рівень
+- `AddNewVariantPage`
+  - сторінка створення варіанту
+  - володіє загальним життєвим циклом: створення варіанту, помилки, готовність `variantId`
+- `VariantDraftProvider`
+  - окремий context тільки для creation flow
+  - зберігає `variantMeta`, `tasksDraft`, `selectedTaskNumber`, `status`
+- `VariantCreationLayout`
+  - збирає UI сторінки з двох зон:
+    - блок метаданих варіанту
+    - блок роботи із задачами
+
+### Блок метаданих варіанту
+- `VariantMetaForm`
+  - поля `variantName`, `variantSerialNumber`, `numberOfTasks`, `typeTest`
+  - локально нічого не зберігає, працює через пропси або draft-context
+- `VariantMetaActions`
+  - кнопка створення
+  - повідомлення про `isCreatingVariant`, `error`, `success`
+- `VariantMetaSummary`
+  - короткий read-only блок після успішного створення
+  - показує назву, номер, кількість задач, тип тесту
+
+### Блок задач
+- `VariantTaskGrid`
+  - список номерів задач
+  - показує стани `empty`, `draft`, `saved`, `error`
+- `VariantTaskGridItem`
+  - один номер задачі
+  - не містить логіки збереження
+- `TaskEditorPanel`
+  - права панель / секція редактора для вибраної задачі
+  - або показує `TaskTypeSelector`, або форму конкретного типу задачі
+
+### Вибір типу задачі
+- `TaskTypeSelector`
+  - `select` з `choice`, `comparison`, `openAnswer`
+  - оновлює тип чернетки задачі
+- `TaskEditorRouter`
+  - простий switch по `task.type`
+  - рендерить конкретний editor
+
+## Редактори задач
+
+### Спільна композиція
+Кожен editor має складатися з container + секцій форми.
+
+- `ChoiceTaskEditor`
+- `ComparisonTaskEditor`
+- `OpenAnswerTaskEditor`
+
+Кожен editor:
+- читає draft задачі
+- оновлює draft задачі
+- викликає `saveTask`
+- не будує сам шляхи Firestore
+
+### Спільні секції
+- `TaskConditionSection`
+  - текст умови
+  - зображення задачі
+- `TaskSaveActions`
+  - кнопка збереження
+  - loading
+  - error/success
+
+### Специфічні секції
+- `ChoiceAnswersSection`
+  - список варіантів відповіді
+  - текст + картинка для кожного
+- `ChoiceCorrectAnswerSection`
+  - правильна відповідь
+
+- `ComparisonPairsSection`
+  - `list1`
+  - `list2`
+  - тексти + картинки
+- `ComparisonCorrectMapSection`
+  - правильні відповідності
+
+- `OpenAnswerCorrectSection`
+  - поле правильної відповіді
+
+## Рівень стану
+
+### Що має жити в `VariantDraftProvider`
+- `variantMeta`
+  - `variantName`
+  - `variantSerialNumber`
+  - `numberOfTasks`
+  - `typeTest`
+  - `variantId | null`
+- `tasksDraft`
+  - словник по номеру задачі
+- `selectedTaskNumber`
+- `isCreatingVariant`
+- `variantCreateError`
+- `savingTaskNumbers`
+- `taskErrors`
+
+### Що не має жити в дрібних компонентах
+- Firestore refs
+- upload logic
+- глобальні помилки сценарію
+- визначення `Mix/Retaking`
+- читання `VariantContext`
+
+Локально в дрібних компонентах можна лишити тільки дрібний UI-стан:
+- відкритий/закритий блок
+- preview імені вибраного файла, якщо це не критично для даних
+
+## Рівень сервісів
+
+### Окремі модулі
+- `creatorVariant.types.ts`
+  - типи draft-моделі
+- `creatorVariant.factories.ts`
+  - `createEmptyVariantMeta`
+  - `createEmptyChoiceTask`
+  - `createEmptyComparisonTask`
+  - `createEmptyOpenAnswerTask`
+- `creatorVariant.validation.ts`
+  - валідація варіанту
+  - валідація кожного типу задачі
+- `creatorVariant.persistence.ts`
+  - `createVariant`
+  - `saveTask`
+  - `uploadTaskFiles`
+  - `getTypePath`
+
+## Конкретна рекомендована структура файлів
+- `creatorVariant/AddNewVariantPage.tsx`
+- `creatorVariant/VariantDraftContext.tsx`
+- `creatorVariant/VariantMetaForm.tsx`
+- `creatorVariant/VariantTaskGrid.tsx`
+- `creatorVariant/TaskEditorPanel.tsx`
+- `creatorVariant/TaskTypeSelector.tsx`
+- `creatorVariant/editors/ChoiceTaskEditor.tsx`
+- `creatorVariant/editors/ComparisonTaskEditor.tsx`
+- `creatorVariant/editors/OpenAnswerTaskEditor.tsx`
+- `creatorVariant/sections/TaskConditionSection.tsx`
+- `creatorVariant/sections/ChoiceAnswersSection.tsx`
+- `creatorVariant/sections/ChoiceCorrectAnswerSection.tsx`
+- `creatorVariant/sections/ComparisonPairsSection.tsx`
+- `creatorVariant/sections/ComparisonCorrectMapSection.tsx`
+- `creatorVariant/sections/OpenAnswerCorrectSection.tsx`
+- `creatorVariant/sections/TaskSaveActions.tsx`
+- `creatorVariant/model/creatorVariant.types.ts`
+- `creatorVariant/model/creatorVariant.factories.ts`
+- `creatorVariant/model/creatorVariant.validation.ts`
+- `creatorVariant/model/creatorVariant.persistence.ts`
+
+## Потік даних
+1. `AddNewVariantPage` монтує `VariantDraftProvider`.
+2. `VariantMetaForm` редагує `variantMeta`.
+3. Кнопка submit викликає `createVariant`.
+4. Після успіху зберігається `variantId` і ініціалізуються `tasksDraft`.
+5. `VariantTaskGrid` дозволяє вибрати задачу.
+6. `TaskTypeSelector` визначає тип draft-задачі.
+7. `TaskEditorRouter` відкриває потрібний editor.
+8. Editor оновлює draft через context/store.
+9. `TaskSaveActions` викликає `saveTask`.
+10. Після успіху задача отримує статус `saved`.
+
+## Статуси, які мають бути явними
+- для варіанту:
+  - `idle`
+  - `creating`
+  - `ready`
+  - `error`
+- для задачі:
+  - `empty`
+  - `draft`
+  - `saving`
+  - `saved`
+  - `error`
+
+## Практичний порядок переходу до цієї структури
+1. Не робити повний великий rewrite одразу.
+2. Спочатку винести persistence і validation.
+3. Потім зробити `VariantDraftProvider`.
+4. Потім перепідключити `infoAboutNewVariant` і `creatorNewVariant`.
+5. Потім поступово замінити `CreatorTaskChoice/Matching/OpenAnswer` на editor-компоненти нової структури.
+6. В кінці прибрати залежність від `VariantContext` всередині `creatorVariant`.
+
+## Прийняті припущення
+- Зберігається існуюча Firestore-структура.
+- Створення варіанту і збереження задач лишаються окремими діями.
+- На першому етапі не потрібен drag-and-drop, autosave або optimistic UI.
+
+
+
+
+
+# Порядок створення файлової структури для `creatorVariant`
+
+## Коротко
+Починати зі структури файлів нормально. Для цього модуля це навіть кращий хід, ніж одразу лізти в багфікси, бо зараз відповідальності змішані. Правильний старт: спочатку каркас папок і файлів, потім модель і сервіси, потім перепідключення UI.
+
+## Порядок створення
+
+### 1. Спочатку створити каркас верхнього рівня
+У папці `creatorVariant` підготувати базові файли контейнерів:
+
+- `AddNewVariantPage.tsx`
+- `VariantDraftContext.tsx`
+- `VariantMetaForm.tsx`
+- `VariantTaskGrid.tsx`
+- `TaskEditorPanel.tsx`
+- `TaskTypeSelector.tsx`
+
+Призначення:
+- `AddNewVariantPage` буде новою точкою входу сторінки
+- `VariantDraftContext` буде джерелом draft-стану
+- `VariantMetaForm` замінить поточний блок `infoAboutNewVariant`
+- `VariantTaskGrid` замінить логіку списку номерів задач
+- `TaskEditorPanel` стане контейнером для редактора вибраної задачі
+- `TaskTypeSelector` ізолює вибір типу задачі
+
+### 2. Потім створити папки для розділення UI
+Створити 3 папки:
+
+- `editors/`
+- `sections/`
+- `model/`
+
+Це треба зробити до переносу логіки, щоб нові компоненти одразу складались у правильні місця, а не накопичувались знову в корені `creatorVariant`.
+
+### 3. Потім створити модельний шар
+У `model/` створити:
+
+- `creatorVariant.types.ts`
+- `creatorVariant.factories.ts`
+- `creatorVariant.validation.ts`
+- `creatorVariant.persistence.ts`
+
+Призначення:
+- `types` для draft-типів і UI-статусів
+- `factories` для `createEmptyChoiceTask`, `createEmptyComparisonTask`, `createEmptyOpenAnswerTask`
+- `validation` для перевірки метаданих варіанту і задач
+- `persistence` для `createVariant`, `saveTask`, `getTypePath`, upload файлів
+
+Першим у `model/` я б робив саме `types`, потім `factories`, потім `persistence`, потім `validation`.
+
+### 4. Потім створити editor-компоненти
+У `editors/` створити:
+
+- `ChoiceTaskEditor.tsx`
+- `ComparisonTaskEditor.tsx`
+- `OpenAnswerTaskEditor.tsx`
+
+Це будуть container-компоненти для конкретних типів задач. Вони мають:
+- брати draft задачі
+- рендерити секції
+- запускати збереження
+- не містити дубльованого Firestore-коду
+
+### 5. Потім створити секції форми
+У `sections/` створити:
+
+- `TaskConditionSection.tsx`
+- `ChoiceAnswersSection.tsx`
+- `ChoiceCorrectAnswerSection.tsx`
+- `ComparisonPairsSection.tsx`
+- `ComparisonCorrectMapSection.tsx`
+- `OpenAnswerCorrectSection.tsx`
+- `TaskSaveActions.tsx`
+
+Принцип:
+- секції тільки показують і редагують поля
+- секції не мають знати про Firestore
+- секції не читають `VariantContext`
+
+### 6. Після цього зробити мапу відповідальностей
+Ще до переносу коду зафіксувати для себе, що куди піде:
+
+- `infoAboutNewVariant.tsx` -> логіка і UI розійдуться в `VariantMetaForm`
+- `creatorNewVariant.tsx` -> логіка списку задач піде в `VariantTaskGrid`
+- `choosingTaskType.tsx` -> заміниться на `TaskTypeSelector`
+- `creatorTaskChoice.tsx` -> буде розбитий на `ChoiceTaskEditor` + `TaskConditionSection` + `ChoiceAnswersSection` + `ChoiceCorrectAnswerSection`
+- `creatorTaskMatching.tsx` -> `ComparisonTaskEditor` + відповідні секції
+- `creatorTaskOpenAnswer.tsx` -> `OpenAnswerTaskEditor` + відповідні секції
+- дубльований Firestore/upload код -> `model/creatorVariant.persistence.ts`
+
+### 7. Лише після створення каркаса починати перенос
+Порядок переносу я рекомендую такий:
+
+1. Перенести `getTypePath`, `createVariant`, upload, `saveTask` у `model/persistence`
+2. Описати factory-функції у `model/factories`
+3. Зробити `VariantDraftContext`
+4. Підключити `VariantMetaForm`
+5. Підключити `VariantTaskGrid`
+6. Підключити `TaskEditorPanel`
+7. Перенести `ChoiceTaskEditor`
+8. Перенести `ComparisonTaskEditor`
+9. Перенести `OpenAnswerTaskEditor`
+10. Прибрати старі компоненти або залишити їх тимчасово як fallback
+
+## Мінімальний стартовий набір файлів
+Якщо хочеш почати без перевантаження, спочатку достатньо створити тільки це:
+
+- `AddNewVariantPage.tsx`
+- `VariantDraftContext.tsx`
+- `VariantMetaForm.tsx`
+- `VariantTaskGrid.tsx`
+- `TaskEditorPanel.tsx`
+- `TaskTypeSelector.tsx`
+- `model/creatorVariant.types.ts`
+- `model/creatorVariant.factories.ts`
+- `model/creatorVariant.persistence.ts`
+
+Це найкращий “перший пакет”, бо він вже задає архітектуру, але ще не змушує одразу переносити всі форми.
+
+## Що не робити на старті
+- Не переносити всі старі компоненти одним великим ривком.
+- Не змішувати нову структуру зі старим кодом без чіткої ролі.
+- Не починати з `sections/`, якщо ще немає `model/` і `TaskEditorPanel`.
+- Не тягнути `VariantContext` у нові creator-компоненти.
+
+## Прийняті рішення
+- Спочатку створюється каркас і модельний шар.
+- Потім підключається draft context.
+- Потім по одному переносяться редактори задач.
+- Старий код використовується як джерело логіки для міграції, а не як база для подальшого розширення.
