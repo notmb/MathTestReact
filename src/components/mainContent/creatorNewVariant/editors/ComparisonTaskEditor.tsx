@@ -1,6 +1,8 @@
 import type { ChangeEvent } from "react";
 import { useVariantDraftContext } from "../VariantDraftContext";
+import { saveTask } from "../model/persistence";
 import type { ComparisonTaskDraft } from "../model/types";
+import { validateComparisonTask } from "../model/validation";
 
 type ComparisonTaskEditorProps = {
   taskDraft: ComparisonTaskDraft;
@@ -9,6 +11,18 @@ type ComparisonTaskEditorProps = {
 const LEFT_ITEM_COUNT = 3;
 const RIGHT_ITEM_COUNT = 5;
 const RIGHT_OPTION_LABELS = ["А", "Б", "В", "Г", "Д"] as const;
+
+const createFilledStringArray = (
+  currentValues: string[],
+  targetLength: number,
+) =>
+  [
+    ...currentValues,
+    ...Array.from(
+      { length: Math.max(0, targetLength - currentValues.length) },
+      () => "",
+    ),
+  ].slice(0, targetLength);
 
 const readFileAsDataUrl = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -31,7 +45,7 @@ const readFileAsDataUrl = (file: File): Promise<string> =>
   });
 
 const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
-  const { updateTaskDraft } = useVariantDraftContext();
+  const { state, setTaskItems, updateTaskDraft } = useVariantDraftContext();
 
   const handleTaskTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const nextText = event.currentTarget.value;
@@ -57,7 +71,8 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
   const handleTaskImageChange = async (
     event: ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.currentTarget.files?.[0];
+    const input = event.currentTarget;
+    const file = input.files?.[0];
     if (!file) {
       return;
     }
@@ -72,17 +87,21 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
       return {
         ...current,
         files: [...current.files, file],
+        previewUrls: {
+          ...current.previewUrls,
+          taskPicture: imageUrl,
+        },
         data: {
           ...current.data,
           task: {
             ...current.data.task,
-            picture: imageUrl,
+            picture: file.name,
           },
         },
       };
     });
 
-    event.currentTarget.value = "";
+    input.value = "";
   };
 
   const handleRemoveTaskImage = () => {
@@ -93,6 +112,10 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
 
       return {
         ...current,
+        previewUrls: {
+          ...current.previewUrls,
+          taskPicture: "",
+        },
         data: {
           ...current.data,
           task: {
@@ -115,7 +138,9 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
         }
 
         const currentTexts = current.data.comparisonTable[listKey].texts ?? [];
-        const nextTexts = [...currentTexts];
+        const targetLength =
+          listKey === "list1" ? LEFT_ITEM_COUNT : RIGHT_ITEM_COUNT;
+        const nextTexts = createFilledStringArray(currentTexts, targetLength);
         nextTexts[index] = nextValue;
 
         return {
@@ -137,7 +162,8 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
   const handleListImageChange =
     (listKey: "list1" | "list2", index: number) =>
     async (event: ChangeEvent<HTMLInputElement>) => {
-      const file = event.currentTarget.files?.[0];
+      const input = event.currentTarget;
+      const file = input.files?.[0];
       if (!file) {
         return;
       }
@@ -149,28 +175,43 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
           return current;
         }
 
-        const currentPictures =
-          current.data.comparisonTable[listKey].pictures ?? [];
-        const nextPictures = [...currentPictures];
-        nextPictures[index] = imageUrl;
+        const targetLength =
+          listKey === "list1" ? LEFT_ITEM_COUNT : RIGHT_ITEM_COUNT;
+        const previewKey =
+          listKey === "list1" ? "list1Pictures" : "list2Pictures";
+        const nextPreviewPictures = createFilledStringArray(
+          current.previewUrls[previewKey],
+          targetLength,
+        );
+        const nextPictureNames = createFilledStringArray(
+          current.data.comparisonTable[listKey].pictures ?? [],
+          targetLength,
+        );
+
+        nextPreviewPictures[index] = imageUrl;
+        nextPictureNames[index] = file.name;
 
         return {
           ...current,
           files: [...current.files, file],
+          previewUrls: {
+            ...current.previewUrls,
+            [previewKey]: nextPreviewPictures,
+          },
           data: {
             ...current.data,
             comparisonTable: {
               ...current.data.comparisonTable,
               [listKey]: {
                 ...current.data.comparisonTable[listKey],
-                pictures: nextPictures,
+                pictures: nextPictureNames,
               },
             },
           },
         };
       });
 
-      event.currentTarget.value = "";
+      input.value = "";
     };
 
   const handleRemoveListImage = (
@@ -182,20 +223,34 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
         return current;
       }
 
-      const currentPictures =
-        current.data.comparisonTable[listKey].pictures ?? [];
-      const nextPictures = [...currentPictures];
-      nextPictures[index] = "";
+      const targetLength = listKey === "list1" ? LEFT_ITEM_COUNT : RIGHT_ITEM_COUNT;
+      const previewKey =
+        listKey === "list1" ? "list1Pictures" : "list2Pictures";
+      const nextPreviewPictures = createFilledStringArray(
+        current.previewUrls[previewKey],
+        targetLength,
+      );
+      const nextPictureNames = createFilledStringArray(
+        current.data.comparisonTable[listKey].pictures ?? [],
+        targetLength,
+      );
+
+      nextPreviewPictures[index] = "";
+      nextPictureNames[index] = "";
 
       return {
         ...current,
+        previewUrls: {
+          ...current.previewUrls,
+          [previewKey]: nextPreviewPictures,
+        },
         data: {
           ...current.data,
           comparisonTable: {
             ...current.data.comparisonTable,
             [listKey]: {
               ...current.data.comparisonTable[listKey],
-              pictures: nextPictures,
+              pictures: nextPictureNames,
             },
           },
         },
@@ -225,31 +280,123 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
       });
     };
 
-  const list1Texts = Array.from(
-    { length: LEFT_ITEM_COUNT },
-    (_, index) => taskDraft.data.comparisonTable.list1.texts?.[index] ?? "",
+  const list1Texts = createFilledStringArray(
+    taskDraft.data.comparisonTable.list1.texts ?? [],
+    LEFT_ITEM_COUNT,
   );
-  const list2Texts = Array.from(
-    { length: RIGHT_ITEM_COUNT },
-    (_, index) => taskDraft.data.comparisonTable.list2.texts?.[index] ?? "",
+  const list2Texts = createFilledStringArray(
+    taskDraft.data.comparisonTable.list2.texts ?? [],
+    RIGHT_ITEM_COUNT,
   );
-  const list1Pictures = Array.from(
-    { length: LEFT_ITEM_COUNT },
-    (_, index) => taskDraft.data.comparisonTable.list1.pictures?.[index] ?? "",
+  const list1Pictures = createFilledStringArray(
+    taskDraft.previewUrls.list1Pictures,
+    LEFT_ITEM_COUNT,
   );
-  const list2Pictures = Array.from(
-    { length: RIGHT_ITEM_COUNT },
-    (_, index) => taskDraft.data.comparisonTable.list2.pictures?.[index] ?? "",
+  const list2Pictures = createFilledStringArray(
+    taskDraft.previewUrls.list2Pictures,
+    RIGHT_ITEM_COUNT,
   );
+
+  const handleSaveTask = async () => {
+    const validationError = validateComparisonTask(taskDraft);
+
+    if (validationError) {
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "comparison") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "error",
+          errorMessage: validationError,
+        };
+      });
+      return;
+    }
+
+    if (!state.meta.variantId) {
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "comparison") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "error",
+          errorMessage: "Спочатку створи варіант, а потім зберігай задачі.",
+        };
+      });
+      return;
+    }
+
+    updateTaskDraft(taskDraft.numberTask, (current) => {
+      if (current.type !== "comparison") {
+        return current;
+      }
+
+      return {
+        ...current,
+        status: "saving",
+        errorMessage: null,
+      };
+    });
+
+    try {
+      await saveTask({
+        variantId: state.meta.variantId,
+        typeTest: state.meta.typeTest,
+        typeOfTask: "comparison",
+        taskNumber: taskDraft.numberTask,
+        taskData: taskDraft.data,
+        files: taskDraft.files,
+      });
+
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "comparison") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "saved",
+          errorMessage: null,
+        };
+      });
+
+      setTaskItems(
+        state.taskItems.map((item) =>
+          item.numberTask === taskDraft.numberTask
+            ? { ...item, taskIsAdded: true }
+            : item,
+        ),
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Не вдалося зберегти задачу на співставлення.";
+
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "comparison") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "error",
+          errorMessage: message,
+        };
+      });
+    }
+  };
 
   return (
     <section className="comparison_editor">
       <div className="comparison_editor__section">
         <div className="comparison_editor__section_header">
           <h3>Умова завдання</h3>
-          <p>
-            Додай основний текст завдання і, за потреби, зображення до нього.
-          </p>
+          <p>Додай основний текст завдання і, за потреби, зображення до нього.</p>
         </div>
 
         <label
@@ -280,11 +427,11 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
             accept="image/*"
             onChange={handleTaskImageChange}
           />
-          {taskDraft.data.task.picture && (
+          {taskDraft.previewUrls.taskPicture && (
             <div className="comparison_editor__preview_card">
               <img
                 className="comparison_editor__preview_image"
-                src={taskDraft.data.task.picture}
+                src={taskDraft.previewUrls.taskPicture}
                 alt={`Ілюстрація до завдання ${taskDraft.numberTask}`}
               />
               <button
@@ -303,8 +450,7 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
         <div className="comparison_editor__section_header">
           <h3>Елементи для співставлення</h3>
           <p>
-            Заповни обидва списки. Кожен елемент може містити текст,
-            зображення або обидва варіанти.
+            Заповни обидва списки. Кожен елемент може містити текст, зображення або обидва варіанти.
           </p>
         </div>
 
@@ -316,9 +462,7 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                 className="comparison_editor__item_card"
                 key={`${taskDraft.numberTask}-comparison-left-${index}`}
               >
-                <span className="comparison_editor__item_mark">
-                  {index + 1}
-                </span>
+                <span className="comparison_editor__item_mark">{index + 1}</span>
                 <div className="comparison_editor__item_fields">
                   <label
                     className="comparison_editor__label"
@@ -437,8 +581,7 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
         <div className="comparison_editor__section_header">
           <h3>Правильні відповідності</h3>
           <p>
-            Вибери, який елемент правого списку відповідає кожному елементу
-            лівого списку.
+            Вибери, який елемент правого списку відповідає кожному елементу лівого списку.
           </p>
         </div>
 
@@ -467,9 +610,7 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                   {RIGHT_OPTION_LABELS.map((label, optionIndex) => (
                     <option key={label} value={label}>
                       {label}
-                      {list2Texts[optionIndex]
-                        ? ` - ${list2Texts[optionIndex]}`
-                        : ""}
+                      {list2Texts[optionIndex] ? ` - ${list2Texts[optionIndex]}` : ""}
                     </option>
                   ))}
                 </select>
@@ -478,6 +619,29 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
           })}
         </div>
       </div>
+
+      <div className="creator_task_save_actions">
+        <button
+          className="creator_task_save_button"
+          type="button"
+          onClick={handleSaveTask}
+          disabled={taskDraft.status === "saving"}
+        >
+          {taskDraft.status === "saving"
+            ? "Збереження..."
+            : "Зберегти задачу"}
+        </button>
+      </div>
+      {taskDraft.errorMessage && (
+        <p className="creator_task_save_feedback creator_task_save_feedback--error">
+          {taskDraft.errorMessage}
+        </p>
+      )}
+      {taskDraft.status === "saved" && !taskDraft.errorMessage && (
+        <p className="creator_task_save_feedback creator_task_save_feedback--success">
+          Задачу збережено.
+        </p>
+      )}
     </section>
   );
 };

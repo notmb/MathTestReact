@@ -41,9 +41,34 @@ export interface TaskBaseDraft<
   data: TTaskData;
 }
 
-export type ChoiceTaskDraft = TaskBaseDraft<"choice", Task1>;
-export type ComparisonTaskDraft = TaskBaseDraft<"comparison", Task2>;
-export type OpenAnswerTaskDraft = TaskBaseDraft<"openAnswer", Task3>;
+export interface ChoiceTaskPreviewUrls {
+  taskPicture: string;
+  answerPictures: string[];
+}
+
+export interface ChoiceTaskDraft extends TaskBaseDraft<"choice", Task1> {
+  previewUrls: ChoiceTaskPreviewUrls;
+}
+
+export interface ComparisonTaskPreviewUrls {
+  taskPicture: string;
+  list1Pictures: string[];
+  list2Pictures: string[];
+}
+
+export interface ComparisonTaskDraft
+  extends TaskBaseDraft<"comparison", Task2> {
+  previewUrls: ComparisonTaskPreviewUrls;
+}
+
+export interface OpenAnswerTaskPreviewUrls {
+  taskPicture: string;
+}
+
+export interface OpenAnswerTaskDraft
+  extends TaskBaseDraft<"openAnswer", Task3> {
+  previewUrls: OpenAnswerTaskPreviewUrls;
+}
 
 export type TaskDraft =
   | EmptyTaskDraft

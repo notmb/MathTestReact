@@ -1,6 +1,8 @@
 import type { ChangeEvent } from "react";
 import { useVariantDraftContext } from "../VariantDraftContext";
+import { saveTask } from "../model/persistence";
 import type { OpenAnswerTaskDraft } from "../model/types";
+import { validateOpenAnswerTask } from "../model/validation";
 
 type OpenAnswerTaskEditorProps = {
   taskDraft: OpenAnswerTaskDraft;
@@ -27,7 +29,7 @@ const readFileAsDataUrl = (file: File): Promise<string> =>
   });
 
 const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
-  const { updateTaskDraft } = useVariantDraftContext();
+  const { state, setTaskItems, updateTaskDraft } = useVariantDraftContext();
 
   const handleTaskTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const nextText = event.currentTarget.value;
@@ -53,7 +55,8 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
   const handleTaskImageChange = async (
     event: ChangeEvent<HTMLInputElement>,
   ) => {
-    const file = event.currentTarget.files?.[0];
+    const input = event.currentTarget;
+    const file = input.files?.[0];
     if (!file) {
       return;
     }
@@ -68,17 +71,20 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
       return {
         ...current,
         files: [...current.files, file],
+        previewUrls: {
+          taskPicture: imageUrl,
+        },
         data: {
           ...current.data,
           task: {
             ...current.data.task,
-            picture: imageUrl,
+            picture: file.name,
           },
         },
       };
     });
 
-    event.currentTarget.value = "";
+    input.value = "";
   };
 
   const handleRemoveTaskImage = () => {
@@ -89,6 +95,9 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
 
       return {
         ...current,
+        previewUrls: {
+          taskPicture: "",
+        },
         data: {
           ...current.data,
           task: {
@@ -118,14 +127,107 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
     });
   };
 
+  const handleSaveTask = async () => {
+    const validationError = validateOpenAnswerTask(taskDraft);
+
+    if (validationError) {
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "openAnswer") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "error",
+          errorMessage: validationError,
+        };
+      });
+      return;
+    }
+
+    if (!state.meta.variantId) {
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "openAnswer") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "error",
+          errorMessage: "Спочатку створи варіант, а потім зберігай задачі.",
+        };
+      });
+      return;
+    }
+
+    updateTaskDraft(taskDraft.numberTask, (current) => {
+      if (current.type !== "openAnswer") {
+        return current;
+      }
+
+      return {
+        ...current,
+        status: "saving",
+        errorMessage: null,
+      };
+    });
+
+    try {
+      await saveTask({
+        variantId: state.meta.variantId,
+        typeTest: state.meta.typeTest,
+        typeOfTask: "openAnswer",
+        taskNumber: taskDraft.numberTask,
+        taskData: taskDraft.data,
+        files: taskDraft.files,
+      });
+
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "openAnswer") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "saved",
+          errorMessage: null,
+        };
+      });
+
+      setTaskItems(
+        state.taskItems.map((item) =>
+          item.numberTask === taskDraft.numberTask
+            ? { ...item, taskIsAdded: true }
+            : item,
+        ),
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Не вдалося зберегти задачу з відкритою відповіддю.";
+
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "openAnswer") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "error",
+          errorMessage: message,
+        };
+      });
+    }
+  };
+
   return (
     <section className="open_answer_editor">
       <div className="open_answer_editor__section">
         <div className="open_answer_editor__section_header">
           <h3>Умова завдання</h3>
           <p>
-            Додай текст завдання і, за потреби, зображення, яке допоможе
-            сформулювати умову.
+            Додай текст завдання і, за потреби, зображення, яке допоможе сформулювати умову.
           </p>
         </div>
 
@@ -157,11 +259,11 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
             accept="image/*"
             onChange={handleTaskImageChange}
           />
-          {taskDraft.data.task.picture && (
+          {taskDraft.previewUrls.taskPicture && (
             <div className="open_answer_editor__preview_card">
               <img
                 className="open_answer_editor__preview_image"
-                src={taskDraft.data.task.picture}
+                src={taskDraft.previewUrls.taskPicture}
                 alt={`Ілюстрація до завдання ${taskDraft.numberTask}`}
               />
               <button
@@ -197,6 +299,29 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
           placeholder="Наприклад: 12 або x = 4"
         />
       </div>
+
+      <div className="creator_task_save_actions">
+        <button
+          className="creator_task_save_button"
+          type="button"
+          onClick={handleSaveTask}
+          disabled={taskDraft.status === "saving"}
+        >
+          {taskDraft.status === "saving"
+            ? "Збереження..."
+            : "Зберегти задачу"}
+        </button>
+      </div>
+      {taskDraft.errorMessage && (
+        <p className="creator_task_save_feedback creator_task_save_feedback--error">
+          {taskDraft.errorMessage}
+        </p>
+      )}
+      {taskDraft.status === "saved" && !taskDraft.errorMessage && (
+        <p className="creator_task_save_feedback creator_task_save_feedback--success">
+          Задачу збережено.
+        </p>
+      )}
     </section>
   );
 };

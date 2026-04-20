@@ -3,6 +3,7 @@ import TaskEditorPanel from "./TaskEditorPanel";
 import TaskEditorRouter from "./TaskEditorRouter";
 import { useVariantDraftContext } from "./VariantDraftContext";
 import VariantMetaForm from "./VariantMetaForm";
+import { createVariant } from "./model/persistence";
 import VariantTaskGrid from "./VariantTaskGrid";
 import { validateVariantMeta } from "./model/validation";
 
@@ -18,7 +19,7 @@ const CreatorNewVariantFlow = () => {
     setTaskType,
   } = useVariantDraftContext();
 
-  const handleSubmitMeta = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmitMeta = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const taskCount = Number(state.meta.numberOfTasks);
@@ -30,10 +31,32 @@ const CreatorNewVariantFlow = () => {
       return;
     }
 
-    setErrorMessage(null);
-    setStatus("ready");
-    initializeTasks(taskCount);
-    setIsMetaCollapsed(true);
+    try {
+      setErrorMessage(null);
+      setStatus("creating");
+
+      const result = await createVariant({
+        variantName: state.meta.variantName,
+        variantSerialNumber: state.meta.variantSerialNumber,
+        numberOfTasks: state.meta.numberOfTasks,
+        typeTest: state.meta.typeTest,
+      });
+
+      patchMeta({
+        variantId: result.variantId,
+      });
+      initializeTasks(taskCount);
+      setStatus("ready");
+      setIsMetaCollapsed(true);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Не вдалося створити варіант.";
+
+      setStatus("error");
+      setErrorMessage(message);
+    }
   };
 
   const selectedTaskType =
@@ -63,10 +86,10 @@ const CreatorNewVariantFlow = () => {
           <div className="creator_meta_summary__header">
             <div>
               <p className="creator_meta_summary__eyebrow">
-                Р‘Р°Р·РѕРІС– РґР°РЅС– РІР°СЂС–Р°РЅС‚Сѓ Р·Р±РµСЂРµР¶РµРЅС–
+                Базові дані варіанту збережені
               </p>
               <h2 className="creator_meta_summary__title">
-                {state.meta.variantName || "Р‘РµР· РЅР°Р·РІРё"}
+                {state.meta.variantName || "Без назви"}
               </h2>
             </div>
             <button
@@ -74,25 +97,25 @@ const CreatorNewVariantFlow = () => {
               type="button"
               onClick={() => setIsMetaCollapsed(false)}
             >
-              Р РµРґР°РіСѓРІР°С‚Рё
+              Редагувати
             </button>
           </div>
 
           <dl className="creator_meta_summary__grid">
             <div>
-              <dt>РќРѕРјРµСЂ</dt>
-              <dd>{state.meta.variantSerialNumber || "РќРµ РІРєР°Р·Р°РЅРѕ"}</dd>
+              <dt>Номер</dt>
+              <dd>{state.meta.variantSerialNumber || "Не вказано"}</dd>
             </div>
             <div>
-              <dt>РљС–Р»СЊРєС–СЃС‚СЊ Р·Р°РґР°С‡</dt>
-              <dd>{state.meta.numberOfTasks || "РќРµ РІРєР°Р·Р°РЅРѕ"}</dd>
+              <dt>Кількість задач</dt>
+              <dd>{state.meta.numberOfTasks || "Не вказано"}</dd>
             </div>
             <div>
-              <dt>РўРёРї С‚РµСЃС‚Сѓ</dt>
+              <dt>Тип тесту</dt>
               <dd>
                 {state.meta.typeTest === "retaking"
-                  ? "РџРµСЂРµР·РґР°С‡Р°"
-                  : "РћСЃРЅРѕРІРЅРёР№"}
+                  ? "Перездача"
+                  : "Основний"}
               </dd>
             </div>
           </dl>
@@ -111,6 +134,7 @@ const CreatorNewVariantFlow = () => {
         <>
           <VariantTaskGrid
             tasks={state.taskItems}
+            taskDrafts={state.taskDrafts}
             selectedTaskNumber={state.selectedTaskNumber}
             onSelectTask={setSelectedTaskNumber}
           />

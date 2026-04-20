@@ -33,7 +33,9 @@
   padding: 4px 8px; /* Відступи всередині кнопки */
   font-size: 16px; /* Розмір шрифту */
   cursor: pointer; /* Курсор у вигляді руки при наведенні */
-  transition: background-color 0.3s, border-color 0.3s; /* Анімація для змін кольору */
+  transition:
+    background-color 0.3s,
+    border-color 0.3s; /* Анімація для змін кольору */
   margin: 4px 0 16px 0;
 }
 
@@ -119,9 +121,7 @@
   height: 30px;
   cursor: pointer;
 }
-.creator_task {
-  margin-top: 24px;
-}
+
 .task_is_added {
   padding: 16px;
 }

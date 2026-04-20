@@ -1,5 +1,11 @@
 # План доробки модуля `creatorNewVariant`
 
+Логіка така:
+
+-у taskDraft.data зберігаються тільки назви файлів
+-у taskDraft.previewUrls зберігаються base64-прев’ю для UI
+-save у Firebase бере чистий taskData, без preview-рядків
+
 ## Мета
 Довести `src/components/mainContent/creatorNewVariant` до стану повноцінного робочого модуля для створення нового варіанту тесту:
 - створення метаданих варіанту;

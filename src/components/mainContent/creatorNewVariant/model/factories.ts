@@ -32,6 +32,10 @@ export const createEmptyChoiceTask = (taskNumber: string): ChoiceTaskDraft => ({
   status: "draft",
   errorMessage: null,
   files: [],
+  previewUrls: {
+    taskPicture: "",
+    answerPictures: [],
+  },
   data: {
     task: {
       text: "",
@@ -59,6 +63,11 @@ export const createEmptyComparisonTask = (
   status: "draft",
   errorMessage: null,
   files: [],
+  previewUrls: {
+    taskPicture: "",
+    list1Pictures: [],
+    list2Pictures: [],
+  },
   data: {
     task: {
       text: "",
@@ -96,6 +105,9 @@ export const createEmptyOpenAnswerTask = (
   status: "draft",
   errorMessage: null,
   files: [],
+  previewUrls: {
+    taskPicture: "",
+  },
   data: {
     task: {
       text: "",
