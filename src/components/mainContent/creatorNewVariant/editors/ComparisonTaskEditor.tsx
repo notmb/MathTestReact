@@ -421,12 +421,23 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
             Зображення до умови
           </label>
           <input
-            className="comparison_editor__file_input"
+            className="comparison_editor__file_input comparison_editor__file_input--hidden"
             id={`comparison-task-image-${taskDraft.numberTask}`}
             type="file"
             accept="image/*"
             onChange={handleTaskImageChange}
           />
+          <label
+            className="comparison_editor__file_trigger"
+            htmlFor={`comparison-task-image-${taskDraft.numberTask}`}
+          >
+            РћР±СЂР°С‚Рё РєР°СЂС‚РёРЅРєСѓ
+          </label>
+          {taskDraft.data.task.picture && (
+            <p className="comparison_editor__file_name">
+              {taskDraft.data.task.picture}
+            </p>
+          )}
           {taskDraft.previewUrls.taskPicture && (
             <div className="comparison_editor__preview_card">
               <img
@@ -486,12 +497,23 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                     Зображення для елемента {index + 1}
                   </label>
                   <input
-                    className="comparison_editor__file_input"
+                    className="comparison_editor__file_input comparison_editor__file_input--hidden"
                     id={`comparison-left-image-${taskDraft.numberTask}-${index}`}
                     type="file"
                     accept="image/*"
                     onChange={handleListImageChange("list1", index)}
                   />
+                  <label
+                    className="comparison_editor__file_trigger"
+                    htmlFor={`comparison-left-image-${taskDraft.numberTask}-${index}`}
+                  >
+                    РћР±СЂР°С‚Рё РєР°СЂС‚РёРЅРєСѓ
+                  </label>
+                  {taskDraft.data.comparisonTable.list1.pictures?.[index] && (
+                    <p className="comparison_editor__file_name">
+                      {taskDraft.data.comparisonTable.list1.pictures[index]}
+                    </p>
+                  )}
 
                   {list1Pictures[index] && (
                     <div className="comparison_editor__preview_card">
@@ -547,12 +569,23 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                     Зображення для елемента {RIGHT_OPTION_LABELS[index]}
                   </label>
                   <input
-                    className="comparison_editor__file_input"
+                    className="comparison_editor__file_input comparison_editor__file_input--hidden"
                     id={`comparison-right-image-${taskDraft.numberTask}-${index}`}
                     type="file"
                     accept="image/*"
                     onChange={handleListImageChange("list2", index)}
                   />
+                  <label
+                    className="comparison_editor__file_trigger"
+                    htmlFor={`comparison-right-image-${taskDraft.numberTask}-${index}`}
+                  >
+                    РћР±СЂР°С‚Рё РєР°СЂС‚РёРЅРєСѓ
+                  </label>
+                  {taskDraft.data.comparisonTable.list2.pictures?.[index] && (
+                    <p className="comparison_editor__file_name">
+                      {taskDraft.data.comparisonTable.list2.pictures[index]}
+                    </p>
+                  )}
 
                   {list2Pictures[index] && (
                     <div className="comparison_editor__preview_card">

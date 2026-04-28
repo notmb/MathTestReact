@@ -16,7 +16,12 @@ const TaskEditorRouter = ({ taskDraft }: TaskEditorRouterProps) => {
     case "openAnswer":
       return <OpenAnswerTaskEditor taskDraft={taskDraft} />;
     default:
-      return <p>Select a task type to start editing task #{taskDraft.numberTask}.</p>;
+      return (
+        <p>
+          Виберіть тип завдання, щоб розпочати редагування завдання #
+          {taskDraft.numberTask}.
+        </p>
+      );
   }
 };
 

@@ -526,21 +526,86 @@
   margin-top: 16px;
 }
 
+.choice_editor__file_input--hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.choice_editor__file_trigger {
+  display: flex;
+  justify-self: start;
+  align-items: center;
+  width: auto;
+  min-height: 46px;
+  padding: 12px 16px;
+  border: 1px solid var(--creator-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--creator-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.choice_editor__file_trigger:hover {
+  background: var(--creator-surface-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(92, 62, 18, 0.12);
+}
+
+.choice_editor__file_name {
+  margin: 0;
+  color: var(--creator-text-soft);
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
 .choice_editor__answers_grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
   gap: 16px;
+  flex-direction: column;
 }
 
 .choice_editor__answer_card {
-  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
   border: 1px solid rgba(183, 157, 104, 0.5);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.72);
 }
 
+.choice_editor_text {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 8px;
+}
+
+.choice_editor_picture {
+  display: flex;
+  width: 50%;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 8px;
+}
+
 .choice_editor__preview_card {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   margin-top: 12px;
   padding: 14px;
@@ -551,14 +616,17 @@
 
 .choice_editor__preview_image {
   width: 100%;
-  max-width: 260px;
+  /* max-width: 260px; */
+  max-height: 250px;
   border-radius: 12px;
   object-fit: contain;
   background: #fff;
 }
 
 .choice_editor__preview_image--answer {
-  max-width: 200px;
+  /* max-width: 200px; */
+  /* max-width: 260px; */
+  max-height: 250px;
 }
 
 .choice_editor__ghost_button {
@@ -714,6 +782,51 @@
   margin-top: 16px;
 }
 
+.comparison_editor__file_input--hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.comparison_editor__file_trigger {
+  display: inline-flex;
+  justify-self: start;
+  align-items: center;
+  min-height: 46px;
+  padding: 12px 16px;
+  border: 1px solid var(--creator-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--creator-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.comparison_editor__file_trigger:hover {
+  background: var(--creator-surface-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(92, 62, 18, 0.12);
+}
+
+.comparison_editor__file_name {
+  margin: 0;
+  color: var(--creator-text-soft);
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
 .comparison_editor__preview_card {
   display: grid;
   gap: 12px;
@@ -837,6 +950,51 @@
   display: grid;
   gap: 8px;
   margin-top: 16px;
+}
+
+.open_answer_editor__file_input--hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.open_answer_editor__file_trigger {
+  display: inline-flex;
+  justify-self: start;
+  align-items: center;
+  min-height: 46px;
+  padding: 12px 16px;
+  border: 1px solid var(--creator-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--creator-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.open_answer_editor__file_trigger:hover {
+  background: var(--creator-surface-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(92, 62, 18, 0.12);
+}
+
+.open_answer_editor__file_name {
+  margin: 0;
+  color: var(--creator-text-soft);
+  font-size: 0.95rem;
+  word-break: break-word;
 }
 
 .open_answer_editor__preview_card {

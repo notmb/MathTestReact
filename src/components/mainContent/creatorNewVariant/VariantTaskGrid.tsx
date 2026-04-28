@@ -12,6 +12,7 @@ type VariantTaskGridProps = {
 };
 
 const getTaskStatusMeta = (status: TaskDraftStatus) => {
+  // функція, перетворює статус задачі на дані для UI.
   switch (status) {
     case "empty":
       return {

@@ -1,5 +1,5 @@
 import type { CreateVariantPayload, SaveTaskPayload } from "./types";
-import { db } from "../../../../firebaseConfig";
+import { db, storage } from "../../../../firebaseConfig";
 import {
   addDoc,
   collection,
@@ -7,6 +7,7 @@ import {
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 
 export type CreateVariantResult = {
   variantId: string;
@@ -21,6 +22,43 @@ const VARIANTS_COLLECTION_PATH = [
   "Topics",
   "Garbage",
 ] as const;
+
+const collectReferencedFileNames = (payload: SaveTaskPayload): Set<string> => {
+  const fileNames = new Set<string>();
+  const { taskData } = payload;
+  const addFileName = (value?: string) => {
+    if (!value) {
+      return;
+    }
+
+    fileNames.add(value);
+  };
+
+  addFileName(taskData.task.picture);
+
+  if (taskData.typeOfTask === "choice") {
+    taskData.answers.pictures?.forEach(addFileName);
+  }
+
+  if (taskData.typeOfTask === "comparison") {
+    taskData.comparisonTable.list1.pictures?.forEach(addFileName);
+    taskData.comparisonTable.list2.pictures?.forEach(addFileName);
+  }
+
+  return fileNames;
+};
+
+const uploadTaskFiles = async (payload: SaveTaskPayload) => {
+  const referencedFileNames = collectReferencedFileNames(payload);
+  const filesToUpload =
+    payload.files?.filter((file) => referencedFileNames.has(file.name)) ?? [];
+
+  await Promise.all(
+    filesToUpload.map((file) =>
+      uploadBytes(ref(storage, `${payload.variantId}/${file.name}`), file),
+    ),
+  );
+};
 
 const normalizeCreateVariantPayload = (
   payload: CreateVariantPayload,
@@ -58,14 +96,13 @@ export const saveTask = async (payload: SaveTaskPayload): Promise<void> => {
     payload.taskNumber,
   );
 
+  await uploadTaskFiles(payload);
+
   await setDoc(
     taskDocument,
     {
-      taskNumber: payload.taskNumber,
-      typeOfTask: payload.typeOfTask,
-      typeTest: payload.typeTest,
-      taskData: payload.taskData,
       updatedAt: serverTimestamp(),
+      ...payload.taskData,
     },
     { merge: true },
   );

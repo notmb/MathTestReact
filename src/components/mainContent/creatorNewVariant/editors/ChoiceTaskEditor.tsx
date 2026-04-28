@@ -9,6 +9,41 @@ type ChoiceTaskEditorProps = {
 };
 
 const DEFAULT_ANSWER_COUNT = 5;
+const UA_LETTERS = [
+  "А",
+  "Б",
+  "В",
+  "Г",
+  "Ґ",
+  "Д",
+  "Е",
+  "Є",
+  "Ж",
+  "З",
+  "И",
+  "І",
+  "Ї",
+  "Й",
+  "К",
+  "Л",
+  "М",
+  "Н",
+  "О",
+  "П",
+  "Р",
+  "С",
+  "Т",
+  "У",
+  "Ф",
+  "Х",
+  "Ц",
+  "Ч",
+  "Ш",
+  "Щ",
+  "Ь",
+  "Ю",
+  "Я",
+];
 
 const createFilledStringArray = (
   currentValues: string[],
@@ -269,6 +304,11 @@ const ChoiceTaskEditor = ({ taskDraft }: ChoiceTaskEditorProps) => {
       ? taskDraft.data.answers.values
       : Array.from({ length: DEFAULT_ANSWER_COUNT }, () => "");
 
+  const letterIdAnswers =
+    taskDraft.data.answers.values.length > 0
+      ? taskDraft.data.answers.values
+      : UA_LETTERS.slice(0, DEFAULT_ANSWER_COUNT);
+
   const answerPictures = createFilledStringArray(
     taskDraft.previewUrls.answerPictures,
     answers.length,
@@ -398,12 +438,23 @@ const ChoiceTaskEditor = ({ taskDraft }: ChoiceTaskEditorProps) => {
             Картинка до умови
           </label>
           <input
-            className="choice_editor__file_input"
+            className="choice_editor__file_input choice_editor__file_input--hidden"
             id={`choice-task-image-${taskDraft.numberTask}`}
             type="file"
             accept="image/*"
             onChange={handleTaskImageChange}
           />
+          <label
+            className="choice_editor__file_trigger"
+            htmlFor={`choice-task-image-${taskDraft.numberTask}`}
+          >
+            Додати картинку
+          </label>
+          {taskDraft.data.task.picture && (
+            <p className="choice_editor__file_name">
+              {taskDraft.data.task.picture}
+            </p>
+          )}
           {taskDraft.previewUrls.taskPicture && (
             <div className="choice_editor__preview_card">
               <img
@@ -431,56 +482,67 @@ const ChoiceTaskEditor = ({ taskDraft }: ChoiceTaskEditorProps) => {
 
         <div className="choice_editor__answers_grid">
           {answers.map((answer, index) => (
-            <div
-              className="choice_editor__answer_card"
-              key={`${taskDraft.numberTask}-choice-answer-${index}`}
-            >
-              <label
-                className="choice_editor__label"
-                htmlFor={`choice-answer-${taskDraft.numberTask}-${index}`}
+            <>
+              <span className="font-semibold">
+                Відповідь: {letterIdAnswers[index]}
+              </span>
+              <div
+                className="choice_editor__answer_card"
+                key={`${taskDraft.numberTask}-choice-answer-${index}`}
               >
-                Відповідь {index + 1}
-              </label>
-              <input
-                className="choice_editor__input"
-                id={`choice-answer-${taskDraft.numberTask}-${index}`}
-                type="text"
-                value={answer}
-                onChange={handleAnswerChange(index)}
-                placeholder={`Текст відповіді ${index + 1}`}
-              />
-
-              <label
-                className="choice_editor__label"
-                htmlFor={`choice-answer-image-${taskDraft.numberTask}-${index}`}
-              >
-                Картинка до відповіді {index + 1}
-              </label>
-              <input
-                className="choice_editor__file_input"
-                id={`choice-answer-image-${taskDraft.numberTask}-${index}`}
-                type="file"
-                accept="image/*"
-                onChange={handleAnswerImageChange(index)}
-              />
-
-              {answerPictures[index] && (
-                <div className="choice_editor__preview_card">
-                  <img
-                    className="choice_editor__preview_image choice_editor__preview_image--answer"
-                    src={answerPictures[index]}
-                    alt={`Answer ${index + 1} illustration`}
+                <div className="choice_editor_text">
+                  <input
+                    className="choice_editor__input"
+                    id={`choice-answer-${taskDraft.numberTask}-${index}`}
+                    type="text"
+                    value={answer}
+                    onChange={handleAnswerChange(index)}
+                    placeholder={`Текст відповіді ${letterIdAnswers[index]}`}
                   />
-                  <button
-                    className="choice_editor__ghost_button"
-                    type="button"
-                    onClick={() => handleRemoveAnswerImage(index)}
-                  >
-                    Прибрати картинку
-                  </button>
                 </div>
-              )}
-            </div>
+
+                <div className="choice_editor_picture">
+                  <input
+                    className="choice_editor__file_input choice_editor__file_input--hidden"
+                    id={`choice-answer-image-${taskDraft.numberTask}-${index}`}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAnswerImageChange(index)}
+                  />
+                  <label
+                    className="choice_editor__file_trigger"
+                    htmlFor={`choice-answer-image-${taskDraft.numberTask}-${index}`}
+                  >
+                    <span>
+                      {answerPictures[index]
+                        ? "Замінити картинку"
+                        : "Додати картинку"}
+                    </span>
+                  </label>
+                  {answerPictures[index] && (
+                    <div className="choice_editor__preview_card">
+                      {taskDraft.data.answers.pictures?.[index] && (
+                        <p className="choice_editor__file_name">
+                          {taskDraft.data.answers.pictures[index]}
+                        </p>
+                      )}
+                      <img
+                        className="choice_editor__preview_image choice_editor__preview_image--answer"
+                        src={answerPictures[index]}
+                        alt={`Answer ${index + 1} illustration`}
+                      />
+                      <button
+                        className="choice_editor__ghost_button"
+                        type="button"
+                        onClick={() => handleRemoveAnswerImage(index)}
+                      >
+                        Прибрати картинку
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
           ))}
         </div>
       </div>
@@ -514,9 +576,7 @@ const ChoiceTaskEditor = ({ taskDraft }: ChoiceTaskEditorProps) => {
           onClick={handleSaveTask}
           disabled={taskDraft.status === "saving"}
         >
-          {taskDraft.status === "saving"
-            ? "Збереження..."
-            : "Зберегти задачу"}
+          {taskDraft.status === "saving" ? "Збереження..." : "Зберегти задачу"}
         </button>
       </div>
       {taskDraft.errorMessage && (

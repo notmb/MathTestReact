@@ -56,13 +56,13 @@
 - `ComparisonTaskEditor`
 - `OpenAnswerTaskEditor`
 
-Кожен editor:
+Кожен editor: +
 - читає draft задачі
 - оновлює draft задачі
 - викликає `saveTask`
 - не будує сам шляхи Firestore
 
-### Спільні секції
+### Спільні секції 
 - `TaskConditionSection`
   - текст умови
   - зображення задачі

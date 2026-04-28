@@ -253,12 +253,23 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
             Зображення до умови
           </label>
           <input
-            className="open_answer_editor__file_input"
+            className="open_answer_editor__file_input open_answer_editor__file_input--hidden"
             id={`open-answer-task-image-${taskDraft.numberTask}`}
             type="file"
             accept="image/*"
             onChange={handleTaskImageChange}
           />
+          <label
+            className="open_answer_editor__file_trigger"
+            htmlFor={`open-answer-task-image-${taskDraft.numberTask}`}
+          >
+            РћР±СЂР°С‚Рё РєР°СЂС‚РёРЅРєСѓ
+          </label>
+          {taskDraft.data.task.picture && (
+            <p className="open_answer_editor__file_name">
+              {taskDraft.data.task.picture}
+            </p>
+          )}
           {taskDraft.previewUrls.taskPicture && (
             <div className="open_answer_editor__preview_card">
               <img
