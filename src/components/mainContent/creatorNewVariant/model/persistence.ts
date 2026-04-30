@@ -1,8 +1,13 @@
-import type { CreateVariantPayload, SaveTaskPayload } from "./types";
+import type {
+  CreateVariantPayload,
+  SaveTaskPayload,
+  VariantType,
+} from "./types";
 import { db, storage } from "../../../../firebaseConfig";
 import {
   addDoc,
   collection,
+  type CollectionReference,
   doc,
   serverTimestamp,
   setDoc,
@@ -14,14 +19,6 @@ export type CreateVariantResult = {
 };
 
 const TASKS_COLLECTION_NAME = "tasks";
-
-const VARIANTS_COLLECTION_PATH = [
-  "Subjects",
-  "Math",
-  "Algebra",
-  "Topics",
-  "Garbage",
-] as const;
 
 const collectReferencedFileNames = (payload: SaveTaskPayload): Set<string> => {
   const fileNames = new Set<string>();
@@ -60,6 +57,14 @@ const uploadTaskFiles = async (payload: SaveTaskPayload) => {
   );
 };
 
+const getVariantsCollection = (typeTest: VariantType): CollectionReference => {
+  const topicsCollection = doc(db, "Subjects", "Math", "Algebra", "Topics");
+
+  return typeTest === "main"
+    ? collection(topicsCollection, "Mix")
+    : collection(topicsCollection, "Retaking");
+};
+
 const normalizeCreateVariantPayload = (
   payload: CreateVariantPayload,
 ): CreateVariantPayload => ({
@@ -73,7 +78,7 @@ export const createVariant = async (
   payload: CreateVariantPayload,
 ): Promise<CreateVariantResult> => {
   const normalizedPayload = normalizeCreateVariantPayload(payload);
-  const variantsCollection = collection(db, ...VARIANTS_COLLECTION_PATH);
+  const variantsCollection = getVariantsCollection(payload.typeTest);
   const createdVariant = await addDoc(variantsCollection, {
     variantName: normalizedPayload.variantName,
     variantSerialNumber: normalizedPayload.variantSerialNumber,
@@ -88,13 +93,10 @@ export const createVariant = async (
 };
 
 export const saveTask = async (payload: SaveTaskPayload): Promise<void> => {
-  const taskDocument = doc(
-    db,
-    ...VARIANTS_COLLECTION_PATH,
-    payload.variantId,
-    TASKS_COLLECTION_NAME,
-    payload.taskNumber,
-  );
+  const variantsCollection = getVariantsCollection(payload.typeTest);
+  const variantDocument = doc(variantsCollection, payload.variantId);
+  const tasksCollection = collection(variantDocument, TASKS_COLLECTION_NAME);
+  const taskDocument = doc(tasksCollection, payload.taskNumber);
 
   await uploadTaskFiles(payload);
 

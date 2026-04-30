@@ -38,7 +38,9 @@ const readFileAsDataUrl = (file: File): Promise<string> =>
     };
 
     reader.onerror = () => {
-      reject(reader.error ?? new Error("Не вдалося прочитати файл зображення."));
+      reject(
+        reader.error ?? new Error("Не вдалося прочитати файл зображення."),
+      );
     };
 
     reader.readAsDataURL(file);
@@ -214,16 +216,14 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
       input.value = "";
     };
 
-  const handleRemoveListImage = (
-    listKey: "list1" | "list2",
-    index: number,
-  ) => {
+  const handleRemoveListImage = (listKey: "list1" | "list2", index: number) => {
     updateTaskDraft(taskDraft.numberTask, (current) => {
       if (current.type !== "comparison") {
         return current;
       }
 
-      const targetLength = listKey === "list1" ? LEFT_ITEM_COUNT : RIGHT_ITEM_COUNT;
+      const targetLength =
+        listKey === "list1" ? LEFT_ITEM_COUNT : RIGHT_ITEM_COUNT;
       const previewKey =
         listKey === "list1" ? "list1Pictures" : "list2Pictures";
       const nextPreviewPictures = createFilledStringArray(
@@ -396,7 +396,9 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
       <div className="comparison_editor__section">
         <div className="comparison_editor__section_header">
           <h3>Умова завдання</h3>
-          <p>Додай основний текст завдання і, за потреби, зображення до нього.</p>
+          <p>
+            Додай основний текст завдання і, за потреби, зображення до нього.
+          </p>
         </div>
 
         <label
@@ -417,9 +419,7 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
           <label
             className="comparison_editor__label"
             htmlFor={`comparison-task-image-${taskDraft.numberTask}`}
-          >
-            Зображення до умови
-          </label>
+          ></label>
           <input
             className="comparison_editor__file_input comparison_editor__file_input--hidden"
             id={`comparison-task-image-${taskDraft.numberTask}`}
@@ -431,7 +431,11 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
             className="comparison_editor__file_trigger"
             htmlFor={`comparison-task-image-${taskDraft.numberTask}`}
           >
-            РћР±СЂР°С‚Рё РєР°СЂС‚РёРЅРєСѓ
+            <span>
+              {taskDraft.data.task.picture
+                ? "Замінити картинку"
+                : "Додати картинку"}
+            </span>
           </label>
           {taskDraft.data.task.picture && (
             <p className="comparison_editor__file_name">
@@ -461,7 +465,8 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
         <div className="comparison_editor__section_header">
           <h3>Елементи для співставлення</h3>
           <p>
-            Заповни обидва списки. Кожен елемент може містити текст, зображення або обидва варіанти.
+            Заповни обидва списки. Кожен елемент може містити текст, зображення
+            або обидва варіанти.
           </p>
         </div>
 
@@ -473,7 +478,9 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                 className="comparison_editor__item_card"
                 key={`${taskDraft.numberTask}-comparison-left-${index}`}
               >
-                <span className="comparison_editor__item_mark">{index + 1}</span>
+                <span className="comparison_editor__item_mark">
+                  {index + 1}
+                </span>
                 <div className="comparison_editor__item_fields">
                   <label
                     className="comparison_editor__label"
@@ -494,7 +501,7 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                     className="comparison_editor__label"
                     htmlFor={`comparison-left-image-${taskDraft.numberTask}-${index}`}
                   >
-                    Зображення для елемента {index + 1}
+                    {/* Зображення для елемента {index + 1} */}
                   </label>
                   <input
                     className="comparison_editor__file_input comparison_editor__file_input--hidden"
@@ -507,7 +514,11 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                     className="comparison_editor__file_trigger"
                     htmlFor={`comparison-left-image-${taskDraft.numberTask}-${index}`}
                   >
-                    РћР±СЂР°С‚Рё РєР°СЂС‚РёРЅРєСѓ
+                    <span>
+                      {list1Pictures[index]
+                        ? "Замінити картинку"
+                        : "Додати картинку"}
+                    </span>
                   </label>
                   {taskDraft.data.comparisonTable.list1.pictures?.[index] && (
                     <p className="comparison_editor__file_name">
@@ -566,7 +577,7 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                     className="comparison_editor__label"
                     htmlFor={`comparison-right-image-${taskDraft.numberTask}-${index}`}
                   >
-                    Зображення для елемента {RIGHT_OPTION_LABELS[index]}
+                    {/* Зображення для елемента {RIGHT_OPTION_LABELS[index]} */}
                   </label>
                   <input
                     className="comparison_editor__file_input comparison_editor__file_input--hidden"
@@ -579,7 +590,11 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                     className="comparison_editor__file_trigger"
                     htmlFor={`comparison-right-image-${taskDraft.numberTask}-${index}`}
                   >
-                    РћР±СЂР°С‚Рё РєР°СЂС‚РёРЅРєСѓ
+                    <span>
+                      {list2Pictures[index]
+                        ? "Замінити картинку"
+                        : "Додати картинку"}
+                    </span>
                   </label>
                   {taskDraft.data.comparisonTable.list2.pictures?.[index] && (
                     <p className="comparison_editor__file_name">
@@ -614,7 +629,8 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
         <div className="comparison_editor__section_header">
           <h3>Правильні відповідності</h3>
           <p>
-            Вибери, який елемент правого списку відповідає кожному елементу лівого списку.
+            Вибери, який елемент правого списку відповідає кожному елементу
+            лівого списку.
           </p>
         </div>
 
@@ -643,7 +659,9 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
                   {RIGHT_OPTION_LABELS.map((label, optionIndex) => (
                     <option key={label} value={label}>
                       {label}
-                      {list2Texts[optionIndex] ? ` - ${list2Texts[optionIndex]}` : ""}
+                      {list2Texts[optionIndex]
+                        ? ` - ${list2Texts[optionIndex]}`
+                        : ""}
                     </option>
                   ))}
                 </select>
@@ -660,9 +678,7 @@ const ComparisonTaskEditor = ({ taskDraft }: ComparisonTaskEditorProps) => {
           onClick={handleSaveTask}
           disabled={taskDraft.status === "saving"}
         >
-          {taskDraft.status === "saving"
-            ? "Збереження..."
-            : "Зберегти задачу"}
+          {taskDraft.status === "saving" ? "Збереження..." : "Зберегти задачу"}
         </button>
       </div>
       {taskDraft.errorMessage && (

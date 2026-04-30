@@ -22,7 +22,9 @@ const readFileAsDataUrl = (file: File): Promise<string> =>
     };
 
     reader.onerror = () => {
-      reject(reader.error ?? new Error("Не вдалося прочитати файл зображення."));
+      reject(
+        reader.error ?? new Error("Не вдалося прочитати файл зображення."),
+      );
     };
 
     reader.readAsDataURL(file);
@@ -227,7 +229,8 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
         <div className="open_answer_editor__section_header">
           <h3>Умова завдання</h3>
           <p>
-            Додай текст завдання і, за потреби, зображення, яке допоможе сформулювати умову.
+            Додай текст завдання і, за потреби, зображення, яке допоможе
+            сформулювати умову.
           </p>
         </div>
 
@@ -263,7 +266,11 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
             className="open_answer_editor__file_trigger"
             htmlFor={`open-answer-task-image-${taskDraft.numberTask}`}
           >
-            РћР±СЂР°С‚Рё РєР°СЂС‚РёРЅРєСѓ
+            <span>
+              {taskDraft.data.task.picture
+                ? "Замінити картинку"
+                : "Додати картинку"}
+            </span>
           </label>
           {taskDraft.data.task.picture && (
             <p className="open_answer_editor__file_name">
@@ -292,7 +299,10 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
       <div className="open_answer_editor__section open_answer_editor__section--compact">
         <div className="open_answer_editor__section_header">
           <h3>Правильна відповідь</h3>
-          <p>Вкажи значення або короткий текст, який вважається правильною відповіддю.</p>
+          <p>
+            Вкажи значення або короткий текст, який вважається правильною
+            відповіддю.
+          </p>
         </div>
 
         <label
@@ -318,9 +328,7 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
           onClick={handleSaveTask}
           disabled={taskDraft.status === "saving"}
         >
-          {taskDraft.status === "saving"
-            ? "Збереження..."
-            : "Зберегти задачу"}
+          {taskDraft.status === "saving" ? "Збереження..." : "Зберегти задачу"}
         </button>
       </div>
       {taskDraft.errorMessage && (

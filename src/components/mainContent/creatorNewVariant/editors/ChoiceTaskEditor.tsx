@@ -482,14 +482,11 @@ const ChoiceTaskEditor = ({ taskDraft }: ChoiceTaskEditorProps) => {
 
         <div className="choice_editor__answers_grid">
           {answers.map((answer, index) => (
-            <>
+            <div key={`${taskDraft.numberTask}-choice-answer-${index}`}>
               <span className="font-semibold">
                 Відповідь: {letterIdAnswers[index]}
               </span>
-              <div
-                className="choice_editor__answer_card"
-                key={`${taskDraft.numberTask}-choice-answer-${index}`}
-              >
+              <div className="choice_editor__answer_card">
                 <div className="choice_editor_text">
                   <input
                     className="choice_editor__input"
@@ -542,7 +539,7 @@ const ChoiceTaskEditor = ({ taskDraft }: ChoiceTaskEditorProps) => {
                   )}
                 </div>
               </div>
-            </>
+            </div>
           ))}
         </div>
       </div>
