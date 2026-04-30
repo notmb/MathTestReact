@@ -5,7 +5,7 @@ import MainPage from "./components/mainPage";
 import AllTest from "./components/mainContent/tests/allTests";
 import SingIn from "./components/account/singIn";
 import SingUp from "./components/account/signUp";
-import AddNewVariant from "./components/mainContent/creatorVariant/addVariant2";
+// import AddNewVariant from "./components/mainContent/creatorVariant/addVariant2";
 import AddNewVariantPage from "./components/mainContent/creatorNewVariant/AddNewVariantPage";
 import SelectedVariant from "./components/mainContent/tests/selectedTest";
 import Header from "./components/header/header";
