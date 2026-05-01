@@ -22,7 +22,11 @@ export const useTaskEditorState = () => {
       await action();
     } catch (error) {
       console.error("Не вдалося зберегти зміни завдання:", error);
-      setError(errorMessage);
+      if (error instanceof Error && error.message) {
+        setError(error.message);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setIsSaving(false);
     }

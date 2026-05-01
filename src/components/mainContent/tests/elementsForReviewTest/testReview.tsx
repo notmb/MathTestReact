@@ -1,9 +1,8 @@
 import { useState } from "react";
 import "./reviewTest.css";
-import { WrapperForModalWindow } from "../../reactTsUtils";
 import type { SupportedTask } from "../taskGuards";
 import { isTask1, isTask2 } from "../taskGuards";
-import TaskEditor from "../taskEditor/TaskEditor";
+import ModalWindowForEdit from "../taskEditor/modalWindowForEdit";
 import { useVariantContext } from "../variantContext";
 import Answers from "./answersForTaskChoise";
 import ComparisonData from "./comparison";
@@ -121,13 +120,11 @@ const TestReview = (props: { selectedVariant: string }) => {
       </div>
 
       {isModalOpen && (
-        <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
-          <TaskEditor
-            numTask={numTaskForEditing}
-            selectedVariant={props.selectedVariant}
-            onSuccess={() => setIsModalOpen(false)}
-          ></TaskEditor>
-        </WrapperForModalWindow>
+        <ModalWindowForEdit
+          numTask={numTaskForEditing}
+          selectedVariant={props.selectedVariant}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </div>
   );

@@ -7,39 +7,64 @@
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  z-index: 1000; /* Щоб накрити інший контент */
+  z-index: 1000;
 }
+
 .modal_content {
   display: flex;
   flex-direction: column;
   position: relative;
   background: white;
   margin: 32px 0;
-  /* padding: 0 20px 20px 20px; */
-  /* border-radius: 8px; */
-  min-width: 40%;
+  min-width: 50%;
   height: max-content;
   max-width: 90vw;
   max-height: 90vh;
 }
+
 .container_for_children {
   padding: 16px;
-  overflow-y: auto; /* скрол лише для контенту */
-  flex: 1 1 auto; /* займатиме весь доступний простір */
+  overflow-y: auto;
+  flex: 1 1 auto;
 }
+
 .container_for_close_button {
-  position: sticky; /* залишається зверху при скролі */
+  position: sticky;
+  top: 0;
   background-color: aliceblue;
   display: flex;
-  justify-content: flex-end; /* кнопка праворуч */
+  justify-content: flex-end;
+  padding: 8px 8px 0;
+  z-index: 1;
 }
+
 .close_button {
-  /* position: absolute; */
-  /* top: 10px;
-  right: 10px; */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
   background: transparent;
-  border: none;
-  font-size: 24px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
   cursor: pointer;
   color: #333;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.close_button:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.close_button:focus-visible {
+  outline: none;
+  border-color: #2d6ea8;
+  box-shadow: 0 0 0 3px rgba(45, 110, 168, 0.2);
 }

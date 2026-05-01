@@ -23,7 +23,14 @@ export const WrapperForModalWindow = (props: {
     <div className="wrapper_for_modal_window">
       <div className="modal_content">
         <div className="container_for_close_button">
-          <button className="close_button" onClick={props.onClose}></button>
+          <button
+            type="button"
+            className="close_button"
+            onClick={props.onClose}
+            aria-label="Close modal window"
+          >
+            X
+          </button>
         </div>
         <div className="container_for_children"> {props.children}</div>
       </div>

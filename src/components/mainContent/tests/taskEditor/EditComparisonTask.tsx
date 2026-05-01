@@ -147,9 +147,9 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
   };
 
   return (
-    <div className="creator_task">
+    <div className="task-editor-content">
       <form
-        className="form_for_creator"
+        className="task-editor-form"
         onSubmit={(event) => {
           event.preventDefault();
           void handleSave();
@@ -157,8 +157,8 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
       >
         <fieldset>
           <legend>Дані для запитання</legend>
-          <div className="box_for_qestion">
-            <label className="set_task" htmlFor={`task-${props.numTask}`}>
+          <div className="task-prompt-field">
+            <label className="task-field-label" htmlFor={`task-${props.numTask}`}>
               Вкажіть умову задачі
             </label>
             <textarea
@@ -175,7 +175,7 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
             ></textarea>
           </div>
 
-          <div className="more_conditions">
+          <div className="task-upload-row">
             <input
               type="file"
               accept="image/*"
@@ -195,7 +195,7 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
 
             <label
               htmlFor={`task-${props.numTask}-picture`}
-              className="upload_picture"
+              className="task-upload-trigger"
             >
               {(taskPictureFile?.name ?? draft.task.picture)
                 ? `Файл: ${taskPictureFile?.name ?? draft.task.picture}`
@@ -204,12 +204,15 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
           </div>
         </fieldset>
 
-        <fieldset className="data_for_comparison">
+        <fieldset className="comparison-section">
           <legend>Дані для співставлення</legend>
           {list1Marks.map((item, index) => (
-            <div key={item} className="box_for_list1">
-              <div className="box_for_answer">
-                <label className="" htmlFor={`task-${props.numTask}-list1-${item}`}>
+            <div key={item} className="comparison-left-item task-editor-card">
+              <div className="task-answer-field">
+                <label
+                  className=""
+                  htmlFor={`task-${props.numTask}-list1-${item}`}
+                >
                   Вкажіть відповідь {item}
                 </label>
                 <textarea
@@ -227,7 +230,7 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
                   }}
                 ></textarea>
               </div>
-              <div className="more_conditions">
+              <div className="task-upload-row">
                 <input
                   type="file"
                   accept="image/*"
@@ -245,7 +248,8 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
                         if (!current.comparisonTable.list1.pictures) {
                           current.comparisonTable.list1.pictures = [];
                         }
-                        current.comparisonTable.list1.pictures[index] = file.name;
+                        current.comparisonTable.list1.pictures[index] =
+                          file.name;
                       });
                     }
                   }}
@@ -254,10 +258,10 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
 
                 <label
                   htmlFor={`task-${props.numTask}-list1-${item}-picture`}
-                  className="upload_picture"
+                  className="task-upload-trigger"
                 >
                   {(list1PictureFiles[index]?.name ??
-                    draft.comparisonTable.list1.pictures?.[index])
+                  draft.comparisonTable.list1.pictures?.[index])
                     ? `Файл: ${
                         list1PictureFiles[index]?.name ??
                         draft.comparisonTable.list1.pictures?.[index]
@@ -269,9 +273,12 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
           ))}
 
           {list2Marks.map((item, index) => (
-            <div key={item} className="box_for_list2">
-              <div className="box_for_answer">
-                <label className="" htmlFor={`task-${props.numTask}-list2-${item}`}>
+            <div key={item} className="comparison-right-item task-editor-card">
+              <div className="task-answer-field">
+                <label
+                  className=""
+                  htmlFor={`task-${props.numTask}-list2-${item}`}
+                >
                   Вкажіть відповідь {item}
                 </label>
                 <textarea
@@ -289,7 +296,7 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
                   }}
                 ></textarea>
               </div>
-              <div className="more_conditions">
+              <div className="task-upload-row">
                 <input
                   type="file"
                   accept="image/*"
@@ -307,7 +314,8 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
                         if (!current.comparisonTable.list2.pictures) {
                           current.comparisonTable.list2.pictures = [];
                         }
-                        current.comparisonTable.list2.pictures[index] = file.name;
+                        current.comparisonTable.list2.pictures[index] =
+                          file.name;
                       });
                     }
                   }}
@@ -316,10 +324,10 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
 
                 <label
                   htmlFor={`task-${props.numTask}-list2-${item}-picture`}
-                  className="upload_picture"
+                  className="task-upload-trigger"
                 >
                   {(list2PictureFiles[index]?.name ??
-                    draft.comparisonTable.list2.pictures?.[index])
+                  draft.comparisonTable.list2.pictures?.[index])
                     ? `Файл: ${
                         list2PictureFiles[index]?.name ??
                         draft.comparisonTable.list2.pictures?.[index]
@@ -331,12 +339,15 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
           ))}
         </fieldset>
 
-        <fieldset className="data_correct_answer">
+        <fieldset className="correct-answer-section">
           <legend>Дані для правильної відповіді</legend>
           {list1Marks.map((item) => (
-            <div key={item} className="box_for_list1">
-              <div className="box_for_answer">
-                <label className="" htmlFor={`task-${props.numTask}-answer-${item}`}>
+            <div key={item} className="comparison-match-item task-editor-card">
+              <div className="task-answer-field">
+                <label
+                  className=""
+                  htmlFor={`task-${props.numTask}-answer-${item}`}
+                >
                   Вкажіть відповідь {item}
                 </label>
                 <textarea
@@ -344,7 +355,9 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
                   name={`task-${props.numTask}-answer-${item}`}
                   value={draft.correctComparison[item] ?? ""}
                   onChange={(event) => {
-                    const value = normalizeAnswerValue(event.currentTarget.value);
+                    const value = normalizeAnswerValue(
+                      event.currentTarget.value,
+                    );
                     updateDraft((current) => {
                       current.correctComparison[item] = value;
                     });
@@ -355,22 +368,25 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
           ))}
         </fieldset>
 
-        {error && <p>{error}</p>}
+        {error && <p className="task-editor-error">{error}</p>}
 
-        <div className="buttons">
-          <div className="left_side">
+        <div className="task-editor-actions">
+          <div className="task-editor-primary-actions">
             <button
-              type="submit"
-              className="custom_button"
+              type="button"
+              className="custom-button"
               disabled={isSaving}
+              onClick={() => {
+                void handleSave();
+              }}
             >
               {isSaving ? "Збереження..." : "Зберегти зміни"}
             </button>
           </div>
-          <div className="right_side">
+          <div className="task-editor-secondary-actions">
             <button
               type="button"
-              className="custom_edit_button"
+              className="custom-edit-button"
               onClick={handleReset}
               disabled={isSaving}
             >

@@ -57,9 +57,9 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
   };
 
   return (
-    <div className="creator_task">
+    <div className="task-editor-content">
       <form
-        className="form_for_creator"
+        className="task-editor-form"
         onSubmit={(event) => {
           event.preventDefault();
           void handleSave();
@@ -67,8 +67,8 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
       >
         <fieldset>
           <legend>Дані для запитання</legend>
-          <div className="box_for_qestion">
-            <label className="set_task" htmlFor={`task-${props.numTask}`}>
+          <div className="task-prompt-field">
+            <label className="task-field-label" htmlFor={`task-${props.numTask}`}>
               Вкажіть умову задачі
             </label>
             <textarea
@@ -85,7 +85,7 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
             ></textarea>
           </div>
 
-          <div className="more_conditions">
+          <div className="task-upload-row">
             <input
               type="file"
               accept="image/*"
@@ -105,7 +105,7 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
 
             <label
               htmlFor={`task-${props.numTask}-picture`}
-              className="upload_picture"
+              className="task-upload-trigger"
             >
               {(taskPictureFile?.name ?? draft.task.picture)
                 ? `Файл: ${taskPictureFile?.name ?? draft.task.picture}`
@@ -114,7 +114,7 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
           </div>
         </fieldset>
 
-        <fieldset className="data_correct_answer">
+        <fieldset className="correct-answer-section">
           <legend>Дані для правильної відповіді</legend>
           <label className="" htmlFor={`correct_answer-${props.numTask}`}>
             Вкажіть правильну відповідь
@@ -132,22 +132,25 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
           ></textarea>
         </fieldset>
 
-        {error && <p>{error}</p>}
+        {error && <p className="task-editor-error">{error}</p>}
 
-        <div className="buttons">
-          <div className="left_side">
+        <div className="task-editor-actions">
+          <div className="task-editor-primary-actions">
             <button
-              type="submit"
-              className="custom_button"
+              type="button"
+              className="custom-button"
               disabled={isSaving}
+              onClick={() => {
+                void handleSave();
+              }}
             >
               {isSaving ? "Збереження..." : "Зберегти зміни"}
             </button>
           </div>
-          <div className="right_side">
+          <div className="task-editor-secondary-actions">
             <button
               type="button"
-              className="custom_edit_button"
+              className="custom-edit-button"
               onClick={handleReset}
               disabled={isSaving}
             >
