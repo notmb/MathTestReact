@@ -12,6 +12,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
+import { useAuth } from "../../../../auth/useAuth";
 
 interface TestLink {
   id: string; // id посилання
@@ -34,6 +35,7 @@ const OneTimeLinks = (props: {
   const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
   const [fetchStatus, setFetchStatus] = useState<FetchStatus>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { user, isDemo } = useAuth();
 
   const fetchTestLinks = async () => {
     setFetchStatus("loading");
@@ -81,6 +83,14 @@ const OneTimeLinks = (props: {
   };
 
   const removeLink = async (linkId: string) => {
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert("This action is not available in demo mode.");
+      return;
+    }
     try {
       const linkPath = `Subjects/Math/TestLinks/${linkId}`;
       const resultsColRef = collection(db, linkPath, "testResults");

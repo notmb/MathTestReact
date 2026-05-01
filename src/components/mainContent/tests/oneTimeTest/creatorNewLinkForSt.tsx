@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { useImmer } from "use-immer";
 import { useVariantContext } from "../variantContext";
+import { useAuth } from "../../../../auth/useAuth";
 
 type StudentOption = {
   id: string;
@@ -37,6 +38,7 @@ const CreatorNewLinkForStudent = (props: {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { dataVariant } = useVariantContext();
+  const { user, isDemo } = useAuth();
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -74,6 +76,14 @@ const CreatorNewLinkForStudent = (props: {
   const addLink = async () => {
     if (!selectedStudentId) {
       alert("Оберіть учня перед додаванням");
+      return;
+    }
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert("This action is not available in demo mode.");
       return;
     }
 

@@ -3,6 +3,7 @@ import { useVariantDraftContext } from "../VariantDraftContext";
 import { saveTask } from "../model/persistence";
 import type { OpenAnswerTaskDraft } from "../model/types";
 import { validateOpenAnswerTask } from "../model/validation";
+import { useAuth } from "../../../../auth/useAuth";
 
 type OpenAnswerTaskEditorProps = {
   taskDraft: OpenAnswerTaskDraft;
@@ -32,6 +33,7 @@ const readFileAsDataUrl = (file: File): Promise<string> =>
 
 const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
   const { state, setTaskItems, updateTaskDraft } = useVariantDraftContext();
+  const { user, isDemo } = useAuth();
 
   const handleTaskTextChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const nextText = event.currentTarget.value;
@@ -161,7 +163,10 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
       });
       return;
     }
-
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
     updateTaskDraft(taskDraft.numberTask, (current) => {
       if (current.type !== "openAnswer") {
         return current;
@@ -173,6 +178,32 @@ const OpenAnswerTaskEditor = ({ taskDraft }: OpenAnswerTaskEditorProps) => {
         errorMessage: null,
       };
     });
+
+    if (isDemo) {
+      alert(
+        "Demo mode: variant will be created only locally and will not be saved.",
+      );
+      updateTaskDraft(taskDraft.numberTask, (current) => {
+        if (current.type !== "openAnswer") {
+          return current;
+        }
+
+        return {
+          ...current,
+          status: "saved",
+          errorMessage: null,
+        };
+      });
+
+      setTaskItems(
+        state.taskItems.map((item) =>
+          item.numberTask === taskDraft.numberTask
+            ? { ...item, taskIsAdded: true }
+            : item,
+        ),
+      );
+      return;
+    }
 
     try {
       await saveTask({

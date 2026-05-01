@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useImmer } from "use-immer";
 import { useVariantContext } from "../variantContext";
+import { useAuth } from "../../../../auth/useAuth";
 import type { Task1 } from "../../types";
 import type { TaskEditorComponentProps } from "./taskEditor.types";
 import { saveEditedTask } from "./taskEditor.utils";
@@ -38,6 +39,7 @@ const EditChoiceTask = (props: TaskEditorComponentProps<Task1>) => {
     Record<number, File>
   >({});
   const { isSaving, error, clearError, runWithSaving } = useTaskEditorState();
+  const { user, isDemo } = useAuth();
 
   useEffect(() => {
     updateDraft(() => cloneChoiceTask(props.task));
@@ -93,6 +95,15 @@ const EditChoiceTask = (props: TaskEditorComponentProps<Task1>) => {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert("This action is not available in demo mode. Please log in.");
+      return;
+    }
+
     await runWithSaving(async () => {
       const newFiles: File[] = [];
 
@@ -125,7 +136,10 @@ const EditChoiceTask = (props: TaskEditorComponentProps<Task1>) => {
         <fieldset>
           <legend>Дані для запитання</legend>
           <div className="task-prompt-field">
-            <label className="task-field-label" htmlFor={`task-${props.numTask}`}>
+            <label
+              className="task-field-label"
+              htmlFor={`task-${props.numTask}`}
+            >
               Вкажіть умову задачі
             </label>
             <textarea
@@ -168,10 +182,7 @@ const EditChoiceTask = (props: TaskEditorComponentProps<Task1>) => {
         <fieldset className="answer-options-section">
           <legend>Дані для варіантів відповіді</legend>
           {answerMarks.map((mark, index) => (
-            <div
-              className="task-editor-card"
-              key={mark}
-            >
+            <div className="task-editor-card" key={mark}>
               <div className="task-answer-field">
                 <label
                   className=""

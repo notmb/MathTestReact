@@ -13,7 +13,6 @@ const LocalMathTest = (props: { tasks: Tasks; selectedVariant: string }) => {
   const selectedVariant = props.selectedVariant;
   const [userAnswers, updateUserAnswers] = useImmer<{ [key: string]: any }>({});
 
-
   //Перевірка
   const CheckComparison = (
     correctAnswer: CorrectComparison,

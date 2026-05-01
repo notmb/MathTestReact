@@ -66,7 +66,10 @@ const normalizeComparisonTask = (task: Task2): Task2 => ({
     }),
   },
   correctComparison: Object.fromEntries(
-    Object.entries(task.correctComparison).map(([key, value]) => [key, value ?? ""]),
+    Object.entries(task.correctComparison).map(([key, value]) => [
+      key,
+      value ?? "",
+    ]),
   ),
   typeOfTask: "comparison",
 });
@@ -77,7 +80,9 @@ const normalizeOpenAnswerTask = (task: Task3): Task3 => ({
   typeOfTask: "openAnswer",
 });
 
-const normalizeEditableTask = <TTask extends EditableTask>(draft: TTask): TTask => {
+const normalizeEditableTask = <TTask extends EditableTask>(
+  draft: TTask,
+): TTask => {
   if (draft.typeOfTask === "choice") {
     return normalizeChoiceTask(draft) as TTask;
   }
@@ -125,7 +130,9 @@ export const uploadVariantFiles = async (
   task: EditableTask,
 ) => {
   const referencedFileNames = collectReferencedFileNames(task);
-  const filesToUpload = files.filter((file) => referencedFileNames.has(file.name));
+  const filesToUpload = files.filter((file) =>
+    referencedFileNames.has(file.name),
+  );
 
   if (filesToUpload.length === 0) {
     return;

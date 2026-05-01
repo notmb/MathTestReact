@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { db } from "../../../firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
+import { useAuth } from "../../../auth/useAuth";
 
 const AddNewStudent = (props: {
   onSuccess: () => void;
@@ -19,10 +20,18 @@ const AddNewStudent = (props: {
   const [name, setName] = useState("");
   const [testResults, setTestResults] = useState("");
   const [testResultsRetaking, setTestResultsRetaking] = useState("");
+  const { user, isDemo } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert("This action is not available in demo mode.");
+      return;
+    }
     const arrTestResults =
       testResults.trim() === ""
         ? []
@@ -61,7 +70,7 @@ const AddNewStudent = (props: {
           testScores: testScores,
           testScoresRetaking: testScoresRetaking,
           createdAt: new Date(),
-        }
+        },
       );
       props.updeteListStudents({
         name: name,

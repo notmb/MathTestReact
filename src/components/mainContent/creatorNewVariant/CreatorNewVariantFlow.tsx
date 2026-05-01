@@ -6,11 +6,12 @@ import VariantMetaForm from "./VariantMetaForm";
 import { createVariant } from "./model/persistence";
 import VariantTaskGrid from "./VariantTaskGrid";
 import { validateVariantMeta } from "./model/validation";
+import { useAuth } from "../../../auth/useAuth";
 
 // ооркестер - головний компонент
 const CreatorNewVariantFlow = () => {
   const [isMetaCollapsed, setIsMetaCollapsed] = useState(false);
-
+  const { user, isDemo } = useAuth();
   const {
     state,
     initializeTasks,
@@ -34,7 +35,24 @@ const CreatorNewVariantFlow = () => {
     }
 
     const taskCount = Number(state.meta.numberOfTasks); // к-сть задач
-
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert(
+        "Demo mode: variant will be created only locally and will not be saved.",
+      );
+      setErrorMessage(null);
+      setStatus("creating");
+      patchMeta({
+        variantId: `demo-${Date.now()}`,
+      });
+      initializeTasks(taskCount); //створює внутрішню структуру задач загалом
+      setStatus("ready"); // базовий етап завершено
+      setIsMetaCollapsed(true); // ховає велику форму метаданих
+      return;
+    }
     try {
       setErrorMessage(null);
       setStatus("creating");

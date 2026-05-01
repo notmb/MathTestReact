@@ -5,6 +5,7 @@ import { useVariantContext } from "../variantContext";
 import type { TaskEditorComponentProps } from "./taskEditor.types";
 import { saveEditedTask } from "./taskEditor.utils";
 import { useTaskEditorState } from "./useTaskEditorState";
+import { useAuth } from "../../../../auth/useAuth";
 
 const list1Marks = ["1", "2", "3"];
 const list2Marks = ["А", "Б", "В", "Г", "Д"];
@@ -61,6 +62,7 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
   >({});
   const { isSaving, error, setError, clearError, runWithSaving } =
     useTaskEditorState();
+  const { user, isDemo } = useAuth();
 
   useEffect(() => {
     updateDraft(() => cloneComparisonTask(props.task));
@@ -120,6 +122,15 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert("This action is not available in demo mode. Please log in.");
+      return;
+    }
+
     const validationError = validateDraft();
 
     if (validationError) {
@@ -158,7 +169,10 @@ const EditComparisonTask = (props: TaskEditorComponentProps<Task2>) => {
         <fieldset>
           <legend>Дані для запитання</legend>
           <div className="task-prompt-field">
-            <label className="task-field-label" htmlFor={`task-${props.numTask}`}>
+            <label
+              className="task-field-label"
+              htmlFor={`task-${props.numTask}`}
+            >
               Вкажіть умову задачі
             </label>
             <textarea

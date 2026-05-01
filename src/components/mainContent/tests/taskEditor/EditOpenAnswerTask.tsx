@@ -5,6 +5,7 @@ import { useVariantContext } from "../variantContext";
 import type { TaskEditorComponentProps } from "./taskEditor.types";
 import { saveEditedTask } from "./taskEditor.utils";
 import { useTaskEditorState } from "./useTaskEditorState";
+import { useAuth } from "../../../../auth/useAuth";
 
 const cloneOpenAnswerTask = (task: Task3): Task3 => ({
   task: {
@@ -29,6 +30,7 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
   );
   const [taskPictureFile, setTaskPictureFile] = useState<File | null>(null);
   const { isSaving, error, clearError, runWithSaving } = useTaskEditorState();
+  const { user, isDemo } = useAuth();
 
   useEffect(() => {
     updateDraft(() => cloneOpenAnswerTask(props.task));
@@ -43,6 +45,15 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert("This action is not available in demo mode. Please log in.");
+      return;
+    }
+
     await runWithSaving(async () => {
       await saveEditedTask({
         draft,
@@ -68,7 +79,10 @@ const EditOpenAnswerTask = (props: TaskEditorComponentProps<Task3>) => {
         <fieldset>
           <legend>Дані для запитання</legend>
           <div className="task-prompt-field">
-            <label className="task-field-label" htmlFor={`task-${props.numTask}`}>
+            <label
+              className="task-field-label"
+              htmlFor={`task-${props.numTask}`}
+            >
               Вкажіть умову задачі
             </label>
             <textarea

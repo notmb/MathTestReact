@@ -12,11 +12,14 @@ import { WrapperForModalWindow } from "../reactTsUtils";
 import { db } from "../../../firebaseConfig";
 import TestReview from "./elementsForReviewTest/testReview";
 import { useVariantContext } from "./variantContext";
+import { useAuth } from "../../../auth/useAuth";
 
 const SelectedVariant = (props: {
   selectedVariant: string;
   navigate: (path: string) => void;
 }) => {
+  const { user, isDemo } = useAuth();
+
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalForAddTaskOpen, setIsModalForAddTaskOpen] =
@@ -40,6 +43,15 @@ const SelectedVariant = (props: {
   };
 
   const handleDelete = async () => {
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert("This action is not available in demo mode. Please log in.");
+      return;
+    }
+
     await deleteDoc(
       doc(
         db,
@@ -56,6 +68,14 @@ const SelectedVariant = (props: {
   };
 
   const handleCopyToRetaking = async () => {
+    if (!user) {
+      alert("You need to log in to perform this action");
+      return;
+    }
+    if (isDemo) {
+      alert("This action is not available in demo mode. Please log in.");
+      return;
+    }
     try {
       const docRef = await addDoc(
         collection(db, "Subjects", "Math", "Algebra", "Topics", "Retaking"),
@@ -103,7 +123,8 @@ const SelectedVariant = (props: {
                 {dataVariant.variantName || `Тест ${props.selectedVariant}`}
               </h1>
               <p className="selected-test-subtitle">
-                Варіант: {dataVariant.variantSerialNumber || props.selectedVariant}
+                Варіант:{" "}
+                {dataVariant.variantSerialNumber || props.selectedVariant}
               </p>
               <button
                 className="selected-test-delete-link"

@@ -4,6 +4,9 @@ import { auth } from "../../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import PersonalAccount from "./personalAccount";
 
+const DEMO_LOGIN = "demouser@gmail.com";
+const DEMO_PASS = "DEMOuser";
+
 const SingIn = () => {
   //prop: { navigate: (path: string) => void }
   const [formData, updateFormData] = useImmer({
@@ -32,7 +35,31 @@ const SingIn = () => {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         formData.email,
-        formData.password
+        formData.password,
+      );
+
+      const user = userCredential.user;
+      console.log("User signed in:", user);
+      alert("Sign in successful!");
+
+      // тут можеш викликати navigate або завантажити роль користувача
+      // props.navigate("/MathTestReact/main");
+    } catch (error) {
+      console.error("Sign in error:", error);
+      alert("Sign in failed: " + (error as any).message);
+    }
+  };
+
+  const handleDemoUserSignIn = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.preventDefault(); // якщо кнопка в формі — блокуємо сабміт форми
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        DEMO_LOGIN,
+        DEMO_PASS,
       );
 
       const user = userCredential.user;
@@ -80,6 +107,10 @@ const SingIn = () => {
             Sing In
           </button>
         </form>
+
+        <button className="button_view_demo" onClick={handleDemoUserSignIn}>
+          View Demo
+        </button>
         {/* <div className="conteiner_for_text">
           <p>У Вас немає акаута, тоді потрібно</p>
           <div
