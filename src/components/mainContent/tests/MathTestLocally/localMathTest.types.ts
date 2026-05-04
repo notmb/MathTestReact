@@ -1,4 +1,4 @@
-﻿import { Timestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 export type TaskType = "choice" | "comparison" | "openAnswer";
 
 export interface Task1 {
@@ -61,3 +61,5 @@ export interface VaiantData {
   numberOfTasks: string;
   variantSerialNumber: string;
 }
+
+export type VariantType = "main" | "retaking";
