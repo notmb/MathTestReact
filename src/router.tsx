@@ -16,7 +16,6 @@ import OneTimeTest from "./components/mainContent/tests/oneTimeTest/test/oneTime
 import TestResults from "./components/mainContent/tests/oneTimeTest/testResults";
 import VariantContextWrapper from "./components/mainContent/tests/variantContextWrapper";
 import StudentsProfil from "./components/mainContent/studentsProfiles/studentsProfil";
-import ContainerForLocalMathTest from "./components/mainContent/tests/containerForLocalMathTest";
 const routes = [
   {
     path: "/MathTestReact/main",
