@@ -1,9 +1,11 @@
-import { useImmer } from "use-immer";
 import { useEffect, useState } from "react";
-import { db } from "../../../firebaseConfig";
+import { useImmer } from "use-immer";
 import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../../firebaseConfig";
 import { WrapperForModalWindow } from "../reactTsUtils";
 import AddNewStudent from "./formForNewStudent";
+import "./studentsProfil.css";
+
 type Student = {
   name: string;
   testScores: {
@@ -15,16 +17,17 @@ type Student = {
   id: string;
 };
 
-const StudentsProfil = () => {
-  const [students, updeteStudents] = useImmer<Student[]>([]); //список студентів
+const TEST_COUNT = 21;
 
-  const [isModalOpen, setIsModalOpen] = useState(false); //вікно з формою
+const StudentsProfil = () => {
+  const [students, updeteStudents] = useImmer<Student[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchStudents = async () => {
       try {
         const querySnapshot = await getDocs(
-          collection(db, "Subjects", "Math", "MyStudents")
+          collection(db, "Subjects", "Math", "MyStudents"),
         );
         const fetchedStudents: Student[] = [];
 
@@ -39,57 +42,76 @@ const StudentsProfil = () => {
         });
         updeteStudents(fetchedStudents);
       } catch (error) {
-        console.error("Помилка при завантаженні студентів:", error);
+        console.error("Помилка при завантаженні учнів:", error);
       }
     };
+
     fetchStudents();
-  }, []);
+  }, [updeteStudents]);
 
   return (
-    <div className="my_students">
-      <div className="conteiner_for_students_profil">
-        <div className="overflow-x-auto max-w-full w-full">
-          <table className="table-auto border-collapse min-w-max">
+    <section className="students-page">
+      <div className="students-page-header">
+        <div>
+          <p className="students-page-kicker">Профілі учнів</p>
+          <h1>Результати тестів</h1>
+          <p className="students-page-subtitle">
+            Таблиця показує першу спробу та перездачу для кожної теми.
+          </p>
+        </div>
+
+        <button
+          className="students-add-button"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Додати учня
+        </button>
+      </div>
+
+      <div className="students-table-card">
+        <div className="students-table-scroll">
+          <table className="students-table">
             <thead>
               <tr>
-                <th className="sticky left-0 z-10 bg-white border px-4 py-2">
-                  Учень
-                </th>
-                {Array.from({ length: 21 }, (_, i) => (
-                  <th key={i} className="border px-2 py-2">
-                    Тест {i + 1}
-                  </th>
+                <th className="students-table-sticky-cell">Учень</th>
+                {Array.from({ length: TEST_COUNT }, (_, i) => (
+                  <th key={i}>Тест {i + 1}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {students.map((student) => (
-                <tr key={student.id}>
-                  <td className="sticky left-0 z-10 bg-white border px-4 py-2 font-medium whitespace-nowrap">
-                    {student.name}
+              {students.length === 0 ? (
+                <tr>
+                  <td className="students-empty-row" colSpan={TEST_COUNT + 1}>
+                    Учнів поки немає. Додайте першого учня, щоб вести
+                    результати.
                   </td>
-                  {Array.from({ length: 21 }, (_, i) => (
-                    <td key={i} className="border px-2 py-2 text-center">
-                      <div className="border-b-1 border-gray-400">
-                        {student.testScores?.[`topic${i + 1}`] ?? "-"}
-                      </div>
-                      <div>
-                        {student.testScoresRetaking?.[`topic${i + 1}`] ?? "-"}
-                      </div>
-                    </td>
-                  ))}
                 </tr>
-              ))}
+              ) : (
+                students.map((student) => (
+                  <tr key={student.id}>
+                    <td className="students-table-sticky-cell students-name-cell">
+                      {student.name}
+                    </td>
+                    {Array.from({ length: TEST_COUNT }, (_, i) => (
+                      <td key={i} className="students-score-cell">
+                        <div className="students-score-primary">
+                          {student.testScores?.[`topic${i + 1}`] ?? "-"}
+                        </div>
+                        <div className="students-score-retake">
+                          {student.testScoresRetaking?.[`topic${i + 1}`] ??
+                            "-"}
+                        </div>
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
       </div>
-      <button
-        className="btn_add_student self-start"
-        onClick={() => setIsModalOpen(true)}
-      >
-        Додати учня
-      </button>
+
       {isModalOpen && (
         <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
           <AddNewStudent
@@ -102,7 +124,8 @@ const StudentsProfil = () => {
           ></AddNewStudent>
         </WrapperForModalWindow>
       )}
-    </div>
+    </section>
   );
 };
+
 export default StudentsProfil;

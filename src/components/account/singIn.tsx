@@ -1,14 +1,12 @@
-import "./personalAccount";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useImmer } from "use-immer";
 import { auth } from "../../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import PersonalAccount from "./personalAccount";
 
 const DEMO_LOGIN = "demouser@gmail.com";
 const DEMO_PASS = "DEMOuser";
 
-const SingIn = () => {
-  //prop: { navigate: (path: string) => void }
+const SingIn = (props: { navigate: (path: string) => void }) => {
   const [formData, updateFormData] = useImmer({
     email: "",
     password: "",
@@ -23,105 +21,88 @@ const SingIn = () => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Запобігає оновленню сторінки
-    console.log("Form submitted!");
-  };
-
-  const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // якщо кнопка в формі — блокуємо сабміт форми
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password,
-      );
-
-      const user = userCredential.user;
-      console.log("User signed in:", user);
-      alert("Sign in successful!");
-
-      // тут можеш викликати navigate або завантажити роль користувача
-      // props.navigate("/MathTestReact/main");
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      props.navigate("/MathTestReact/main");
     } catch (error) {
       console.error("Sign in error:", error);
-      alert("Sign in failed: " + (error as any).message);
+      alert("Sign in failed: " + (error as Error).message);
     }
   };
 
-  const handleDemoUserSignIn = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-  ) => {
-    e.preventDefault(); // якщо кнопка в формі — блокуємо сабміт форми
-
+  const handleDemoUserSignIn = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        DEMO_LOGIN,
-        DEMO_PASS,
-      );
-
-      const user = userCredential.user;
-      console.log("User signed in:", user);
-      alert("Sign in successful!");
-
-      // тут можеш викликати navigate або завантажити роль користувача
-      // props.navigate("/MathTestReact/main");
+      await signInWithEmailAndPassword(auth, DEMO_LOGIN, DEMO_PASS);
+      props.navigate("/MathTestReact/main");
     } catch (error) {
       console.error("Sign in error:", error);
-      alert("Sign in failed: " + (error as any).message);
+      alert("Sign in failed: " + (error as Error).message);
     }
   };
 
   return (
-    <PersonalAccount>
-      <div className="sing_up_sing_in">
-        <form className="form_for_singin_signup" onSubmit={handleSubmit}>
-          <label htmlFor="username">
-            User Name:
-            <input
-              className="user_name"
-              id="username"
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </label>
+    <PersonalAccount
+      title="Вхід до кабінету"
+      subtitle="Увійдіть, щоб керувати тестами."
+    >
+      <form className="account-form" onSubmit={handleSignIn}>
+        <label className="account-field" htmlFor="useremail">
+          <span>Email</span>
+          <input
+            id="useremail"
+            name="email"
+            type="email"
+            placeholder="name@example.com"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
 
-          <label htmlFor="userpassword">
-            Password:
-            <input
-              id="userpassword"
-              className="user_password"
-              type="password"
-              name="password"
-              placeholder="Email"
-              value={formData.password}
-              onChange={handleInputChange}
-            ></input>
-          </label>
-          <button className="button_for_sing_in" onClick={handleSignIn}>
-            Sing In
-          </button>
-        </form>
+        <label className="account-field" htmlFor="userpassword">
+          <span>Пароль</span>
+          <input
+            id="userpassword"
+            type="password"
+            name="password"
+            placeholder="Введіть пароль"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
 
-        <button className="button_view_demo" onClick={handleDemoUserSignIn}>
-          View Demo
+        <button className="account-primary-button" type="submit">
+          Увійти
         </button>
-        {/* <div className="conteiner_for_text">
-          <p>У Вас немає акаута, тоді потрібно</p>
-          <div
-            onClick={() => prop.navigate("/MathTestReact/account/singup")}
-            className="conteiner_text_sing_up"
-          >
-            <p className="text_sing_up">Зареєструватись</p>
-          </div>
-        </div> */}
+      </form>
+
+      <div className="account-divider">
+        <span>або</span>
       </div>
+
+      <button
+        className="account-secondary-button"
+        type="button"
+        onClick={handleDemoUserSignIn}
+      >
+        Переглянути демо
+      </button>
+
+      {/* <p className="account-switch-text">
+        Немає акаунта?{" "}
+        <button
+          type="button"
+          onClick={() => props.navigate("/MathTestReact/account/singup")}
+        >
+          Зареєструватися
+        </button>
+      </p> */}
     </PersonalAccount>
   );
 };
+
 export default SingIn;

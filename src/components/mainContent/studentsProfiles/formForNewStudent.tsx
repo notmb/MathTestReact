@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { db } from "../../../firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../../firebaseConfig";
 import { useAuth } from "../../../auth/useAuth";
 
 const AddNewStudent = (props: {
@@ -16,7 +16,6 @@ const AddNewStudent = (props: {
     id: string;
   }) => void;
 }) => {
-  //
   const [name, setName] = useState("");
   const [testResults, setTestResults] = useState("");
   const [testResultsRetaking, setTestResultsRetaking] = useState("");
@@ -32,96 +31,95 @@ const AddNewStudent = (props: {
       alert("This action is not available in demo mode.");
       return;
     }
+
     const arrTestResults =
       testResults.trim() === ""
         ? []
         : testResults.split(";").map((item) => item.trim());
     const arrTestResultsRetaking =
-      testResults.trim() === ""
+      testResultsRetaking.trim() === ""
         ? []
-        : testResults.split(";").map((item) => item.trim());
+        : testResultsRetaking.split(";").map((item) => item.trim());
 
-    // Генеруємо testScores: { topic1: "...", topic2: "...", ... }
     const testScores: { [key: string]: string } = {};
     const testScoresRetaking: { [key: string]: string } = {};
 
-    if (arrTestResults.length > 0) {
-      arrTestResults.forEach((result, index) => {
-        testScores[`topic${index + 1}`] = result;
-      });
-    } else {
-      // testScores залишиться пустим об'єктом {}
-    }
+    arrTestResults.forEach((result, index) => {
+      testScores[`topic${index + 1}`] = result;
+    });
 
-    if (arrTestResultsRetaking.length > 0) {
-      arrTestResultsRetaking.forEach((result, index) => {
-        testScoresRetaking[`topic${index + 1}`] = result;
-      });
-    } else {
-      // testScoresRetaking залишиться пустим об'єктом {}
-    }
+    arrTestResultsRetaking.forEach((result, index) => {
+      testScoresRetaking[`topic${index + 1}`] = result;
+    });
 
-    // Тут можна відправити дані кудись або передати наверх
     try {
       const docRef = await addDoc(
         collection(db, "Subjects", "Math", "MyStudents"),
         {
-          name: name,
-          testScores: testScores,
-          testScoresRetaking: testScoresRetaking,
+          name,
+          testScores,
+          testScoresRetaking,
           createdAt: new Date(),
         },
       );
       props.updeteListStudents({
-        name: name,
-        testScores: testScores,
-        testScoresRetaking: testScoresRetaking,
+        name,
+        testScores,
+        testScoresRetaking,
         id: docRef.id,
       });
     } catch (error) {
       console.error("Помилка при збереженні учня:", error);
       alert("Не вдалося зберегти.");
+      return;
     }
 
-    props.onSuccess(); // закрити модалку
+    props.onSuccess();
   };
 
   return (
-    <div className="box_for_form_for_add_student  mt-4">
-      <form className="form_for_add_student" onSubmit={handleSubmit}>
-        <div className="containet_for_input">
-          <label>Ім'я учня:</label>
+    <div className="student-form-box">
+      <div className="student-form-header">
+        <h2>Новий учень</h2>
+        <p>Введіть ім'я та результати через крапку з комою.</p>
+      </div>
+
+      <form className="student-form" onSubmit={handleSubmit}>
+        <label className="student-form-field">
+          <span>Ім'я учня</span>
           <input
-            className="w-1/2"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            placeholder="Наприклад: Олена Петренко"
             required
           />
-        </div>
+        </label>
 
-        <div className="containet_for_input">
-          <label>Результати (розділяємо ';') тестів (необов’язково):</label>
+        <label className="student-form-field">
+          <span>Результати тестів</span>
           <textarea
             value={testResults}
             onChange={(e) => setTestResults(e.target.value)}
+            placeholder="Наприклад: 8; 10; 7; 11"
           />
-        </div>
-        <div className="containet_for_input">
-          <label>
-            Результати (розділяємо ';') перездачі тестів (необов’язково):
-          </label>
+        </label>
+
+        <label className="student-form-field">
+          <span>Результати перездачі</span>
           <textarea
             value={testResultsRetaking}
             onChange={(e) => setTestResultsRetaking(e.target.value)}
+            placeholder="Наприклад: 10; 11; 9"
           />
-        </div>
+        </label>
 
-        <button type="submit" className="self-start">
+        <button type="submit" className="student-form-submit">
           Зберегти
         </button>
       </form>
     </div>
   );
 };
+
 export default AddNewStudent;

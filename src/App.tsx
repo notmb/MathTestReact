@@ -24,13 +24,11 @@ function App() {
     };
   }, []);
   return (
-    <>
-      <div className="app">
-        <MathJaxContext>
-          <Router currentPath={currentPath} navigate={navigate} />
-        </MathJaxContext>
-      </div>
-    </>
+    <div className="app">
+      <MathJaxContext>
+        <Router currentPath={currentPath} navigate={navigate} />
+      </MathJaxContext>
+    </div>
   );
 }
 
