@@ -1,10 +1,10 @@
 import "./mainPage.css";
 import section3RightImg from "/section3_right.svg";
 
-const MainPage = (props: { navigate: (path: string) => void }) => {
+const MainPage = () => {
   return (
     <>
-      <section className="section1">
+      {/* <section className="section1">
         <div className="container_for_article">
           <div className="section1_navigation">
             <div
@@ -35,7 +35,7 @@ const MainPage = (props: { navigate: (path: string) => void }) => {
             </article>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* <section className="section2">
         <Card navigate={props.navigate}></Card>

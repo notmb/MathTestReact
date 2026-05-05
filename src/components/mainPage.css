@@ -8,7 +8,7 @@ body {
   color: #17324d;
 }
 
-.section1 {
+/* .section1 {
   width: 100%;
   min-height: 520px;
   padding: 72px clamp(20px, 5vw, 72px);
@@ -24,7 +24,7 @@ body {
     url("/geometry_math.jpg");
   background-size: cover;
   background-position: center;
-}
+} */
 
 .conteiner_for_img {
   width: 50%;
@@ -64,7 +64,7 @@ body {
   margin: 0;
 }
 
-.section1_navigation {
+/* .section1_navigation {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
@@ -102,7 +102,7 @@ body {
   font-size: clamp(15px, 1.5vw, 18px);
   line-height: 1.25;
   font-weight: 700;
-}
+} */
 
 .section2 {
   width: 100%;

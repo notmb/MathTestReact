@@ -12,43 +12,21 @@ const Header = (props: { navigate: (path: string) => void }) => {
   };
 
   return (
-    <div className="box_header">
-      <header className="header">
+    <header className="header">
+      <div className="section_top">
         <img
           className="logo"
           src={logo}
           alt="MathTest"
           onClick={() => handleNavigate("/MathTestReact/main")}
         ></img>
-
-        <div className="header_navigation">
-          <div
-            className="header_navigation_item"
-            onClick={() => handleNavigate("/MathTestReact/allTest")}
-          >
-            <h5 className="header_navigation_item_h">Переглянути тести</h5>
-          </div>
-          <div
-            className="header_navigation_item"
-            onClick={() => handleNavigate("/MathTestReact/study")}
-          >
-            <h5 className="header_navigation_item_h">Додати тест</h5>
-          </div>
-          <div
-            className="header_navigation_item"
-            onClick={() => handleNavigate("/MathTestReact/student")}
-          >
-            <h5 className="header_navigation_item_h">Учні</h5>
-          </div>
-        </div>
-
-        <div
-          className="header_log_in"
+        <button
+          className="auth_button"
+          type="button"
           onClick={() => handleNavigate("/MathTestReact/account/login")}
         >
-          <h4 className="header_navigation_item_h">Log in</h4>
-        </div>
-
+          Log in
+        </button>
         <button
           className={`burger_button ${
             isMobileMenuOpen ? "burger_button_open" : ""
@@ -56,15 +34,53 @@ const Header = (props: { navigate: (path: string) => void }) => {
           type="button"
           aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-header-navigation"
           onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
         >
           <span></span>
           <span></span>
           <span></span>
         </button>
-      </header>
+      </div>
+      <section className="header_nav_section">
+        <div className="section_navigation">
+          <div
+            className="navigation_item section_navigation_item1"
+            onClick={() => handleNavigate("/MathTestReact/allTest")}
+          >
+            <h5 className="text-2xl">Переглянути тести</h5>
+          </div>
+          <div
+            className="navigation_item section_navigation_item2"
+            onClick={() => handleNavigate("/MathTestReact/study")}
+          >
+            <h5 className="text-2xl">Додати тест</h5>
+          </div>
+          <div
+            className="navigation_item section_navigation_item3"
+            onClick={() => handleNavigate("/MathTestReact/student")}
+          >
+            <h5 className="text-2xl">Учні</h5>
+          </div>
+        </div>
 
+        <article className="header_article">
+          <div className="article_text">
+            <h1 className="text-center my-1 leading-relaxed ≈ 1.625">
+              Математика навколо нас
+            </h1>
+            <p className="main-text-article my-5 text-xl leading-relaxed ≈ 1.625">
+              Математика - це не лише формули та задачі. Вона живе в музиці,
+              мистецтві, природі та технологіях. Це мова, якою описується світ.
+              Ми покажемо, як зробити математику цікавою та зрозумілою.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      {/* ---MoBILE--- */}
       <nav
+        id="mobile-header-navigation"
         className={`mobile_header_navigation ${
           isMobileMenuOpen ? "mobile_header_navigation_open" : ""
         }`}
@@ -94,7 +110,8 @@ const Header = (props: { navigate: (path: string) => void }) => {
           Log in
         </button>
       </nav>
-    </div>
+      {/* ---MoBILE--- */}
+    </header>
   );
 };
 
