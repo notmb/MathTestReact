@@ -1,18 +1,21 @@
 import "./header.css";
-
 import { useState } from "react";
 import logo from "/logo.svg";
 
 const Header = (props: { navigate: (path: string) => void }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const pathname = window.location.pathname;
+  const isMainPage =
+    pathname === "/MathTestReact/" || pathname === "/MathTestReact/main";
+  console.log(pathname, isMainPage);
   const handleNavigate = (path: string) => {
     props.navigate(path);
     setIsMobileMenuOpen(false);
   };
 
   return (
-    <header className="header">
+    <header className={isMainPage ? "header_big" : "header_small"}>
       <div className="section_top">
         <img
           className="logo"
@@ -20,6 +23,32 @@ const Header = (props: { navigate: (path: string) => void }) => {
           alt="MathTest"
           onClick={() => handleNavigate("/MathTestReact/main")}
         ></img>
+
+        <div
+          className={
+            isMainPage ? "section_navigation_none" : "section_navigation"
+          }
+        >
+          <div
+            className="navigation_item_header_small"
+            onClick={() => handleNavigate("/MathTestReact/allTest")}
+          >
+            <h5>Переглянути тести</h5>
+          </div>
+          <div
+            className="navigation_item_header_small"
+            onClick={() => handleNavigate("/MathTestReact/study")}
+          >
+            <h5>Додати тест</h5>
+          </div>
+          <div
+            className="navigation_item_header_small"
+            onClick={() => handleNavigate("/MathTestReact/student")}
+          >
+            <h5>Учні</h5>
+          </div>
+        </div>
+
         <button
           className="auth_button"
           type="button"
@@ -27,6 +56,7 @@ const Header = (props: { navigate: (path: string) => void }) => {
         >
           Log in
         </button>
+
         <button
           className={`burger_button ${
             isMobileMenuOpen ? "burger_button_open" : ""
@@ -42,7 +72,12 @@ const Header = (props: { navigate: (path: string) => void }) => {
           <span></span>
         </button>
       </div>
-      <section className="header_nav_section">
+
+      <section
+        className={
+          isMainPage ? "header_nav_section" : "header_nav_section_none"
+        }
+      >
         <div className="section_navigation">
           <div
             className="navigation_item section_navigation_item1"
