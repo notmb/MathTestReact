@@ -84,11 +84,11 @@ const OneTimeLinks = (props: {
 
   const removeLink = async (linkId: string) => {
     if (!user) {
-      alert("You need to log in to perform this action");
+      alert("Потрібно увійти щоб виконати цю дію");
       return;
     }
     if (isDemo) {
-      alert("This action is not available in demo mode.");
+      alert("Demo mode: Ця дія недоступна");
       return;
     }
     try {

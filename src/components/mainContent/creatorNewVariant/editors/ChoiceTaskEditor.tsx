@@ -350,7 +350,7 @@ const ChoiceTaskEditor = ({ taskDraft }: ChoiceTaskEditorProps) => {
     }
 
     if (!user) {
-      alert("You need to log in to perform this action");
+      alert("Потрібно увійти щоб виконати цю дію");
       return;
     }
 
@@ -367,9 +367,7 @@ const ChoiceTaskEditor = ({ taskDraft }: ChoiceTaskEditorProps) => {
     });
 
     if (isDemo) {
-      alert(
-        "Demo mode: variant will be created only locally and will not be saved.",
-      );
+      alert("Demo mode: Варіант не буде збережено");
       updateTaskDraft(taskDraft.numberTask, (current) => {
         if (current.type !== "choice") {
           return current;

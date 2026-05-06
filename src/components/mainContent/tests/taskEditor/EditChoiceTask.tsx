@@ -96,11 +96,11 @@ const EditChoiceTask = (props: TaskEditorComponentProps<Task1>) => {
 
   const handleSave = async () => {
     if (!user) {
-      alert("You need to log in to perform this action");
+      alert("Потрібно увійти щоб виконати цю дію");
       return;
     }
     if (isDemo) {
-      alert("This action is not available in demo mode. Please log in.");
+      alert("Demo mode: Ця дія недоступна");
       return;
     }
 
