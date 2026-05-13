@@ -2,7 +2,11 @@ import type { Timestamp } from "firebase/firestore";
 
 export { isTask1, isTask2, isTask3 } from "../../../taskGuards";
 
-export type BaseParsed = { studentId: string; variantId: string; linkId: string };
+export type BaseParsed = {
+  studentId: string;
+  variantId: string;
+  linkId: string;
+};
 
 export type Status =
   | { phase: "loading" }
@@ -11,20 +15,20 @@ export type Status =
   | ({ phase: "loadingLink" } & BaseParsed)
   | ({ phase: "blocked"; reason: string } & BaseParsed)
   | ({ phase: "loadingVariant" } & BaseParsed & {
-      endAtMs: number;
-      variantCollection: "Mix" | "Retaking";
-    })
+        endAtMs: number;
+        variantCollection: "Mix" | "Retaking";
+      })
   | ({ phase: "running" } & BaseParsed & {
-      endAtMs: number;
-      variantCollection: "Mix" | "Retaking";
-    })
+        endAtMs: number;
+        variantCollection: "Mix" | "Retaking";
+      })
   | ({ phase: "finalizing"; finishReason: "timeOut" | "manual" } & BaseParsed)
   | ({ phase: "done" } & BaseParsed);
 
 export type TestLinkDoc = {
   testLinkStatus: "notStarted" | "started" | "finished" | string;
   nameStudent: string;
-  startedAt?: import("firebase/firestore").Timestamp;
+  startedAt?: Timestamp;
   durationSec?: number;
   typeTest?: "main" | "retaking" | string;
   finishReason?: "timeOut" | "manual" | string;
@@ -43,7 +47,9 @@ export type VariantDoc = {
 
 export type NormalizedTypeTest = "main" | "retaking";
 
-export const normalizeTypeTest = (value: unknown): NormalizedTypeTest | null => {
+export const normalizeTypeTest = (
+  value: unknown,
+): NormalizedTypeTest | null => {
   if (value === "main" || value === "retaking") return value;
   return null;
 };

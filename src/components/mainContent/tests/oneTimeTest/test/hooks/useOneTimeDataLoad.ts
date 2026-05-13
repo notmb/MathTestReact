@@ -15,17 +15,19 @@ import {
   type VariantDoc,
 } from "./useOneTimeFlow.types";
 
+type StateSettler<T> = Dispatch<SetStateAction<T>>;
+
 type UseOneTimeDataLoadParams = {
   status: Status;
   storageKey?: string;
   variantMeta: VariantDoc | null;
   localTasks: Tasks | null;
-  setStatus: Dispatch<SetStateAction<Status>>;
-  setUserName: Dispatch<SetStateAction<string | undefined>>;
-  setLinkTypeTest: Dispatch<SetStateAction<NormalizedTypeTest | null>>;
-  setVariantMeta: Dispatch<SetStateAction<VariantDoc | null>>;
-  setLocalTasks: Dispatch<SetStateAction<Tasks | null>>;
-  setUserAnswers: Dispatch<SetStateAction<UserAnswersState>>;
+  setStatus: StateSettler<Status>;
+  setUserName: StateSettler<string | undefined>;
+  setLinkTypeTest: StateSettler<NormalizedTypeTest | null>;
+  setVariantMeta: StateSettler<VariantDoc | null>;
+  setLocalTasks: StateSettler<Tasks | null>;
+  setUserAnswers: StateSettler<UserAnswersState>;
   toFinalizing: (
     finishReason: "timeOut" | "manual",
     base: { studentId: string; variantId: string; linkId: string },

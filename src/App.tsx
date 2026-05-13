@@ -23,6 +23,7 @@ function App() {
       removeEventListener("popstate", onLocationChange);
     };
   }, []);
+
   return (
     <div className="app">
       <MathJaxContext>
