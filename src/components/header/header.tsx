@@ -43,6 +43,12 @@ const Header = (props: { navigate: (path: string) => void }) => {
           </div>
           <div
             className="navigation_item_header_small"
+            onClick={() => handleNavigate("/MathTestReact/theory")}
+          >
+            <h5>Додати теорію</h5>
+          </div>
+          <div
+            className="navigation_item_header_small"
             onClick={() => handleNavigate("/MathTestReact/student")}
           >
             <h5>Учні</h5>
@@ -93,6 +99,12 @@ const Header = (props: { navigate: (path: string) => void }) => {
           </div>
           <div
             className="navigation_item section_navigation_item3"
+            onClick={() => handleNavigate("/MathTestReact/theory")}
+          >
+            <h5 className="text-2xl">Додати теорію</h5>
+          </div>
+          <div
+            className="navigation_item section_navigation_item4"
             onClick={() => handleNavigate("/MathTestReact/student")}
           >
             <h5 className="text-2xl">Учні</h5>
@@ -129,6 +141,12 @@ const Header = (props: { navigate: (path: string) => void }) => {
         <button
           type="button"
           onClick={() => handleNavigate("/MathTestReact/study")}
+        >
+          Додати тест
+        </button>
+        <button
+          type="button"
+          onClick={() => handleNavigate("/MathTestReact/theory")}
         >
           Додати тест
         </button>

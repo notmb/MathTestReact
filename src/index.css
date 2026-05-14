@@ -2,3 +2,17 @@
 @import "tailwindcss/theme.css" layer(theme);
 /* @import "tailwindcss/preflight.css" layer(base); */
 @import "tailwindcss/utilities.css" layer(utilities);
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 12px 0;
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3 {
+  margin: 16px 0;
+  font-weight: bold;
+}

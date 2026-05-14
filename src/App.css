@@ -5,3 +5,17 @@
   display: flex;
   flex-direction: column;
 }
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 12px 0;
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3 {
+  margin: 16px 0;
+  font-weight: bold;
+}

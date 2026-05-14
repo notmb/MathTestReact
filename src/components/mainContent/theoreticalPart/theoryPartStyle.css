@@ -1,0 +1,12 @@
+.theoretical_page {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 40px;
+}
+.theory_editor_page {
+  padding: 40px;
+}
+.my-image {
+  width: 300px;
+}
