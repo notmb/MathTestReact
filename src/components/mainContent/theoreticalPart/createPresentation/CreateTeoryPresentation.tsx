@@ -4,6 +4,7 @@ import Image from "@tiptap/extension-image";
 import "../theoryPartStyle.css";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
+import TheoryToolbar from "../toolbar/Toolbar";
 
 const CreateTeoryPresentation = () => {
   const editor = useEditor({
@@ -52,51 +53,11 @@ const CreateTeoryPresentation = () => {
   return (
     <div className="border border-black rounded-xl p-4">
       <div className="flex gap-2 mb-4">
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-        >
-          Bold
-        </button>
+        <TheoryToolbar editor={editor}></TheoryToolbar>
 
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-        >
-          Italic
-        </button>
-
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-        >
-          H1
-        </button>
-
-        <button onClick={() => editor.chain().focus().toggleBulletList().run()}>
-          List
-        </button>
-
-        <button onClick={() => saveTheory()}>Save</button>
-
-        {/* <button
-          type="button"
-          onClick={() =>
-            editor
-              .chain()
-              .focus()
-              .setImage({
-                src: "https://placehold.co/300x200",
-              })
-              .run()
-          }
-        >
-          Add image
-        </button> */}
+        <EditorContent editor={editor} className="min-h-[300px]" />
       </div>
-
-      <EditorContent editor={editor} className="min-h-[300px]" />
+      <button onClick={() => saveTheory()}>Save</button>
     </div>
   );
 };

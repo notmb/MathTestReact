@@ -1,7 +1,6 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import Image from "@tiptap/extension-image";
 import StarterKit from "@tiptap/starter-kit";
-import { JSONContent } from "@tiptap/react";
 
 interface Props {
   content: any;
