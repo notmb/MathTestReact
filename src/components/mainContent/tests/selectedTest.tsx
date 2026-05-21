@@ -7,7 +7,7 @@ import {
   doc,
   writeBatch,
 } from "firebase/firestore";
-import AddTask from "../creatorVariant/addTask";
+import AddTaskToVariant from "../creatorNewVariant/AddTaskToVariant";
 import { WrapperForModalWindow } from "../reactTsUtils";
 import { db } from "../../../firebaseConfig";
 import TestReview from "./elementsForReviewTest/testReview";
@@ -196,10 +196,10 @@ const SelectedVariant = (props: {
             <WrapperForModalWindow
               onClose={() => setIsModalForAddTaskOpen(false)}
             >
-              <AddTask
+              <AddTaskToVariant
                 selectedVariant={props.selectedVariant}
                 onSuccess={() => setIsModalForAddTaskOpen(false)}
-              ></AddTask>
+              />
               <button
                 className="text-xl"
                 onClick={() => {
@@ -207,7 +207,7 @@ const SelectedVariant = (props: {
                 }}
                 style={{ marginRight: "10px" }}
               >
-                Так
+                Закрити
               </button>
             </WrapperForModalWindow>
           )}
