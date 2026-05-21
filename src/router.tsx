@@ -17,9 +17,9 @@ import TestResults from "./components/mainContent/tests/oneTimeTest/testResults"
 import VariantContextWrapper from "./components/mainContent/tests/variantContextWrapper";
 import StudentsProfil from "./components/mainContent/studentsProfiles/studentsProfil";
 import TheoreticalPart from "./components/mainContent/theoreticalPart/TheoreticalPart";
-import CreateTeoryPresentation from "./components/mainContent/theoreticalPart/createPresentation/CreateTeoryPresentation";
+import CreateTeoryPresentation from "./components/mainContent/theoreticalPart/createPresentation/CreateTheoryPresentation";
 import TheoryEditorPage from "./components/mainContent/theoreticalPart/editPresentation/TheoryEditorPage";
-import ViewerPresentationPage from "./components/mainContent/theoreticalPart/viewerPresentation/viewerPresentationPage";
+import ViewerPresentationPage from "./components/mainContent/theoreticalPart/viewerPresentation/ViewerPresentationPage";
 const routes = [
   {
     path: "/MathTestReact/main",

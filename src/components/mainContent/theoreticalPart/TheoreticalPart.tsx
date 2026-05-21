@@ -1,4 +1,5 @@
 import "./theoryPartStyle.css";
+
 const TheoreticalPart = (props: { navigate: (path: string) => void }) => {
   return (
     <div className="theoretical_page h-screen bg-blue-100">

@@ -1,31 +1,18 @@
-import { EditorContent, useEditor } from "@tiptap/react";
-import Image from "@tiptap/extension-image";
-import StarterKit from "@tiptap/starter-kit";
+import type { JSONContent } from "@tiptap/react";
+import TheoryEditor from "../editor/TheoryEditor";
 
 interface Props {
-  content: any;
+  content: JSONContent | null;
 }
 
 const ViewerPresentation = (props: Props) => {
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Image.configure({
-        HTMLAttributes: {
-          class: "my-image",
-        },
-      }),
-    ],
-
-    content: props.content,
-    editable: false,
-  });
-
-  if (!editor) {
-    return null;
-  }
-
-  return <EditorContent editor={editor} />;
+  return (
+    <TheoryEditor
+      content={props.content}
+      editable={false}
+      showToolbar={false}
+    />
+  );
 };
 
 export default ViewerPresentation;
