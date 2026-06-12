@@ -9,6 +9,7 @@ interface Props {
   content: JSONContent | string | null;
   editable?: boolean;
   showToolbar?: boolean;
+  imageUploadFolder?: string;
   onChange?: (content: JSONContent) => void;
   onEditorReady?: (editor: Editor) => void;
 }
@@ -17,6 +18,7 @@ const TheoryEditor = ({
   content,
   editable = true,
   showToolbar = true,
+  imageUploadFolder,
   onChange,
   onEditorReady,
 }: Props) => {
@@ -43,7 +45,7 @@ const TheoryEditor = ({
     }
 
     onEditorReady?.(editor);
-  }, [editor, onEditorReady]);
+  }, [editor]);
 
   if (!editor) {
     return null;
@@ -51,7 +53,12 @@ const TheoryEditor = ({
 
   return (
     <div className="creator_theory">
-      {showToolbar && editable && <TheoryToolbar editor={editor} />}
+      {showToolbar && editable && (
+        <TheoryToolbar
+          editor={editor}
+          imageUploadFolder={imageUploadFolder}
+        />
+      )}
       <EditorContent editor={editor} className="theory_editor_wrapper" />
     </div>
   );

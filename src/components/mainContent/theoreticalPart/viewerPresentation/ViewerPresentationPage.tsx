@@ -13,24 +13,31 @@ const ViewerPresentationPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const loadTeory = async () => {
-      const theoryRef = doc(
-        db,
-        "Subjects",
-        "Math",
-        "Algebra",
-        "Theory",
-        "Topics",
-        YOUR_DOCUMENT_ID,
-      );
-      const theorySnapshot = await getDoc(theoryRef);
-      if (theorySnapshot.exists()) {
-        const data = theorySnapshot.data();
-        setLoadedContent(data.content);
+    const loadTheory = async () => {
+      try {
+        const theoryRef = doc(
+          db,
+          "Subjects",
+          "Math",
+          "Algebra",
+          "Theory",
+          "Topics",
+          YOUR_DOCUMENT_ID,
+        );
+        const theorySnapshot = await getDoc(theoryRef);
+        if (theorySnapshot.exists()) {
+          const data = theorySnapshot.data();
+          setLoadedContent(data.content);
+        } else {
+          console.log("Theory document not found");
+        }
+      } catch (error) {
+        console.error("Failed to load theory:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    loadTeory();
+    loadTheory();
   }, []);
 
   if (loading) {

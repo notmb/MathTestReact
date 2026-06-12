@@ -1,13 +1,22 @@
 import { Editor, useEditorState } from "@tiptap/react";
-import type { MouseEvent } from "react";
+import Bold from "./buttons/Bold";
+import BulletList from "./buttons/BulletList";
+import H1 from "./buttons/H1";
+import H2 from "./buttons/H2";
+import ImageButton from "./buttons/ImageButton";
+import Italic from "./buttons/Italic";
+import MathBlockButton from "./buttons/MathBlockButton";
+import Redo from "./buttons/Redo";
+import Undo from "./buttons/Undo";
 import "../theoryPartStyle.css";
 
 interface Props {
   editor: Editor;
+  imageUploadFolder?: string;
 }
 
 const TheoryToolbar = (props: Props) => {
-  const { editor } = props;
+  const { editor, imageUploadFolder = "theory/images" } = props;
   const activeState = useEditorState({
     editor,
     selector: ({ editor }) => ({
@@ -19,96 +28,20 @@ const TheoryToolbar = (props: Props) => {
     }),
   });
 
-  const runCommand = (event: MouseEvent, command: () => void) => {
-    event.preventDefault();
-    command();
-  };
-
   return (
     <div className="theory_toolbar">
-      <button
-        type="button"
-        className={
-          activeState.bold ? "toolbar_button active" : "toolbar_button"
-        }
-        onMouseDown={(event) =>
-          runCommand(event, () => editor.chain().focus().toggleBold().run())
-        }
-      >
-        B
-      </button>
-
-      <button
-        type="button"
-        className={
-          activeState.italic ? "toolbar_button active" : "toolbar_button"
-        }
-        onMouseDown={(event) =>
-          runCommand(event, () => editor.chain().focus().toggleItalic().run())
-        }
-      >
-        I
-      </button>
-
-      <button
-        type="button"
-        className={
-          activeState.heading1 ? "toolbar_button active" : "toolbar_button"
-        }
-        onMouseDown={(event) =>
-          runCommand(event, () =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run(),
-          )
-        }
-      >
-        H1
-      </button>
-
-      <button
-        type="button"
-        className={
-          activeState.heading2 ? "toolbar_button active" : "toolbar_button"
-        }
-        onMouseDown={(event) =>
-          runCommand(event, () =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run(),
-          )
-        }
-      >
-        H2
-      </button>
-
-      <button
-        type="button"
-        className={
-          activeState.bulletList ? "toolbar_button active" : "toolbar_button"
-        }
-        onMouseDown={(event) =>
-          runCommand(event, () =>
-            editor.chain().focus().toggleBulletList().run(),
-          )
-        }
-      >
-        • List
-      </button>
-
-      <button
-        type="button"
-        onMouseDown={(event) =>
-          runCommand(event, () => editor.chain().focus().undo().run())
-        }
-      >
-        Undo
-      </button>
-
-      <button
-        type="button"
-        onMouseDown={(event) =>
-          runCommand(event, () => editor.chain().focus().redo().run())
-        }
-      >
-        Redo
-      </button>
+      <Bold editor={editor} active={activeState.bold} />
+      <Italic editor={editor} active={activeState.italic} />
+      <H1 editor={editor} active={activeState.heading1} />
+      <H2 editor={editor} active={activeState.heading2} />
+      <MathBlockButton editor={editor} />
+      <BulletList editor={editor} active={activeState.bulletList} />
+      <ImageButton
+        editor={editor}
+        imageUploadFolder={imageUploadFolder}
+      />
+      <Undo editor={editor} />
+      <Redo editor={editor} />
     </div>
   );
 };

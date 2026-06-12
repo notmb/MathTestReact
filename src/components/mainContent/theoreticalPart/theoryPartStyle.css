@@ -5,68 +5,289 @@
   padding: 40px;
 }
 .theory_editor_page {
-  padding: 40px;
+  min-height: 100vh;
+  padding: 32px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  color: #172033;
 }
 .my-image {
-  width: 300px;
+  display: block;
+  width: min(100%, 520px);
+  height: auto;
+  margin: 22px auto;
+  border: 1px solid #d7dee8;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(27, 38, 59, 0.12);
 }
 .creator_theory {
   display: flex;
-  align-items: start;
-  /* gap: 4px; */
+  align-items: stretch;
+  width: min(1180px, 100%);
+  min-height: calc(100vh - 150px);
+  margin: 0 auto;
+  border: 1px solid #d9e0ea;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 18px 50px rgba(33, 47, 70, 0.12);
+  overflow: hidden;
 }
 .theory_editor_wrapper {
   width: 100%;
+  min-width: 0;
+  background: #f6f8fb;
 }
 
 .theory_toolbar {
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid black;
-  border-right: none;
-  background: #f5f5f5;
-  flex-wrap: wrap;
+  gap: 7px;
+  width: 92px;
+  padding: 14px 10px;
+  border-right: 1px solid #d9e0ea;
+  background: #f9fbfd;
 }
 
 .toolbar_button {
   white-space: nowrap;
-  padding: 8px 12px;
-  border: 1px solid gray;
-  background: white;
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #243044;
   cursor: pointer;
   border-radius: 6px;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.toolbar_button:hover:not(:disabled) {
+  border-color: #8aa0bd;
+  background: #f2f6fb;
+  box-shadow: 0 4px 12px rgba(35, 54, 82, 0.1);
+}
+
+.toolbar_button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.toolbar_button:disabled {
+  cursor: wait;
+  opacity: 0.58;
 }
 
 .toolbar_button.active {
-  background: #bfdbfe;
+  border-color: #2f7d6d;
+  background: #e2f3ee;
+  color: #14574b;
+  box-shadow: inset 0 0 0 1px rgba(47, 125, 109, 0.18);
 }
 
 .ProseMirror {
-  border: 1px solid black;
-  min-height: 500px;
-  padding: 24px;
+  width: min(820px, calc(100% - 40px));
+  min-height: calc(100vh - 190px);
+  margin: 20px auto;
+  padding: 44px 56px;
+  border: 1px solid #dbe2eb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #182235;
   font-size: 20px;
-  line-height: 1.7;
+  line-height: 1.75;
   outline: none;
+  box-shadow: 0 10px 32px rgba(27, 38, 59, 0.08);
+}
+
+.ProseMirror:focus {
+  border-color: #80a6d8;
+  box-shadow:
+    0 0 0 3px rgba(94, 143, 205, 0.16),
+    0 10px 32px rgba(27, 38, 59, 0.08);
 }
 
 .ProseMirror h1 {
-  font-size: 40px;
-  margin: 24px 0;
+  margin: 8px 0 22px;
+  color: #10203b;
+  font-size: 38px;
+  line-height: 1.18;
+  font-weight: 750;
 }
 
 .ProseMirror h2 {
-  font-size: 32px;
-  margin: 20px 0;
+  margin: 28px 0 14px;
+  color: #163f59;
+  font-size: 29px;
+  line-height: 1.25;
+  font-weight: 720;
 }
 
 .ProseMirror p {
   margin: 16px 0;
+  text-indent: 32px;
 }
 
 .ProseMirror ul {
   padding-left: 32px;
+}
+
+.ProseMirror ol {
+  padding-left: 32px;
+}
+
+.ProseMirror li {
+  margin: 8px 0;
+}
+
+.ProseMirror blockquote {
+  margin: 20px 0;
+  padding: 12px 18px;
+  border-left: 4px solid #2f7d6d;
+  background: #f0f7f4;
+  color: #1d3b35;
+}
+
+.math_block {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 24px auto;
+  padding: 8px 12px;
+  border: 1px solid #d7dee8;
+  border-radius: 8px;
+  background: #fbfcfe;
+  text-align: center;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.math_block_formula {
+  min-width: 0;
+}
+
+.math_block_drag_handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #d7dee8;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #65758c;
+  cursor: grab;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  user-select: none;
+}
+
+.math_block_drag_handle:active {
+  cursor: grabbing;
+}
+
+.math_block:hover {
+  border-color: #8aa0bd;
+  background: #f8fbff;
+}
+
+.math_block:hover .math_block_drag_handle {
+  border-color: #aab8ca;
+  color: #334155;
+}
+
+.math_block.selected {
+  border-color: #2f7d6d;
+  box-shadow: 0 0 0 3px rgba(47, 125, 109, 0.14);
+}
+
+.math_block .MathJax {
+  max-width: 100%;
+}
+
+.math_block mjx-container[display="true"] {
+  display: inline-block !important;
+  margin: 0 !important;
+}
+
+.theory_save_button {
+  display: block;
+  min-height: 42px;
+  margin: 18px auto 0;
+  padding: 0 22px;
+  border: 1px solid #1d6a5c;
+  border-radius: 6px;
+  background: #24796a;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(36, 121, 106, 0.22);
+  transition:
+    background 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.theory_save_button:hover {
+  background: #1d6a5c;
+  box-shadow: 0 10px 24px rgba(36, 121, 106, 0.28);
+}
+
+.theory_save_button:active {
+  transform: translateY(1px);
+}
+
+.theory_save_message {
+  width: min(1180px, 100%);
+  margin: 12px auto 0;
+  color: #41516a;
+  font-size: 14px;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .theory_editor_page {
+    padding: 14px;
+  }
+
+  .creator_theory {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .theory_toolbar {
+    flex-direction: row;
+    width: 100%;
+    padding: 10px;
+    border-right: none;
+    border-bottom: 1px solid #d9e0ea;
+    overflow-x: auto;
+  }
+
+  .toolbar_button {
+    flex: 0 0 auto;
+  }
+
+  .ProseMirror {
+    width: 100%;
+    min-height: 520px;
+    margin: 0;
+    padding: 24px 18px;
+    border: none;
+    border-radius: 0;
+    font-size: 18px;
+    box-shadow: none;
+  }
 }
