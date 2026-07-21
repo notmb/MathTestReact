@@ -1,5 +1,6 @@
 import Image from "@tiptap/extension-image";
 import StarterKit from "@tiptap/starter-kit";
+import InlineMath from "./extensions/inlineMath/InlineMath";
 import MathBlock from "./extensions/mathBlock/MathBlock";
 
 const TheoryImage = Image.extend({
@@ -25,6 +26,7 @@ const TheoryImage = Image.extend({
 
 export const theoryEditorExtensions = [
   StarterKit,
+  InlineMath,
   MathBlock,
   TheoryImage.configure({
     HTMLAttributes: {

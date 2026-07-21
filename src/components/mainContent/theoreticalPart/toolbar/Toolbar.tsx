@@ -4,6 +4,7 @@ import BulletList from "./buttons/BulletList";
 import H1 from "./buttons/H1";
 import H2 from "./buttons/H2";
 import ImageButton from "./buttons/ImageButton";
+import InlineMathButton from "./buttons/InlineMathButton";
 import Italic from "./buttons/Italic";
 import MathBlockButton from "./buttons/MathBlockButton";
 import Redo from "./buttons/Redo";
@@ -34,6 +35,7 @@ const TheoryToolbar = (props: Props) => {
       <Italic editor={editor} active={activeState.italic} />
       <H1 editor={editor} active={activeState.heading1} />
       <H2 editor={editor} active={activeState.heading2} />
+      <InlineMathButton editor={editor} />
       <MathBlockButton editor={editor} />
       <BulletList editor={editor} active={activeState.bulletList} />
       <ImageButton

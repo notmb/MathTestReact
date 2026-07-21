@@ -221,6 +221,26 @@
   margin: 0 !important;
 }
 
+.inline_math {
+  display: inline-flex;
+  align-items: baseline;
+  max-width: 100%;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: #f5f8fb;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+
+.inline_math.selected {
+  background: #e2f3ee;
+  box-shadow: 0 0 0 2px rgba(47, 125, 109, 0.14);
+}
+
+.inline_math mjx-container {
+  margin: 0 !important;
+}
+
 .theory_save_button {
   display: block;
   min-height: 42px;
