@@ -13,12 +13,16 @@ const AddNewStudent = (props: {
     testScoresRetaking: {
       [key: string]: string;
     };
+    testScoresNmt: {
+      [key: string]: string;
+    };
     id: string;
   }) => void;
 }) => {
   const [name, setName] = useState("");
   const [testResults, setTestResults] = useState("");
   const [testResultsRetaking, setTestResultsRetaking] = useState("");
+  const [testResultsNmt, setTestResultsNmt] = useState("");
   const { user, isDemo } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,9 +44,14 @@ const AddNewStudent = (props: {
       testResultsRetaking.trim() === ""
         ? []
         : testResultsRetaking.split(";").map((item) => item.trim());
+    const arrTestResultsNmt =
+      testResults.trim() === ""
+        ? []
+        : testResults.split(";").map((item) => item.trim());
 
     const testScores: { [key: string]: string } = {};
     const testScoresRetaking: { [key: string]: string } = {};
+    const testScoresNmt: { [key: string]: string } = {};
 
     arrTestResults.forEach((result, index) => {
       testScores[`topic${index + 1}`] = result;
@@ -52,6 +61,10 @@ const AddNewStudent = (props: {
       testScoresRetaking[`topic${index + 1}`] = result;
     });
 
+    arrTestResultsNmt.forEach((result, index) => {
+      testScoresNmt[`NMT${index + 1}`] = result;
+    });
+
     try {
       const docRef = await addDoc(
         collection(db, "Subjects", "Math", "MyStudents"),
@@ -59,6 +72,7 @@ const AddNewStudent = (props: {
           name,
           testScores,
           testScoresRetaking,
+          testScoresNmt,
           createdAt: new Date(),
         },
       );
@@ -66,6 +80,7 @@ const AddNewStudent = (props: {
         name,
         testScores,
         testScoresRetaking,
+        testScoresNmt,
         id: docRef.id,
       });
     } catch (error) {
@@ -110,6 +125,15 @@ const AddNewStudent = (props: {
           <textarea
             value={testResultsRetaking}
             onChange={(e) => setTestResultsRetaking(e.target.value)}
+            placeholder="Наприклад: 10; 11; 9"
+          />
+        </label>
+
+        <label className="student-form-field">
+          <span>Результати перездачі</span>
+          <textarea
+            value={testResultsNmt}
+            onChange={(e) => setTestResultsNmt(e.target.value)}
             placeholder="Наприклад: 10; 11; 9"
           />
         </label>

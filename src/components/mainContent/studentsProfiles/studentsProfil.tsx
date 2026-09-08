@@ -14,6 +14,9 @@ type Student = {
   testScoresRetaking: {
     [key: string]: string;
   };
+  testScoresNmt?: {
+    [key: string]: string;
+  };
   id: string;
 };
 
@@ -22,6 +25,13 @@ const TEST_COUNT = 21;
 const StudentsProfil = () => {
   const [students, updeteStudents] = useImmer<Student[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const NMT_TEST_COUNT = Math.max(
+    0,
+    ...students.map(
+      (student) => Object.keys(student.testScoresNmt ?? {}).length,
+    ),
+  );
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -37,6 +47,7 @@ const StudentsProfil = () => {
             name: data.name,
             testScores: data.testScores || {},
             testScoresRetaking: data.testScoresRetaking || {},
+            testScoresNmt: data.testScoresNmt || {},
             id: doc.id,
           });
         });
@@ -67,7 +78,6 @@ const StudentsProfil = () => {
           Додати учня
         </button>
       </div>
-
       <div className="students-table-card">
         <div className="students-table-scroll">
           <table className="students-table">
@@ -99,8 +109,7 @@ const StudentsProfil = () => {
                           {student.testScores?.[`topic${i + 1}`] ?? "-"}
                         </div>
                         <div className="students-score-retake">
-                          {student.testScoresRetaking?.[`topic${i + 1}`] ??
-                            "-"}
+                          {student.testScoresRetaking?.[`topic${i + 1}`] ?? "-"}
                         </div>
                       </td>
                     ))}
@@ -111,7 +120,57 @@ const StudentsProfil = () => {
           </table>
         </div>
       </div>
-
+      // --------------
+      <div className="students-table-card">
+        <div className="students-table-scroll">
+          <table className="students-table">
+            <thead>
+              <tr>
+                <th className="students-table-sticky-cell">Учень</th>
+                {Array.from({ length: NMT_TEST_COUNT }, (_, i) => (
+                  <th key={i}>Тест {i + 1}</th>
+                ))}
+                {/* + додали порожній останній стовпець */}
+                <th className="students-table-filler" />
+              </tr>
+            </thead>
+            <tbody>
+              {students.length === 0 ? (
+                <tr>
+                  <td
+                    className="students-empty-row"
+                    colSpan={NMT_TEST_COUNT + 2}
+                  >
+                    Учнів поки немає. Додайте першого учня, щоб вести
+                    результати.
+                  </td>
+                </tr>
+              ) : (
+                students.map((student) => (
+                  <tr key={student.id}>
+                    <td className="students-table-sticky-cell students-name-cell">
+                      {student.name}
+                    </td>
+                    {Array.from({ length: NMT_TEST_COUNT }, (_, i) => (
+                      <td key={i} className="students-score-cell">
+                        <div className="students-score-primary">
+                          {student.testScores?.[`topic${i + 1}`] ?? "-"}
+                        </div>
+                        <div className="students-score-retake">
+                          {student.testScoresRetaking?.[`topic${i + 1}`] ?? "-"}
+                        </div>
+                      </td>
+                    ))}
+                    {/* + filler */}
+                    <td className="students-table-filler" />
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      // -----------------
       {isModalOpen && (
         <WrapperForModalWindow onClose={() => setIsModalOpen(false)}>
           <AddNewStudent
