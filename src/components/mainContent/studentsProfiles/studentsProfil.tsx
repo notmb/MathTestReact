@@ -128,7 +128,9 @@ const StudentsProfil = () => {
               <tr>
                 <th className="students-table-sticky-cell">Учень</th>
                 {Array.from({ length: NMT_TEST_COUNT }, (_, i) => (
-                  <th key={i}>Тест {i + 1}</th>
+                  <th key={i} className="students-score-cell">
+                    NMT {i + 1}
+                  </th>
                 ))}
                 {/* + додали порожній останній стовпець */}
                 <th className="students-table-filler" />

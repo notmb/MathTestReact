@@ -120,7 +120,9 @@
   position: sticky;
   left: 0;
   z-index: 3;
+  width: 1%;
   min-width: 190px;
+  white-space: nowrap;
   text-align: left;
   background: #ffffff;
   box-shadow: 8px 0 18px rgba(32, 82, 128, 0.08);
@@ -138,6 +140,9 @@
 
 .students-score-cell {
   color: #315d83;
+  width: 1%;
+  min-width: 62px;
+  white-space: nowrap;
 }
 
 .students-score-primary {
@@ -159,6 +164,10 @@
   color: #5c7892;
   font-size: 17px;
   background: #ffffff;
+}
+
+.students-table-filler {
+  width: 100%;
 }
 
 .student-form-box {
