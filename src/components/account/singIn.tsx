@@ -4,8 +4,8 @@ import { auth } from "../../firebaseConfig";
 import PersonalAccount from "./personalAccount";
 
 const DEMO_LOGIN = "demouser@gmail.com";
-// const DEMO_PASS = "DEMOuser";
-const DEMO_PASS = "";
+const DEMO_PASS = "DEMOuser";
+// const DEMO_PASS = "";
 
 const SingIn = (props: { navigate: (path: string) => void }) => {
   const [formData, updateFormData] = useImmer({
