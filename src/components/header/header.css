@@ -106,7 +106,7 @@
   padding: 0 20px;
   display: grid;
   grid-template-columns: 1fr 1fr; /* ліва / права = 50% / 50% */
-  grid-template-rows: repeat(4, 1fr); /* 3 рядки */
+  grid-template-rows: repeat(4, 1fr);
   gap: 16px;
   min-height: calc(60vh - 16px - 64px - 32px);
 }
@@ -125,7 +125,7 @@
   grid-column: 1;
   grid-row: 3;
 }
-.section_navigation_item3 {
+.section_navigation_item4 {
   grid-column: 1;
   grid-row: 4;
 }
@@ -195,7 +195,7 @@
 @media (max-width: 900px) {
   .header_nav_section {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
   }
 
   .section_navigation_item1 {

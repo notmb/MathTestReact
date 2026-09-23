@@ -1,3 +1,4 @@
+import "./router.css";
 import { auth } from "./firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect } from "react";
@@ -178,15 +179,29 @@ const Router = (props: {
     // Якщо не залогінений, і це не сторінка логіну
     return (
       <>
-        {!withoutLayout && <Header navigate={props.navigate} />}
-        <div style={{ padding: "2rem", textAlign: "center" }}>
-          <h2>Access denied</h2>
-          <p>Please log in to view this page.</p>
-          <button
-            onClick={() => props.navigate("/MathTestReact/account/login")}
-          >
-            Go to Login
-          </button>
+        <div className="logged_out_screen">
+          {!withoutLayout && <Header navigate={props.navigate} />}
+          <main className="main_without_log_in">
+            <section className="login_prompt" aria-labelledby="login-prompt-title">
+              <div className="login_prompt_icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="5" y="10" width="14" height="11" rx="3" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                  <path d="M12 14v3" />
+                </svg>
+              </div>
+              <h2 id="login-prompt-title">Увійдіть, щоб продовжити</h2>
+              <p>Ця сторінка доступна після входу в обліковий запис.</p>
+              <button
+                className="login_prompt_button"
+                type="button"
+                onClick={() => props.navigate("/MathTestReact/account/login")}
+              >
+                Увійти в обліковий запис
+                <span aria-hidden="true">→</span>
+              </button>
+            </section>
+          </main>
         </div>
         {!withoutLayout && <Footer />}
       </>
