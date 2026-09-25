@@ -1,7 +1,7 @@
 ﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// витягує дані із адреси
 import { parseOneTimeParamsFromPathname } from "../../shared/oneTime/parseOneTimeParamsFromPathname";
-import type { UserAnswersState } from "../oneTimeTest.types";
-import type { Tasks } from "../oneTimeTest.types";
+
 import { buildTestResultString } from "../utils/oneTimeTestScoring";
 import { useOneTimeDataLoad } from "./useOneTimeDataLoad";
 import { useOneTimeFinalize } from "./useOneTimeFinalize";
@@ -10,6 +10,8 @@ import type {
   Status,
   VariantDoc,
 } from "./useOneTimeFlow.types";
+import type { UserAnswersState } from "../oneTimeTest.types";
+import type { Tasks } from "../oneTimeTest.types";
 
 export const useOneTimeTestFlow = () => {
   const [status, setStatus] = useState<Status>({ phase: "loading" });

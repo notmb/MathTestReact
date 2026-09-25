@@ -6,6 +6,7 @@ export function parseOneTimeParamsFromPathname(
   pathname: string,
 ): OneTimeParams {
   const parts = pathname.split("/").filter(Boolean);
+  // filter(Boolean) - Booleal - вбудована ф-яб котру ми передали в filter.
 
   const oneTimeIndex = parts.lastIndexOf("one-time-link");
   if (oneTimeIndex === -1)

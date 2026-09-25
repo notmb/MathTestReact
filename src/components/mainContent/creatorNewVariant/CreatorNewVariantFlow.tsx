@@ -3,30 +3,30 @@ import TaskEditorPanel from "./TaskEditorPanel";
 import TaskEditorRouter from "./TaskEditorRouter";
 import { useVariantDraftContext } from "./VariantDraftContext";
 import VariantMetaForm from "./VariantMetaForm";
-import { createVariant } from "./model/persistence";
 import VariantTaskGrid from "./VariantTaskGrid";
+import { createVariant } from "./model/persistence";
 import { validateVariantMeta } from "./model/validation";
 import { useAuth } from "../../../auth/useAuth";
 
-// ооркестер - головний компонент
+// ооркестер - головний компонент)
 const CreatorNewVariantFlow = () => {
+  // ховає велику форму загальних даних варіанта
   const [isMetaCollapsed, setIsMetaCollapsed] = useState(false);
   const { user, isDemo } = useAuth();
   const {
     state,
-    initializeTasks,
-    patchMeta,
+    initializeTasks, //створює внутрішню структуру задач загалом
+    patchMeta, //оновлює(перестворює дані варіанту)
     setErrorMessage,
     setSelectedTaskNumber,
     setStatus,
     setTaskType,
-  } = useVariantDraftContext(); // контекст
+  } = useVariantDraftContext();
 
   const handleSubmitMeta = async (event: FormEvent<HTMLFormElement>) => {
-    // ф-я створення варіанту
     event.preventDefault();
 
-    const validationError = validateVariantMeta(state.meta); //валідує state.meta
+    const validationError = validateVariantMeta(state.meta);
 
     if (validationError) {
       setStatus("error");
@@ -34,7 +34,7 @@ const CreatorNewVariantFlow = () => {
       return;
     }
 
-    const taskCount = Number(state.meta.numberOfTasks); // к-сть задач
+    const taskCount = Number(state.meta.numberOfTasks);
     if (!user) {
       alert("Потрібно увійти, щоб виконати цю дію");
       return;
@@ -46,9 +46,9 @@ const CreatorNewVariantFlow = () => {
       patchMeta({
         variantId: `demo-${Date.now()}`,
       });
-      initializeTasks(taskCount); //створює внутрішню структуру задач загалом
+      initializeTasks(taskCount);
       setStatus("ready"); // базовий етап завершено
-      setIsMetaCollapsed(true); // ховає велику форму метаданих
+      setIsMetaCollapsed(true);
       return;
     }
     try {
@@ -56,7 +56,6 @@ const CreatorNewVariantFlow = () => {
       setStatus("creating");
 
       const result = await createVariant({
-        //створює документ варіанту в firestore
         variantName: state.meta.variantName,
         variantSerialNumber: state.meta.variantSerialNumber,
         numberOfTasks: state.meta.numberOfTasks,
@@ -64,12 +63,11 @@ const CreatorNewVariantFlow = () => {
       });
 
       patchMeta({
-        //записується id створеного варіанту
         variantId: result.variantId,
       });
-      initializeTasks(taskCount); //створює внутрішню структуру задач загалом
-      setStatus("ready"); // базовий етап завершено
-      setIsMetaCollapsed(true); // ховає велику форму метаданих
+      initializeTasks(taskCount);
+      setStatus("ready");
+      setIsMetaCollapsed(true);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Не вдалося створити варіант.";
@@ -80,11 +78,9 @@ const CreatorNewVariantFlow = () => {
   };
 
   const selectedTaskType =
-    // якщо номер задачі не вибрано то selectedTaskType == ""
     state.selectedTaskNumber === null
       ? ""
-      : // якщо вибрана - то візяти її type, тільки якщо чернетка існує
-        (state.taskDrafts[state.selectedTaskNumber]?.type ?? "");
+      : (state.taskDrafts[state.selectedTaskNumber]?.type ?? "");
 
   const selectedTaskDraft = //
     state.selectedTaskNumber === null
@@ -92,7 +88,6 @@ const CreatorNewVariantFlow = () => {
       : (state.taskDrafts[state.selectedTaskNumber] ?? null);
 
   const handleSelectTaskType = (
-    // функція обробляє вибір типу для поточної задачі
     taskType: "choice" | "comparison" | "openAnswer",
   ) => {
     if (!state.selectedTaskNumber) {
