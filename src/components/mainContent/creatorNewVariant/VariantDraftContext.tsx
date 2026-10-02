@@ -36,13 +36,19 @@ type VariantDraftContextValue = {
 
 const initialDraftState = createEmptyVariantDraftState();
 
+// створюється контекст (лоб'єкт контексту)
 const VariantDraftContext = createContext<VariantDraftContextValue | undefined>(
   undefined,
 );
 
+// Компонент - зберігає стан і надає доступ до нього
 export const VariantDraftProvider = ({ children }: PropsWithChildren) => {
+  //тут живуть дані чернетки -> initialDraftState - створює внутрішню структуру задач загалом
   const [state, setState] = useState<VariantDraftState>(initialDraftState);
 
+  //Далі формується об’єкт value, у якому зібрані стан і функції:
+  //setStatus, patchMeta, setErrorMessage — не окремі стейти.
+  //Це твої функції, які змінюють різні частини одного state через setState.
   const value = useMemo<VariantDraftContextValue>(
     () => ({
       state,

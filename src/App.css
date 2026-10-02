@@ -6,8 +6,11 @@
   flex-direction: column;
 }
 .main_content {
-  flex: 1;
+  /* flex: 1; */
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .ProseMirror {
   outline: none;

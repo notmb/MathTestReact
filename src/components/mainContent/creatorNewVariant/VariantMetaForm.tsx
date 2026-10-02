@@ -1,5 +1,6 @@
 import type { ChangeEvent, FormEvent } from "react";
 import type { VariantMetaDraft } from "./model/types";
+import { buttonStyles } from "./styles/tvStyles";
 
 type VariantMetaFormProps = {
   values: VariantMetaDraft;
@@ -105,7 +106,11 @@ const VariantMetaForm = ({
       </div>
 
       <div className="creator_variant_actions">
-        <button className="custom_button" type="submit" disabled={isSubmitting}>
+        <button
+          className={buttonStyles({ kind: "create" })}
+          type="submit"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Створення..." : "Створити варіант"}
         </button>
         {errorMessage && (

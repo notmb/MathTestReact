@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { buttonStyles, createVariantSectionStyles } from "./styles/tvStyles";
 import TaskEditorPanel from "./TaskEditorPanel";
 import TaskEditorRouter from "./TaskEditorRouter";
 import { useVariantDraftContext } from "./VariantDraftContext";
@@ -82,7 +83,7 @@ const CreatorNewVariantFlow = () => {
       ? ""
       : (state.taskDrafts[state.selectedTaskNumber]?.type ?? "");
 
-  const selectedTaskDraft = //
+  const selectedTaskDraft =
     state.selectedTaskNumber === null
       ? null
       : (state.taskDrafts[state.selectedTaskNumber] ?? null);
@@ -98,9 +99,19 @@ const CreatorNewVariantFlow = () => {
   };
 
   return (
-    <section className="creator_new_variant">
-      {isMetaCollapsed ? (
-        <section className="creator_meta_summary">
+    <section data-component="creatorNewVariant" className="py-0 px-[24px]">
+      {!isMetaCollapsed ? (
+        <section className="meta-section">
+          <VariantMetaForm
+            values={state.meta}
+            isSubmitting={state.status === "creating"}
+            errorMessage={state.errorMessage}
+            onChange={patchMeta}
+            onSubmit={handleSubmitMeta}
+          />
+        </section>
+      ) : (
+        <section className={createVariantSectionStyles({ kind: "summary" })}>
           <div className="creator_meta_summary__header">
             <div>
               <p className="creator_meta_summary__eyebrow">
@@ -111,7 +122,7 @@ const CreatorNewVariantFlow = () => {
               </h2>
             </div>
             <button
-              className="creator_meta_summary__edit_button"
+              className={buttonStyles({ kind: "edit" })}
               type="button"
               onClick={() => setIsMetaCollapsed(false)}
             >
@@ -136,20 +147,10 @@ const CreatorNewVariantFlow = () => {
             </div>
           </dl>
         </section>
-      ) : (
-        <section className="creator_new_variant">
-          <VariantMetaForm
-            values={state.meta}
-            isSubmitting={state.status === "creating"}
-            errorMessage={state.errorMessage}
-            onChange={patchMeta}
-            onSubmit={handleSubmitMeta}
-          />
-        </section>
       )}
 
       {state.taskItems.length > 0 && (
-        <>
+        <section className="tasks-section">
           <VariantTaskGrid
             tasks={state.taskItems}
             taskDrafts={state.taskDrafts}
@@ -165,7 +166,7 @@ const CreatorNewVariantFlow = () => {
               <TaskEditorRouter taskDraft={selectedTaskDraft} />
             )}
           </TaskEditorPanel>
-        </>
+        </section>
       )}
     </section>
   );
