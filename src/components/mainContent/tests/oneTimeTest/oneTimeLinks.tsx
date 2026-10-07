@@ -37,36 +37,43 @@ const OneTimeLinks = (props: {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { user, isDemo } = useAuth();
 
-  const fetchTestLinks = async () => {
-    setFetchStatus("loading");
-    setErrorMessage(null);
-
-    const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
-    const dataLinks = query(
-      testLinksRef,
-      where("variantId", "==", props.selectedVariant),
-    );
-
-    try {
-      const querySnapshot = await getDocs(dataLinks);
-
-      const links: TestLink[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as TestLink[];
-
-      updateTestLinks(links);
-      setFetchStatus("success");
-    } catch (error) {
-      console.error("Помилка при отриманні документів:", error);
-      setErrorMessage("Не вдалося завантажити одноразові посилання.");
-      setFetchStatus("error");
-    }
-  };
-
+  const { selectedVariant } = props;
   useEffect(() => {
-    fetchTestLinks();
-  }, [props.selectedVariant]);
+    let cancelled = false;
+
+    const fetchTestLinks = async () => {
+      setFetchStatus("loading");
+      setErrorMessage(null);
+
+      try {
+        const testLinksRef = collection(db, "Subjects", "Math", "TestLinks");
+        const dataLinks = query(
+          testLinksRef,
+          where("variantId", "==", selectedVariant),
+        );
+
+        const querySnapshot = await getDocs(dataLinks);
+        if (cancelled) return;
+
+        const links: TestLink[] = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as TestLink[];
+
+        updateTestLinks(links);
+        setFetchStatus("success");
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Помилка при отриманні документів:", error);
+        setErrorMessage("Не вдалося завантажити одноразові посилання.");
+        setFetchStatus("error");
+      }
+    };
+    void fetchTestLinks();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedVariant, updateTestLinks]);
 
   const copyLink = async (idLink: string) => {
     const link = `${window.location.origin}/MathTestReact/${idLink}/one-time-link`;

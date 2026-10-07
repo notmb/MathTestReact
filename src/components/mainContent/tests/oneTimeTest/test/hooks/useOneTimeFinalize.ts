@@ -1,4 +1,4 @@
-﻿import {
+import {
   doc,
   getDoc,
   runTransaction,
@@ -126,12 +126,18 @@ export const useOneTimeFinalize = ({
       );
 
       try {
-        await runTransaction(db, async (tx) => {
+        const completion = await runTransaction(db, async (tx) => {
           const snap = await tx.get(linkRef);
           if (!snap.exists()) throw new Error("linkNotFound");
 
-          const data = snap.data() as { testLinkStatus?: string };
-          if (data.testLinkStatus === "finished") return;
+          const data = snap.data();
+          if (data.testLinkStatus === "finished") {
+            if (typeof data.testResult !== "string") {
+              throw new Error("invalidSavedResult");
+            }
+
+            return { alreadyFinished: true, result: data.testResult };
+          }
 
           tx.update(linkRef, {
             testLinkStatus: "finished",
@@ -152,7 +158,19 @@ export const useOneTimeFinalize = ({
             },
             { merge: true },
           );
+
+          return { alreadyFinished: false, result: payload.result };
         });
+
+        // Another tab already saved the result; do not overwrite the student profile.
+        if (completion.alreadyFinished) {
+          if (cancelled) return;
+          if (storageKey) sessionStorage.removeItem(storageKey);
+          setFinalResult(completion.result);
+          setPreparedTestResult(null);
+          setStatus({ phase: "done", studentId, variantId, linkId });
+          return;
+        }
 
         const topicKey = serialText;
         const summaryUpdate =

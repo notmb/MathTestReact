@@ -1,45 +1,14 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { useMemo, useState, type PropsWithChildren } from "react";
 import {
   createEmptyTaskDraft,
   createEmptyTaskDraftByType,
   createEmptyVariantDraftState,
   createTaskItems,
-} from "./model/factories";
-import type {
-  TaskDraft,
-  VariantDraftState,
-  VariantMetaDraft,
-} from "./model/types";
-import type { TaskType } from "../types";
-
-type VariantDraftContextValue = {
-  state: VariantDraftState;
-  setMeta: (nextMeta: VariantMetaDraft) => void;
-  patchMeta: (patch: Partial<VariantMetaDraft>) => void;
-  setStatus: (nextStatus: VariantDraftState["status"]) => void;
-  setErrorMessage: (message: string | null) => void;
-  setSelectedTaskNumber: (taskNumber: string | null) => void;
-  setTaskItems: (items: VariantDraftState["taskItems"]) => void;
-  initializeTasks: (count: number) => void;
-  setTaskType: (taskNumber: string, type: TaskType) => void;
-  updateTaskDraft: (
-    taskNumber: string,
-    updater: (current: TaskDraft) => TaskDraft,
-  ) => void;
-};
+} from "../model/factories";
+import type { VariantDraftState } from "../model/types";
+import { VariantDraftContext, type VariantDraftContextValue } from "./VariantDraftContext";
 
 const initialDraftState = createEmptyVariantDraftState();
-
-// створюється контекст (лоб'єкт контексту)
-const VariantDraftContext = createContext<VariantDraftContextValue | undefined>(
-  undefined,
-);
 
 // Компонент - зберігає стан і надає доступ до нього
 export const VariantDraftProvider = ({ children }: PropsWithChildren) => {
@@ -151,13 +120,3 @@ export const VariantDraftProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-export const useVariantDraftContext = () => {
-  const context = useContext(VariantDraftContext);
-  if (!context) {
-    throw new Error(
-      "useVariantDraftContext must be used within VariantDraftProvider",
-    );
-  }
-
-  return context;
-};

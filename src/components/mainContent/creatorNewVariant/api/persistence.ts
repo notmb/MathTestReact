@@ -2,7 +2,7 @@ import type {
   CreateVariantPayload,
   SaveTaskPayload,
   VariantType,
-} from "./types";
+} from "../model/types";
 import { db, storage } from "../../../../firebaseConfig";
 import {
   addDoc,

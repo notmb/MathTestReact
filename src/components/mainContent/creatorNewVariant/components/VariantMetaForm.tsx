@@ -1,6 +1,6 @@
 import type { ChangeEvent, FormEvent } from "react";
-import type { VariantMetaDraft } from "./model/types";
-import { buttonStyles } from "./styles/tvStyles";
+import type { VariantMetaDraft } from "../model/types";
+import { buttonStyles } from "../styles/tvStyles";
 
 type VariantMetaFormProps = {
   values: VariantMetaDraft;

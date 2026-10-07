@@ -1,6 +1,6 @@
-import "./creatorNewVariant.css";
+import "./styles/creatorNewVariant.css";
 import CreatorNewVariantFlow from "./CreatorNewVariantFlow";
-import { VariantDraftProvider } from "./VariantDraftContext";
+import { VariantDraftProvider } from "./context/VariantDraftProvider";
 
 const AddNewVariantPage = () => {
   return (

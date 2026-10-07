@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
-import { useVariantDraftContext } from "../VariantDraftContext";
-import { saveTask } from "../model/persistence";
+import { useVariantDraftContext } from "../context/useVariantDraftContext";
+import { saveTask } from "../api/persistence";
 import type { ChoiceTaskDraft } from "../model/types";
 import { validateChoiceTask } from "../model/validation";
 import { useAuth } from "../../../../auth/useAuth";

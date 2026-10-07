@@ -1,6 +1,6 @@
 .account-page {
   width: 100%;
-  min-height: calc(100vh - 70px);
+  min-height: 100vh;
   padding: clamp(32px, 6vw, 80px) clamp(16px, 5vw, 72px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
@@ -8,7 +8,12 @@
   align-items: center;
   color: #17324d;
   background:
-    linear-gradient(90deg, rgba(247, 251, 255, 0.98) 0%, rgba(247, 251, 255, 0.92) 46%, rgba(238, 247, 255, 0.72) 100%),
+    linear-gradient(
+      90deg,
+      rgba(247, 251, 255, 0.98) 0%,
+      rgba(247, 251, 255, 0.92) 46%,
+      rgba(238, 247, 255, 0.72) 100%
+    ),
     url("/geometry_math.jpg");
   background-size: cover;
   background-position: center;

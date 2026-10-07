@@ -1,0 +1,41 @@
+﻿
+> my-react-ts-app@0.0.0 lint
+> eslint .
+
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\creatorNewVariant\VariantDraftContext.tsx
+  154:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\reactTsUtils.tsx
+  21:6  warning  React Hook useEffect has a missing dependency: 'props'. Either include it or remove the dependency array. However, 'props' will change when *any* prop changes, so the preferred fix is to destructure the 'props' object outside of the useEffect call and refer to those specific props inside useEffect  react-hooks/exhaustive-deps
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\tests\oneTimeTest\creatorNewLinkForSt.tsx
+  74:6  warning  React Hook useEffect has a missing dependency: 'updateStudents'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\tests\oneTimeTest\oneTimeLink\oneTimeLink.tsx
+  55:19  warning  Unexpected any. Specify a different type                                                                                                  @typescript-eslint/no-explicit-any
+  63:6   warning  React Hook useEffect has a missing dependency: 'status.linkId'. Either include it or remove the dependency array                          react-hooks/exhaustive-deps
+  63:21  warning  React Hook useEffect has a complex expression in the dependency array. Extract it to a separate variable so it can be statically checked  react-hooks/exhaustive-deps
+  75:17  warning  Unexpected any. Specify a different type                                                                                                  @typescript-eslint/no-explicit-any
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\tests\oneTimeTest\oneTimeLinks.tsx
+  69:6  warning  React Hook useEffect has a missing dependency: 'fetchTestLinks'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\tests\oneTimeTest\shared\functions.tsx
+  18:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  22:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  79:33  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\tests\oneTimeTest\test\components\tasksList.tsx
+  17:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:46  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\tests\oneTimeTest\test\utils\oneTimeTestScoring.ts
+   67:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  121:27  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Ольга\My programing\MathTestReact\src\components\mainContent\theoreticalPart\editor\TheoryEditor.tsx
+  48:6  warning  React Hook useEffect has a missing dependency: 'onEditorReady'. Either include it or remove the dependency array. If 'onEditorReady' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+✖ 16 problems (0 errors, 16 warnings)
+

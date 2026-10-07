@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import TaskEditorRouter from "./TaskEditorRouter";
-import TaskTypeSelector from "./TaskTypeSelector";
-import {
-  VariantDraftProvider,
-  useVariantDraftContext,
-} from "./VariantDraftContext";
+import TaskEditorRouter from "./components/TaskEditorRouter";
+import TaskTypeSelector from "./components/TaskTypeSelector";
+import { VariantDraftProvider } from "./context/VariantDraftProvider";
+import { useVariantDraftContext } from "./context/useVariantDraftContext";
 import { createEmptyTaskDraft } from "./model/factories";
 import type { VariantType } from "./model/types";
 import { useVariantContext } from "../tests/variantContext";

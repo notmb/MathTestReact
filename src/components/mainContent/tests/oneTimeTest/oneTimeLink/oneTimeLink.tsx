@@ -42,25 +42,35 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
     });
   }, [parsed]);
 
+  const linkId = status.phase === "ok" ? status.linkId : null;
+
   useEffect(() => {
     let cancelled = false;
     setData(null);
     setError(null);
-    if (status.phase !== "ok") return;
+    if (linkId === null) return;
 
-    (async () => {
+    const load = async () => {
       try {
-        const d = await fetchTestLinkData(status.linkId);
-        if (!cancelled) setData(d);
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? "Unknown error");
+        const result = await fetchTestLinkData(linkId);
+        if (!cancelled) setData(result);
+      } catch (error: unknown) {
+        if (!cancelled) {
+          setError(
+            error instanceof Error
+              ? error.message
+              : "Не вдалося завантажити посилання.",
+          );
+        }
       }
-    })();
+    };
+
+    void load();
 
     return () => {
       cancelled = true;
     };
-  }, [status.phase, status.phase === "ok" && status.linkId]);
+  }, [linkId]);
 
   const runningTheTest = (linkId: string) => {
     props.navigate(`/MathTestReact/${linkId}/one-time-link/one-time-test`);
@@ -188,4 +198,3 @@ const OneTimeLink = (props: { navigate: (path: string) => void }) => {
 };
 
 export default OneTimeLink;
-

@@ -1,5 +1,5 @@
 import type { ChangeEvent } from "react";
-import type { TaskType } from "../types";
+import type { TaskType } from "../../types";
 
 type TaskTypeSelectorProps = {
   id: string;

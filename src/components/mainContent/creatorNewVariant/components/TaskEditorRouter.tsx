@@ -1,7 +1,7 @@
-import ChoiceTaskEditor from "./editors/ChoiceTaskEditor";
-import ComparisonTaskEditor from "./editors/ComparisonTaskEditor";
-import OpenAnswerTaskEditor from "./editors/OpenAnswerTaskEditor";
-import type { TaskDraft } from "./model/types";
+import ChoiceTaskEditor from "../editors/ChoiceTaskEditor";
+import ComparisonTaskEditor from "../editors/ComparisonTaskEditor";
+import OpenAnswerTaskEditor from "../editors/OpenAnswerTaskEditor";
+import type { TaskDraft } from "../model/types";
 
 type TaskEditorRouterProps = {
   taskDraft: TaskDraft;

@@ -45,7 +45,7 @@ const TheoryEditor = ({
     }
 
     onEditorReady?.(editor);
-  }, [editor]);
+  }, [editor, onEditorReady]);
 
   if (!editor) {
     return null;
@@ -54,10 +54,7 @@ const TheoryEditor = ({
   return (
     <div className="creator_theory">
       {showToolbar && editable && (
-        <TheoryToolbar
-          editor={editor}
-          imageUploadFolder={imageUploadFolder}
-        />
+        <TheoryToolbar editor={editor} imageUploadFolder={imageUploadFolder} />
       )}
       <EditorContent editor={editor} className="theory_editor_wrapper" />
     </div>

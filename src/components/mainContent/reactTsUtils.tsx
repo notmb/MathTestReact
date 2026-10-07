@@ -5,10 +5,11 @@ export const WrapperForModalWindow = (props: {
   children: React.ReactNode;
   onClose: () => void;
 }) => {
+  const { onClose } = props;
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        props.onClose();
+        onClose();
       }
     };
 
@@ -18,7 +19,7 @@ export const WrapperForModalWindow = (props: {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [props.onClose]);
+  }, [onClose]);
   return (
     <div className="wrapper_for_modal_window">
       <div className="modal_content">

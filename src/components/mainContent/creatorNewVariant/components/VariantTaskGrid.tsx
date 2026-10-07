@@ -2,7 +2,7 @@ import type {
   TaskDraftStatus,
   TaskItemDraft,
   TaskMapDraft,
-} from "./model/types";
+} from "../model/types";
 
 type VariantTaskGridProps = {
   tasks: TaskItemDraft[];

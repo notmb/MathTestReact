@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { TaskType } from "../types";
+import type { TaskType } from "../../types";
 import TaskTypeSelector from "./TaskTypeSelector";
 
 type TaskEditorPanelProps = {

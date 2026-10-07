@@ -41,6 +41,8 @@ const CreatorNewLinkForStudent = (props: {
   const { user, isDemo } = useAuth();
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchStudents = async () => {
       setLoading(true);
       setError(null);
@@ -48,6 +50,8 @@ const CreatorNewLinkForStudent = (props: {
       try {
         const colRef = collection(db, "Subjects", "Math", "MyStudents");
         const snapshot = await getDocs(colRef);
+
+        if (cancelled) return;
 
         const list: StudentOption[] = snapshot.docs
           .map((doc) => {
@@ -58,20 +62,25 @@ const CreatorNewLinkForStudent = (props: {
           })
           .filter((item): item is StudentOption => item !== null);
 
-        updateStudents((draft) => {
-          draft.length = 0;
-          list.forEach((student) => draft.push(student));
-        });
+        updateStudents(list);
       } catch (err) {
+        if (cancelled) return;
+
         console.error("Помилка завантаження учнів:", err);
         setError("Не вдалося завантажити список учнів.");
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchStudents();
-  }, []);
+    void fetchStudents();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [updateStudents]);
 
   const addLink = async () => {
     if (!selectedStudentId) {

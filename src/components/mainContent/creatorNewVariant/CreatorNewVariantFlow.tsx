@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { buttonStyles, createVariantSectionStyles } from "./styles/tvStyles";
-import TaskEditorPanel from "./TaskEditorPanel";
-import TaskEditorRouter from "./TaskEditorRouter";
-import { useVariantDraftContext } from "./VariantDraftContext";
-import VariantMetaForm from "./VariantMetaForm";
-import VariantTaskGrid from "./VariantTaskGrid";
-import { createVariant } from "./model/persistence";
+import TaskEditorPanel from "./components/TaskEditorPanel";
+import TaskEditorRouter from "./components/TaskEditorRouter";
+import { useVariantDraftContext } from "./context/useVariantDraftContext";
+import VariantMetaForm from "./components/VariantMetaForm";
+import VariantTaskGrid from "./components/VariantTaskGrid";
+import { createVariant } from "./api/persistence";
 import { validateVariantMeta } from "./model/validation";
 import { useAuth } from "../../../auth/useAuth";
 
@@ -71,6 +71,7 @@ const CreatorNewVariantFlow = () => {
       setIsMetaCollapsed(true);
     } catch (error) {
       const message =
+        // Якщо error — об’єкт класу Error або його нащадка, беремо його повідомлення error.message.
         error instanceof Error ? error.message : "Не вдалося створити варіант.";
 
       setStatus("error");
@@ -99,7 +100,10 @@ const CreatorNewVariantFlow = () => {
   };
 
   return (
-    <section data-component="creatorNewVariant" className="py-0 px-[24px]">
+    <section
+      data-component="creatorNewVariant"
+      className="py-[24px] px-[24px] self-start"
+    >
       {!isMetaCollapsed ? (
         <section className="meta-section">
           <VariantMetaForm
@@ -129,7 +133,6 @@ const CreatorNewVariantFlow = () => {
               Редагувати
             </button>
           </div>
-
           <dl className="creator_meta_summary__grid">
             <div>
               <dt>Номер</dt>
