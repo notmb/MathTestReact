@@ -6,6 +6,24 @@ Web application for creating and passing math tests.
 
 https://notmb.github.io/MathTestReact
 
+## Screenshots
+
+### Create Test Variant
+
+![Create Test Variant](./screenshots/CreateTestVariant.png)
+
+### Task Editor
+
+![Task Editor](./screenshots/TaskEditor.png)
+
+### Variants List
+
+![Student Results](./screenshots/VariantsList.png)
+
+### Student Results
+
+![Student Results](./screenshots/StudentResults.png)
+
 ## Features
 
 - Create test variants
