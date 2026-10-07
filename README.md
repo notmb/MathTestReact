@@ -33,7 +33,7 @@ https://notmb.github.io/MathTestReact
 
 ### Variants List
 
-![Student Results](./screenshots/VariantsList.png)
+![Student Results](./screenshots/variants-list.png)
 
 ### Student Results
 
