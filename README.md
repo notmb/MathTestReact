@@ -6,24 +6,6 @@ Web application for creating and passing math tests.
 
 https://notmb.github.io/MathTestReact
 
-## Screenshots
-
-### Create Test Variant
-
-![Create Test Variant](./screenshots/CreateTestVariant.png)
-
-### Task Editor
-
-![Task Editor](./screenshots/TaskEditor.png)
-
-### Variants List
-
-![Student Results](./screenshots/VariantsList.png)
-
-### Student Results
-
-![Student Results](./screenshots/StudentResults.png)
-
 ## Features
 
 - Create test variants
@@ -38,3 +20,21 @@ https://notmb.github.io/MathTestReact
 - TypeScript
 - Firebase (Firestore, Storage)
 - Vite
+
+## Screenshots
+
+### Create Test Variant
+
+![Create Test Variant](./screenshots/create-variant.png)
+
+### Task Editor
+
+![Task Editor](./screenshots/task-editor.png)
+
+### Variants List
+
+![Student Results](./screenshots/VariantsList.png)
+
+### Student Results
+
+![Student Results](./screenshots/student-results.png)
